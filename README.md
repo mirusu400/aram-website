@@ -28,7 +28,10 @@ python -m http.server 8000
 
 ## Deploy (GitHub Pages)
 
+Live at **https://aram.mir.sh/** (custom domain; the deploy writes `CNAME`).
+
 One-time: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
-Then every push to `main` (and a daily schedule) fetches the latest nightly
-`aram.wasm` and deploys. No large binaries live in git history.
+Every push to `main`, a `repository_dispatch` from `aram-emu` (sent right after it
+publishes a new `nightly`), and a daily safety-net cron fetch the latest nightly
+`aram.wasm` and deploy. No large binaries live in git history.
