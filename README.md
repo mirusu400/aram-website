@@ -1,6 +1,6 @@
 # ARAM website
 
-Landing page for **ARAM — Archived Runtime for ARM Mobiles**, plus an
+Landing page for **ARAM, Archived Runtime for ARM Mobiles**, plus an
 in-browser build of the emulator.
 
 ## Structure
@@ -10,7 +10,7 @@ in-browser build of the emulator.
 | `index.html` | Landing page. Self-contained: Pretendard via CDN, inline SVG icon sprite, ko/en + dark/light. |
 | `assets/icon.png` | Brand icon (from `aram-frontend`). |
 | `player/` | In-browser ARAM (Ebitengine → WebAssembly). `index.html` + `icon.png` are committed. |
-| `player/aram.wasm`, `player/wasm_exec.js` | **Not committed** — ~52 MB runtime, fetched from the `aram-emu` **nightly** release at deploy time. |
+| `player/aram.wasm`, `player/wasm_exec.js` | **Not committed**, ~52 MB runtime, fetched from the `aram-emu` **nightly** release at deploy time. |
 | `scripts/sync-player.{ps1,sh}` | Download the runtime from the nightly release into `player/`. |
 | `.github/workflows/deploy.yml` | GitHub Pages deploy: runs the sync, then deploys. |
 
