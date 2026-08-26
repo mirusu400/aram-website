@@ -326,17 +326,17 @@
 <!-- RUNTIMES -->
 <section class="section" id="runtimes"><div class="wrap"><div class="fit">
   <div class="sec-head">
-    <span class="eyebrow" data-k="rt_eyebrow">Two runtimes, one shell</span>
-    <p data-k="rt_p">Both modes share the frontend, input, audio, profiles, save-state, debugger and compatibility tooling, but they don't pretend to be the same backend.</p>
+    <span class="eyebrow" data-k="rt_eyebrow">Two ways to run</span>
+    <p data-k="rt_p">ARAM runs old software two different ways. Both share the same screen, controls, saves and tools, but each uses the engine that fits the job.</p>
   </div>
   <div class="duo">
     <div class="rt"><div class="k" data-k="rt_app_k">Application mode</div>
-      <h3 data-k="rt_app_h">Run WIPI packages</h3>
-      <p data-k="rt_app_p">Load a WIPI package, execute its ARM/Thumb guest code, and provide WIPI, carrier, OEM, display, audio, input, storage and timing services through high-level emulation.</p>
+      <h3 data-k="rt_app_h">Run apps and games</h3>
+      <p data-k="rt_app_p">Load a WIPI app or game and ARAM runs it directly, providing the phone services it needs: display, sound, input, storage and timing.</p>
       <span class="badge live" data-k="rt_app_b">Working today</span></div>
     <div class="rt"><div class="k" data-k="rt_sys_k">System mode</div>
-      <h3 data-k="rt_sys_h">Boot phone firmware</h3>
-      <p data-k="rt_sys_p">Load user-supplied firmware, instantiate a concrete device/SoC profile (SCH-W830, SCH-W860), and progressively boot as hardware coverage grows.</p>
+      <h3 data-k="rt_sys_h">Boot a whole phone</h3>
+      <p data-k="rt_sys_p">Load a real phone's firmware and ARAM boots the entire device, one supported model at a time (SCH-W830, SCH-W860).</p>
       <span class="badge exp" data-k="rt_sys_b">Experimental · research</span></div>
   </div>
   <div class="steps">
@@ -347,7 +347,7 @@
     <div class="step"><div class="n">05</div><div class="t" data-k="ms5">Playable</div></div>
     <div class="step"><div class="n">06</div><div class="t" data-k="ms6">Complete</div></div>
   </div>
-  <p class="cap" data-k="ms_cap">Reference titles reach a deterministic first frame; broad compatibility and firmware boot are roadmap.</p>
+  <p class="cap" data-k="ms_cap">A few reference titles already reach their first frame. Wide game support and full phone boot are still to come.</p>
 </div></div></section>
 
 <!-- PLAY -->
@@ -463,22 +463,22 @@ const I18N={
  hero_lead:{en:"ARAM is a cross-platform emulator for Korean feature-phone (WIPI) software, a fast application runtime today, with whole-phone firmware boot as an ongoing research track.",
    ko:"ARAM은 한국 피처폰(WIPI) 소프트웨어를 위한 크로스플랫폼 에뮬레이터입니다. 지금은 빠른 애플리케이션 런타임, 그리고 폰 전체 펌웨어 부팅을 연구 트랙으로 진행 중입니다."},
  hero_cta1:{en:"View on GitHub",ko:"GitHub에서 보기"},hero_cta2:{en:"Play in browser",ko:"브라우저에서 플레이"},hero_cta_dl:{en:"Download",ko:"다운로드"},
- rt_eyebrow:{en:"Two runtimes, one shell",ko:"두 런타임, 하나의 셸"},
+ rt_eyebrow:{en:"Two ways to run",ko:"두 가지 실행 방식"},
  rt_h2:{en:"How ARAM runs the past.",ko:"ARAM이 과거를 실행하는 방식."},
- rt_p:{en:"Both modes share the frontend, input, audio, profiles, save-state, debugger and compatibility tooling, but they don't pretend to be the same backend.",
-   ko:"두 모드는 프론트엔드·입력·오디오·프로파일·세이브스테이트·디버거·호환성 도구를 공유합니다. 하지만 같은 백엔드인 척하지는 않습니다."},
- rt_app_k:{en:"Application mode",ko:"애플리케이션 모드"},rt_app_h:{en:"Run WIPI packages",ko:"WIPI 패키지 실행"},
- rt_app_p:{en:"Load a WIPI package, execute its ARM/Thumb guest code, and provide WIPI, carrier, OEM, display, audio, input, storage and timing services through high-level emulation.",
-   ko:"WIPI 패키지를 불러와 ARM/Thumb 게스트 코드를 실행하고, WIPI·통신사·OEM·디스플레이·오디오·입력·저장·타이밍 서비스를 고수준 에뮬레이션으로 제공합니다."},
+ rt_p:{en:"ARAM runs old software two different ways. Both share the same screen, controls, saves and tools, but each uses the engine that fits the job.",
+   ko:"ARAM은 옛 소프트웨어를 두 가지 방식으로 실행합니다. 화면·조작·저장·도구는 똑같이 쓰지만, 각 방식은 그 일에 맞는 엔진을 씁니다."},
+ rt_app_k:{en:"Application mode",ko:"애플리케이션 모드"},rt_app_h:{en:"Run apps and games",ko:"앱·게임 실행"},
+ rt_app_p:{en:"Load a WIPI app or game and ARAM runs it directly, providing the phone services it needs: display, sound, input, storage and timing.",
+   ko:"WIPI 앱이나 게임을 불러오면 ARAM이 바로 실행하고, 화면·소리·입력·저장·타이밍 등 폰 기능을 대신 제공합니다."},
  rt_app_b:{en:"Working today",ko:"지금 동작"},
- rt_sys_k:{en:"System mode",ko:"시스템 모드"},rt_sys_h:{en:"Boot phone firmware",ko:"폰 펌웨어 부팅"},
- rt_sys_p:{en:"Load user-supplied firmware, instantiate a concrete device/SoC profile (SCH-W830, SCH-W860), and progressively boot as hardware coverage grows.",
-   ko:"사용자가 제공한 펌웨어를 불러와 구체적 기기/SoC 프로파일(SCH-W830, SCH-W860)을 구성하고, 하드웨어 커버리지가 늘수록 점진적으로 부팅합니다."},
+ rt_sys_k:{en:"System mode",ko:"시스템 모드"},rt_sys_h:{en:"Boot a whole phone",ko:"폰 통째로 부팅"},
+ rt_sys_p:{en:"Load a real phone's firmware and ARAM boots the entire device, one supported model at a time (SCH-W830, SCH-W860).",
+   ko:"실제 폰의 펌웨어를 불러와 기기를 통째로 부팅합니다. 지원 기종(SCH-W830, SCH-W860)부터 하나씩."},
  rt_sys_b:{en:"Experimental · research",ko:"실험적 · 연구"},
  ms1:{en:"Recognized",ko:"인식"},ms2:{en:"Loads",ko:"로드"},ms3:{en:"Executes",ko:"실행"},
  ms4:{en:"First frame",ko:"첫 프레임"},ms5:{en:"Playable",ko:"플레이 가능"},ms6:{en:"Complete",ko:"완료"},
- ms_cap:{en:"Reference titles reach a deterministic first frame; broad compatibility and firmware boot are roadmap.",
-   ko:"레퍼런스 타이틀은 결정론적 첫 프레임까지 도달합니다. 폭넓은 호환성과 펌웨어 부팅은 로드맵입니다."},
+ ms_cap:{en:"A few reference titles already reach their first frame. Wide game support and full phone boot are still to come.",
+   ko:"일부 레퍼런스 타이틀은 이미 첫 화면까지 도달했습니다. 폭넓은 게임 지원과 폰 완전 부팅은 아직 진행 중입니다."},
  ft_eyebrow:{en:"What ARAM can do",ko:"ARAM으로 할 수 있는 것"},
  ft_h2:{en:"A real emulator, not a demo.",ko:"데모가 아니라 진짜 에뮬레이터."},
  ft1_h:{en:"Cross-platform",ko:"크로스플랫폼"},ft1_p:{en:"Windows, Linux & macOS desktop; Android via Ebitengine. iOS designed into the boundary.",ko:"Windows·Linux·macOS 데스크톱, Ebitengine으로 Android. iOS는 경계에 설계되어 있습니다."},
