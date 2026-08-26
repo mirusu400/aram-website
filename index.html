@@ -435,7 +435,7 @@
       <svg class="os"><use href="#i-android"/></svg><div class="meta"><b>Android</b><span>arm64 / x86_64 · .apk</span></div><svg class="dl"><use href="#i-download"/></svg></a>
   </div>
   <div class="dlmore">
-    <a href="#play" data-k="dlx_browser">Run it in your browser</a>
+    <a id="dlBrowser" href="player/?ch=stable" data-k="dlx_browser">Run it in your browser</a>
     <a id="dlSums" href="https://github.com/mirusu400/aram-emu/releases/latest/download/SHA256SUMS.txt">SHA-256 checksums</a>
     <a href="https://github.com/mirusu400/aram-emu/releases" target="_blank" rel="noopener" data-k="dlx_all">All releases on GitHub</a>
   </div>
@@ -604,6 +604,7 @@ function setChannel(ch){
   const sums=document.getElementById("dlSums"); if(sums) sums.href=c.base+"SHA256SUMS.txt";
   document.querySelectorAll(".dltab").forEach(t=>t.classList.toggle("on",t.dataset.ch===ch));
   const pl=document.getElementById("playLaunch"); if(pl) pl.href="player/?ch="+ch;
+  const br=document.getElementById("dlBrowser"); if(br) br.href="player/?ch="+ch;
   const note=document.getElementById("dlChan");
   if(note){ note.dataset.k=c.note; const tr=I18N[c.note]; if(tr) note.textContent=tr[lang]; }
   try{ localStorage.setItem("aram-ch",ch); }catch(e){}
