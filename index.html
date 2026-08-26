@@ -368,8 +368,12 @@
         <div class="keys"><span>MENU</span><span>WIPI</span><span>BACK</span></div></div>
     </div>
     <div class="launch-body">
+      <div class="dltabs" role="tablist" style="margin:0 0 14px">
+        <button class="dltab" data-ch="stable" data-k="dlx_tab_stable">Stable</button>
+        <button class="dltab" data-ch="nightly" data-k="dlx_tab_nightly">Nightly</button>
+      </div>
       <div class="launch-actions">
-        <a class="btn primary lg" href="player/index.html"><svg class="ic"><use href="#i-play"/></svg><span data-k="pl_btn">Launch ARAM</span></a>
+        <a id="playLaunch" class="btn primary lg" href="player/?ch=stable"><svg class="ic"><use href="#i-play"/></svg><span data-k="pl_btn">Launch ARAM</span></a>
       </div>
       <p class="cap" data-k="pl_note">First launch downloads the runtime (~52 MB). Desktop Chrome, Firefox or Edge recommended. Then File ▸ Open your own authorized file.</p>
     </div>
@@ -599,6 +603,7 @@ function setChannel(ch){
   document.querySelectorAll("#download .oscard").forEach(a=>a.href=c.base+a.dataset.file);
   const sums=document.getElementById("dlSums"); if(sums) sums.href=c.base+"SHA256SUMS.txt";
   document.querySelectorAll(".dltab").forEach(t=>t.classList.toggle("on",t.dataset.ch===ch));
+  const pl=document.getElementById("playLaunch"); if(pl) pl.href="player/?ch="+ch;
   const note=document.getElementById("dlChan");
   if(note){ note.dataset.k=c.note; const tr=I18N[c.note]; if(tr) note.textContent=tr[lang]; }
   try{ localStorage.setItem("aram-ch",ch); }catch(e){}

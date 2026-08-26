@@ -8,39 +8,35 @@
 <style>
   :root { color-scheme: dark; }
   html, body {
-    margin: 0;
-    height: 100%;
-    background: #101014;
-    color: #e6e6ea;
-    font: 14px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+    margin: 0; height: 100%;
+    background: #101014; color: #e6e6ea;
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
     overflow: hidden;
   }
   body { display: flex; align-items: center; justify-content: center; }
-  /* Ebitengine creates and appends its own <canvas>; center and letterbox it. */
   canvas { image-rendering: pixelated; max-width: 100vw; max-height: 100vh; outline: none; }
   #boot {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    background: #101014;
-    transition: opacity .4s ease;
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    background: #101014; transition: opacity .4s ease;
   }
   #boot.hidden { opacity: 0; pointer-events: none; }
   #boot h1 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: .5px; }
   #boot p { margin: 0; color: #9a9aa6; }
   .spinner {
     width: 34px; height: 34px;
-    border: 3px solid #2a2a33;
-    border-top-color: #00d992;
-    border-radius: 50%;
+    border: 3px solid #2a2a33; border-top-color: #00d992; border-radius: 50%;
     animation: spin 0.9s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   #boot .err { color: #ff6b6b; max-width: 42ch; text-align: center; }
+  #chrow { display: flex; gap: 4px; padding: 4px; border: 1px solid #2a2a33; border-radius: 999px; margin-top: 4px; }
+  #chrow a {
+    font-size: 12px; font-weight: 600; color: #9a9aa6; text-decoration: none;
+    padding: 6px 16px; border-radius: 999px; transition: .15s;
+  }
+  #chrow a:hover { color: #e6e6ea; }
+  #chrow a.on { background: #00d992; color: #06140d; }
 </style>
 </head>
 <body>
@@ -48,14 +44,26 @@
   <div class="spinner" id="spinner"></div>
   <h1>ARAM</h1>
   <p id="status">Loading runtime…</p>
+  <div id="chrow">
+    <a id="chStable" href="?ch=stable">Stable</a>
+    <a id="chNightly" href="?ch=nightly">Nightly</a>
+  </div>
 </div>
 
-<script src="wasm_exec.js"></script>
 <script>
 (async function () {
   const boot = document.getElementById("boot");
   const status = document.getElementById("status");
   const spinner = document.getElementById("spinner");
+
+  // resolve channel: ?ch= wins, else remembered choice, else stable
+  const params = new URLSearchParams(location.search);
+  let ch = params.get("ch");
+  if (ch !== "stable" && ch !== "nightly") { try { ch = localStorage.getItem("aram-ch"); } catch (e) {} }
+  if (ch !== "stable" && ch !== "nightly") ch = "stable";
+  try { localStorage.setItem("aram-ch", ch); } catch (e) {}
+  const active = document.getElementById(ch === "stable" ? "chStable" : "chNightly");
+  if (active) active.classList.add("on");
 
   function fail(message) {
     spinner.style.display = "none";
@@ -63,27 +71,33 @@
     status.textContent = message;
   }
 
+  status.textContent = "Loading ARAM (" + ch + ")…";
+
+  // load the channel's wasm_exec.js (must match the wasm's Go toolchain)
+  await new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = ch + "/wasm_exec.js";
+    s.onload = resolve;
+    s.onerror = () => reject(new Error("wasm_exec.js"));
+    document.head.appendChild(s);
+  }).catch(() => {});
+
+  if (typeof Go !== "function") {
+    fail("Failed to load the " + ch + " runtime loader.");
+    return;
+  }
+
   if (!("instantiateStreaming" in WebAssembly)) {
-    // Safari/older browsers: fall back to arrayBuffer instantiation.
     WebAssembly.instantiateStreaming = async (resp, importObject) => {
       const source = await (await resp).arrayBuffer();
       return await WebAssembly.instantiate(source, importObject);
     };
   }
 
-  if (typeof Go !== "function") {
-    fail("wasm_exec.js failed to load. Serve it next to index.html.");
-    return;
-  }
-
   const go = new Go();
   try {
-    status.textContent = "Downloading aram.wasm…";
-    const result = await WebAssembly.instantiateStreaming(
-      fetch("aram.wasm"),
-      go.importObject
-    );
-    // Reveal the Ebitengine canvas once the game loop takes over the frame.
+    status.textContent = "Downloading " + ch + " build…";
+    const result = await WebAssembly.instantiateStreaming(fetch(ch + "/aram.wasm"), go.importObject);
     requestAnimationFrame(() => requestAnimationFrame(() => boot.classList.add("hidden")));
     await go.run(result.instance);
   } catch (e) {

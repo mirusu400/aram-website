@@ -1,8 +1,12 @@
-# The ARAM WebAssembly runtime is pulled from the aram-emu `nightly` release
-# at deploy time, not committed here (aram.wasm is ~52 MB). Run one of:
+# The ARAM WebAssembly runtimes are pulled from the aram-emu releases at deploy
+# time, not committed here (each aram.wasm is ~52 MB). Run one of:
 #   pwsh scripts/sync-player.ps1
 #   bash scripts/sync-player.sh
-# to populate player/ before serving or deploying.
+# to populate player/stable/ and player/nightly/ before serving or deploying.
+player/*/aram.wasm
+player/*/wasm_exec.js
+
+# legacy single-channel layout
 player/aram.wasm
 player/wasm_exec.js
 player/BUILD-INFO.txt
