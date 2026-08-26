@@ -278,6 +278,28 @@
   a.plat{cursor:pointer}
   a.plat:hover{border-color:var(--accent);color:var(--ink)}
 
+  /* ---------- screenshot carousel ---------- */
+  .carousel{position:relative;margin-top:26px;display:flex;flex-direction:column;align-items:center}
+  .cframe{position:relative;width:100%;max-width:520px;overflow:hidden}
+  .ctrack{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+  .cslide{flex:0 0 100%;display:flex;flex-direction:column;align-items:center;gap:14px;padding:2px 0}
+  .cphone{position:relative;width:min(230px,60vw);aspect-ratio:240/320;background:#000;
+    border:1px solid var(--line);border-radius:22px;padding:15px 12px 30px}
+  .cphone::after{content:"";position:absolute;top:9px;left:50%;transform:translateX(-50%);width:26px;height:4px;border-radius:2px;background:var(--accent)}
+  .cphone img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;border-radius:4px;background:#000}
+  .cslide figcaption{font-family:var(--fdisp);font-weight:600;font-size:15px;color:var(--ink);text-align:center}
+  .cslide figcaption span{color:var(--body);font-weight:400;font-family:var(--m);font-size:12px}
+  .cbtn{position:absolute;top:calc(50% - 22px);transform:translateY(-50%);z-index:3;width:40px;height:40px;border-radius:50%;
+    border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--ink);
+    cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;backdrop-filter:blur(4px)}
+  .cbtn:hover{border-color:var(--accent);color:var(--accent-ink)}
+  .cbtn .ic{width:20px;height:20px}
+  .cbtn.prev{left:0}.cbtn.next{right:0}
+  .cdots{display:flex;gap:8px;margin-top:18px}
+  .cdots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer;transition:.15s}
+  .cdots button:hover{background:var(--mute)}
+  .cdots button.on{background:var(--accent);transform:scale(1.3)}
+
   /* ---------- mobile: readability over one-view fit ---------- */
   @media(max-width:760px){
     html{scroll-snap-type:none}
@@ -294,6 +316,8 @@
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
 <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></symbol>
 <symbol id="i-bug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-9" /> <path d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z" /> <path d="M14.12 3.88 16 2" /> <path d="M21 21a4 4 0 0 0-3.81-4" /> <path d="M21 5a4 4 0 0 1-3.55 3.97" /> <path d="M22 13h-4" /> <path d="M3 21a4 4 0 0 1 3.81-4" /> <path d="M3 5a4 4 0 0 0 3.55 3.97" /> <path d="M6 13H2" /> <path d="m8 2 1.88 1.88" /> <path d="M9 7.13V6a3 3 0 1 1 6 0v1.13" /></symbol>
 <symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v2" /> <path d="M12 2v2" /> <path d="M17 20v2" /> <path d="M17 2v2" /> <path d="M2 12h2" /> <path d="M2 17h2" /> <path d="M2 7h2" /> <path d="M20 12h2" /> <path d="M20 17h2" /> <path d="M20 7h2" /> <path d="M7 20v2" /> <path d="M7 2v2" /> <rect x="4" y="4" width="16" height="16" rx="2" /> <rect x="8" y="8" width="8" height="8" rx="1" /></symbol>
 <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <path d="m7 10 5 5 5-5" /></symbol>
@@ -424,25 +448,23 @@
 <!-- SCREENS -->
 <section class="section" id="screens"><div class="wrap"><div class="fit">
   <div class="sec-head">
-    <span class="eyebrow" data-k="sc_eyebrow">Screens</span>
-    <h2 data-k="sc_h2">Guest frames & the runtime underneath.</h2>
-    <p data-k="sc_p">Early nightly, application mode. The frontend renders the guest framebuffer at native resolution; the core reports every step as a distinct milestone.</p>
+    <span class="eyebrow" data-k="sc_eyebrow">Screenshots</span>
+    <p data-k="sc_p">Real Korean feature-phone games, booted and running in ARAM. Slide through a few titles.</p>
   </div>
-  <div class="shots">
-    <div class="shotcard">
-      <div class="device"><span class="led"></span><div class="lcd"></div>
-        <div class="keys"><span>MENU</span><span>WIPI</span><span>BACK</span></div></div>
-      <div class="cap" data-k="sc_cap">Application mode · guest framebuffer · 240×320</div>
+  <div class="carousel" id="carousel">
+    <div class="cframe">
+      <button class="cbtn prev" id="cPrev" aria-label="Previous"><svg class="ic"><use href="#i-chevron-left"/></svg></button>
+      <div class="ctrack" id="ctrack">
+        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-01.png" width="240" height="320" loading="lazy" alt="붕어빵 타이쿤 3 running in the ARAM feature-phone emulator"></div><figcaption>붕어빵 타이쿤 3 <span>· COM2US</span></figcaption></figure>
+        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-02.png" width="176" height="220" loading="lazy" alt="미니게임천국 2 running in the ARAM WIPI emulator"></div><figcaption>미니게임천국 2 <span>· COM2US</span></figcaption></figure>
+        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-03.png" width="176" height="220" loading="lazy" alt="아노티아 연대기 running in the ARAM feature-phone emulator"></div><figcaption>아노티아 연대기 <span>· COM2US</span></figcaption></figure>
+        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-04.png" width="240" height="320" loading="lazy" alt="리듬스타 running in the ARAM feature-phone emulator"></div><figcaption>리듬스타 <span>· ANB Games</span></figcaption></figure>
+        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-05.png" width="176" height="220" loading="lazy" alt="Epic Chronicle Perfect Edition running in the ARAM emulator"></div><figcaption>Epic Chronicle <span>· Perfect Edition</span></figcaption></figure>
+        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-06.png" width="120" height="160" loading="lazy" alt="Dragon Knight EX running in the ARAM feature-phone emulator"></div><figcaption>Dragon Knight EX <span>· PMJ</span></figcaption></figure>
+      </div>
+      <button class="cbtn next" id="cNext" aria-label="Next"><svg class="ic"><use href="#i-chevron-right"/></svg></button>
     </div>
-    <div class="term"><div class="bar"><i></i><i></i><i></i><span>aram-probe, application mode</span></div>
-<pre><b>aram</b>  › load  <u>authorized-input.dat</u>
-<b>core</b>  › EADS text+bss mapped   sha256 <u>3f9c…a1e0</u>
-<b>core</b>  › CPU backend            <u>ARMv5TE / Thumb  interp v3</u>
-<b>wipi</b>  › services bound         display audio input storage timing
-<b>oem</b>   › hash-keyed services    <u>ok</u>
-<b>run</b>   › bootstrap → setup → start → preload
-<b>run</b>   › first visible frame    <u>ok_frame @ 240×320</u>
-<b>state</b> › snapshot written       <u>checksum ok</u></pre></div>
+    <div class="cdots" id="cdots"></div>
   </div>
   <div class="plats">
     <a class="plat" href="#download"><svg class="ic"><use href="#i-monitor"/></svg>Windows x64</a>
@@ -550,9 +572,9 @@ const I18N={
  pl_note:{en:"First launch downloads the runtime (~52 MB). Desktop Chrome, Firefox or Edge recommended. Then File ▸ Open your own authorized file.",
    ko:"첫 실행 시 런타임(~52 MB)을 내려받습니다. 데스크톱 Chrome·Firefox·Edge 권장. 이후 File ▸ Open 으로 사용 권한이 있는 파일을 여세요."},
  pl_btn:{en:"Launch ARAM",ko:"ARAM 실행"},pl_fs:{en:"Open in new tab",ko:"새 탭에서 열기"},
- sc_eyebrow:{en:"Screens",ko:"화면"},sc_h2:{en:"Guest frames & the runtime underneath.",ko:"게스트 프레임과 그 아래 런타임."},
- sc_p:{en:"Early nightly, application mode. The frontend renders the guest framebuffer at native resolution; the core reports every step as a distinct milestone.",
-   ko:"초기 Nightly, 애플리케이션 모드. 프론트엔드는 게스트 프레임버퍼를 네이티브 해상도로 렌더하고, 코어는 각 단계를 개별 마일스톤으로 보고합니다."},
+ sc_eyebrow:{en:"Screenshots",ko:"스크린샷"},
+ sc_p:{en:"Real Korean feature-phone games, booted and running in ARAM. Slide through a few titles.",
+   ko:"ARAM에서 실제로 실행한 한국 피처폰 게임들입니다. 몇 가지 타이틀을 넘겨보세요."},
  sc_cap:{en:"Application mode · guest framebuffer · 240×320",ko:"애플리케이션 모드 · 게스트 프레임버퍼 · 240×320"},
  sc_ios:{en:"iOS · designed",ko:"iOS · 설계됨"},
  dlx_eyebrow:{en:"Download",ko:"다운로드"},
@@ -651,6 +673,31 @@ function setChannel(ch){
   try{ localStorage.setItem("aram-ch",ch); }catch(e){}
 }
 document.querySelectorAll(".dltab").forEach(t=>t.addEventListener("click",()=>setChannel(t.dataset.ch)));
+
+/* ---------- screenshot carousel ---------- */
+(function(){
+  const track=document.getElementById("ctrack"); if(!track) return;
+  const n=track.children.length, dotsWrap=document.getElementById("cdots"), car=document.getElementById("carousel");
+  let idx=0, timer=null;
+  for(let i=0;i<n;i++){ const b=document.createElement("button"); b.setAttribute("aria-label","Slide "+(i+1));
+    b.addEventListener("click",()=>{go(i);restart();}); dotsWrap.appendChild(b); }
+  const dots=[...dotsWrap.children];
+  function go(i){ idx=(i+n)%n; track.style.transform="translateX("+(-idx*100)+"%)";
+    dots.forEach((d,j)=>d.classList.toggle("on",j===idx)); }
+  document.getElementById("cPrev").addEventListener("click",()=>{go(idx-1);restart();});
+  document.getElementById("cNext").addEventListener("click",()=>{go(idx+1);restart();});
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function start(){ if(!reduce&&!timer) timer=setInterval(()=>go(idx+1),4500); }
+  function stop(){ if(timer){clearInterval(timer);timer=null;} }
+  function restart(){ stop(); start(); }
+  car.addEventListener("mouseenter",stop); car.addEventListener("mouseleave",start);
+  car.addEventListener("focusin",stop); car.addEventListener("focusout",start);
+  let x0=null; const frame=car.querySelector(".cframe");
+  frame.addEventListener("pointerdown",e=>{x0=e.clientX;});
+  frame.addEventListener("pointerup",e=>{ if(x0===null)return; const dx=e.clientX-x0;
+    if(Math.abs(dx)>40){ dx<0?go(idx+1):go(idx-1); restart(); } x0=null; });
+  go(0); start();
+})();
 
 /* ---------- boot ---------- */
 applyLang(lang);
