@@ -34,6 +34,7 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html _site/
+          cp robots.txt sitemap.xml _site/
           cp -r assets _site/
           cp -r player _site/
           echo aram.mir.sh > _site/CNAME
