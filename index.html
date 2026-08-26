@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ARAM, Archived Runtime for ARM Mobiles</title>
+<meta name="description" content="Cross-platform emulator for Korean feature-phone (WIPI) software. Play in your browser.">
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<style>
+  /* ---------- VoltAgent-derived tokens · dark (default) ---------- */
+  :root{
+    --bg:#101010; --surface:#171717; --surface2:#1c1c1c;
+    --ink:#f2f2f2; --ink-strong:#ffffff; --body:#bdbdbd; --mute:#8b949e;
+    --line:#302f2d; --accent:#00d992; --accent-ink:#00d992; --accent-deep:#10b981;
+    --onaccent:#06140d; --scan:rgba(0,0,0,.22); --nav:60px;
+    --f:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+    --m:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+  }
+  /* light palette, applied when OS is light and user has not forced dark */
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#ffffff; --surface:#f5f7f6; --surface2:#eceeed;
+      --ink:#0d1211; --ink-strong:#000000; --body:#4a534e; --mute:#727b76;
+      --line:#e4e7e4; --accent:#00b884; --accent-ink:#058b63; --accent-deep:#047a57;
+      --onaccent:#04140d; --scan:rgba(0,0,0,.10);
+    }
+  }
+  /* explicit user choice always wins both ways */
+  :root[data-theme="light"]{
+    --bg:#ffffff; --surface:#f5f7f6; --surface2:#eceeed;
+    --ink:#0d1211; --ink-strong:#000000; --body:#4a534e; --mute:#727b76;
+    --line:#e4e7e4; --accent:#00b884; --accent-ink:#058b63; --accent-deep:#047a57;
+    --onaccent:#04140d; --scan:rgba(0,0,0,.10);
+  }
+  :root[data-theme="dark"]{
+    --bg:#101010; --surface:#171717; --surface2:#1c1c1c;
+    --ink:#f2f2f2; --ink-strong:#ffffff; --body:#bdbdbd; --mute:#8b949e;
+    --line:#302f2d; --accent:#00d992; --accent-ink:#00d992; --accent-deep:#10b981;
+    --onaccent:#06140d; --scan:rgba(0,0,0,.22);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-snap-type:y proximity;scroll-padding-top:var(--nav);scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--f);line-height:1.55;
+    -webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;width:100%}
+  .mono{font-family:var(--m)}
+  ::selection{background:var(--accent);color:var(--onaccent)}
+
+  .eyebrow{font-family:var(--m);font-size:12px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--accent-ink);display:inline-flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--accent-ink)}
+  h1,h2,h3{font-family:var(--f);text-wrap:balance;letter-spacing:-.02em;line-height:1.05}
+
+  /* ---------- nav ---------- */
+  .topnav{position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:50;
+    background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);display:flex;align-items:center}
+  .topnav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{font-family:var(--f);font-weight:700;font-size:17px;letter-spacing:.14em;display:flex;align-items:center;gap:9px}
+  .brand .logo{width:26px;height:26px;image-rendering:pixelated;display:inline-block}
+  .nlinks{display:flex;gap:22px;font-size:14px;color:var(--body)}
+  .nlinks a:hover{color:var(--ink)}
+  .ntools{display:flex;align-items:center;gap:8px}
+  .icobtn{font-family:var(--m);font-size:12px;color:var(--body);background:transparent;border:1px solid var(--line);
+    border-radius:6px;height:34px;min-width:34px;padding:0 10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
+  .icobtn:hover{border-color:var(--accent);color:var(--ink)}
+  @media(max-width:840px){.nlinks{display:none}}
+
+  .btn{font-family:var(--f);font-weight:600;font-size:14px;padding:10px 17px;border-radius:6px;
+    display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn.primary{background:var(--accent);color:var(--onaccent)}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--accent)}
+
+  /* ---------- section / snap / fit ---------- */
+  .section{min-height:100vh;display:flex;align-items:center;scroll-snap-align:start;
+    border-top:1px solid var(--line);padding:calc(var(--nav) + 34px) 0 40px}
+  #home{border-top:0}
+  .fit{width:100%;transform-origin:center center;transition:transform .18s ease}
+  .sec-head h2{font-weight:600;font-size:clamp(24px,3.2vw,36px);margin:14px 0 0}
+  .sec-head p{color:var(--body);margin-top:12px;font-size:16px;max-width:62ch}
+
+  /* ---------- hero ---------- */
+  .hero{display:grid;grid-template-columns:1.08fr .92fr;gap:52px;align-items:center}
+  @media(max-width:880px){.hero{grid-template-columns:1fr;gap:34px}}
+  .hero h1{font-weight:600;font-size:clamp(34px,5.4vw,60px);margin:20px 0 0}
+  .hero .lead{color:var(--body);font-size:17px;max-width:47ch;margin-top:18px}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+  .install{font-family:var(--m);font-size:13px;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:6px;padding:10px 14px;margin-top:20px;display:inline-flex;gap:10px}
+  .install b{color:var(--accent-ink);font-weight:400}
+  .stage{display:flex;justify-content:center}
+  .device{position:relative;width:min(250px,74vw);aspect-ratio:240/320;border-radius:26px;
+    background:var(--surface2);border:1px solid var(--line);padding:16px 14px 34px}
+  .device .led{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:28px;height:4px;border-radius:2px;background:var(--accent)}
+  .lcd{position:relative;width:100%;height:100%;border-radius:6px;overflow:hidden;background:#000;border:1px solid rgba(0,0,0,.5)}
+  .lcd::before{content:"";position:absolute;inset:0;background:var(--shot) center/cover no-repeat;image-rendering:pixelated}
+  .lcd::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(to bottom,transparent 0 2px,var(--scan) 2px 3px)}
+  .device .keys{position:absolute;left:0;right:0;bottom:11px;display:flex;justify-content:space-between;padding:0 22px;
+    font-family:var(--m);font-size:9px;letter-spacing:.08em;color:var(--body);opacity:.8}
+
+  /* milestone */
+  .steps{display:flex;flex-wrap:wrap;margin-top:26px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .step{flex:1;min-width:110px;padding:13px 15px;border-right:1px solid var(--line)}
+  .step:last-child{border-right:0}
+  .step .n{font-family:var(--m);font-size:11px;color:var(--mute)}
+  .step .t{font-family:var(--f);font-weight:600;font-size:14px;margin-top:5px}
+  .step.done{background:var(--surface)}
+  .step.done .t{color:var(--accent-ink)}
+  .step.done .n::before{content:"● "}
+  .cap{font-family:var(--m);font-size:12px;color:var(--body);margin-top:12px}
+
+  /* runtimes / features / repos cards */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+  @media(max-width:760px){.duo{grid-template-columns:1fr}}
+  .rt{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:24px}
+  .rt .k{font-family:var(--m);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+  .rt h3{font-weight:600;font-size:21px;margin:12px 0 8px}
+  .rt p{color:var(--body);font-size:15px}
+  .badge{display:inline-block;font-family:var(--m);font-size:11px;padding:3px 9px;border-radius:999px;margin-top:14px;border:1px solid var(--line);color:var(--body)}
+  .badge.exp{color:#e0a83a;border-color:color-mix(in srgb,#e0a83a 45%,var(--line))}
+  .badge.live{color:var(--accent-ink);border-color:var(--accent-ink)}
+
+  .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+  @media(max-width:860px){.feat{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.feat{grid-template-columns:1fr}}
+  .fc{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px}
+  .fc .ic{font-family:var(--m);font-size:12px;color:var(--accent-ink);letter-spacing:.1em}
+  .fc h4{font-family:var(--f);font-weight:600;font-size:16px;margin:9px 0 6px}
+  .fc p{color:var(--body);font-size:13.5px}
+
+  /* play */
+  .playgrid{display:grid;grid-template-columns:1fr;gap:22px;margin-top:26px}
+  .playstage{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#000;
+    aspect-ratio:16/10;max-height:56vh}
+  .playstage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;background:#000}
+  .poster{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:var(--surface2);cursor:pointer;text-align:center;padding:24px}
+  .poster h4{font-family:var(--f);font-weight:600;font-size:19px}
+  .poster p{color:var(--body);font-size:13px;max-width:44ch}
+  .poster .go{font-family:var(--f);font-weight:600;background:var(--accent);color:var(--onaccent);border-radius:8px;padding:12px 22px;font-size:15px}
+  .playmeta{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;color:var(--body);font-size:13px}
+  .playmeta .mono{font-size:12px}
+
+  /* screens */
+  .shots{display:grid;grid-template-columns:.8fr 1.2fr;gap:22px;margin-top:26px}
+  @media(max-width:820px){.shots{grid-template-columns:1fr}}
+  .shotcard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .shotcard .cap{margin-top:14px;text-align:center}
+  .term{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .term .bar{display:flex;gap:6px;padding:11px 14px;border-bottom:1px solid var(--line);align-items:center}
+  .term .bar i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+  .term .bar span{font-family:var(--m);font-size:11px;color:var(--body);margin-left:8px}
+  .term pre{font-family:var(--m);font-size:12.5px;line-height:1.75;padding:16px;overflow-x:auto;color:var(--body);white-space:pre}
+  .term pre b{color:var(--accent-ink);font-weight:400}.term pre u{color:var(--ink);text-decoration:none}
+  .plats{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+  .plat{font-family:var(--m);font-size:13px;border:1px solid var(--line);border-radius:6px;padding:8px 14px;color:var(--ink)}
+  .plat.soon{color:var(--body);opacity:.6}
+
+  /* repos + close */
+  .repos{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:26px}
+  @media(max-width:720px){.repos{grid-template-columns:1fr}}
+  .repo{display:block;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px;transition:.15s}
+  a.repo:hover{border-color:var(--accent)}
+  .repo .rn{font-family:var(--m);font-size:14px;color:var(--ink)}.repo .rn b{color:var(--accent-ink);font-weight:400}
+  .repo .rd{color:var(--body);font-size:13.5px;margin-top:8px}.repo .arr{float:right;color:var(--body)}
+  .closebar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+    margin-top:24px;padding:22px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+  .closebar h3{font-weight:600;font-size:20px}.closebar p{color:var(--body);font-size:14px;margin-top:4px}
+  .closebar .cta{display:flex;gap:10px;flex-wrap:wrap}
+  .fnote{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-top:18px;
+    color:var(--body);font-size:12.5px}
+  .fbar{display:flex;flex-wrap:wrap;gap:18px;color:var(--mute);font-size:13px;margin-top:16px}
+  .fbar a:hover{color:var(--ink)}
+
+  /* section dots */
+  .dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:45;display:flex;flex-direction:column;gap:12px}
+  @media(max-width:900px){.dots{display:none}}
+  .dots a{width:9px;height:9px;border-radius:50%;border:1px solid var(--mute);display:block;transition:.2s}
+  .dots a.on{background:var(--accent);border-color:var(--accent);transform:scale(1.25)}
+
+  /* ---------- launch ---------- */
+  .launch{display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center;margin-top:28px;
+    border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:28px}
+  @media(max-width:640px){.launch{grid-template-columns:1fr;gap:22px;text-align:center}}
+  .launch-visual .device{width:170px}
+  @media(max-width:640px){.launch-visual{display:flex;justify-content:center}}
+  .launch-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  @media(max-width:640px){.launch-actions{justify-content:center}}
+  .launch-body .cap{margin-top:16px;max-width:52ch}
+
+  /* ---------- icons ---------- */
+  .ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:none}
+  .icobtn .ic,.btn .ic{width:16px;height:16px}
+  .btn.lg{font-size:15px;padding:13px 22px}.btn.lg .ic{width:18px;height:18px}
+  .fc .ficon{width:22px;height:22px;color:var(--accent-ink);display:block}
+  .plat{display:inline-flex;align-items:center;gap:8px}.plat .ic{width:15px;height:15px;opacity:.85}
+  .repo .rn{display:flex;align-items:center;gap:8px}.repo .rn .gh{width:15px;height:15px;color:var(--body)}
+  .repo .arr{width:15px;height:15px}
+  .launch a.ext{display:inline-flex;align-items:center;gap:6px;color:var(--accent-ink);font-size:12px;margin-left:14px}
+  .launch a.ext .ic{width:13px;height:13px}
+  /* ---------- mobile: readability over one-view fit ---------- */
+  @media(max-width:760px){
+    html{scroll-snap-type:none}
+    .section{min-height:auto;align-items:flex-start;padding:calc(var(--nav) + 26px) 0 40px}
+    .fit{transform:none!important}
+    .hero h1{font-size:clamp(29px,8vw,42px)}
+    .hero .lead{font-size:16px}
+    .sec-head p,.rt p,.fc p{font-size:15px}
+    .term pre{font-size:12px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
+<symbol id="i-bug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-9" /> <path d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z" /> <path d="M14.12 3.88 16 2" /> <path d="M21 21a4 4 0 0 0-3.81-4" /> <path d="M21 5a4 4 0 0 1-3.55 3.97" /> <path d="M22 13h-4" /> <path d="M3 21a4 4 0 0 1 3.81-4" /> <path d="M3 5a4 4 0 0 0 3.55 3.97" /> <path d="M6 13H2" /> <path d="m8 2 1.88 1.88" /> <path d="M9 7.13V6a3 3 0 1 1 6 0v1.13" /></symbol>
+<symbol id="i-cpu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v2" /> <path d="M12 2v2" /> <path d="M17 20v2" /> <path d="M17 2v2" /> <path d="M2 12h2" /> <path d="M2 17h2" /> <path d="M2 7h2" /> <path d="M20 12h2" /> <path d="M20 17h2" /> <path d="M20 7h2" /> <path d="M7 20v2" /> <path d="M7 2v2" /> <rect x="4" y="4" width="16" height="16" rx="2" /> <rect x="8" y="8" width="8" height="8" rx="1" /></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <path d="m7 10 5 5 5-5" /></symbol>
+<symbol id="i-gamepad-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="11" y2="11" /> <line x1="8" x2="8" y1="9" y2="13" /> <line x1="15" x2="15.01" y1="12" y2="12" /> <line x1="18" x2="18.01" y1="10" y2="10" /> <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z" /></symbol>
+<symbol id="i-hard-drive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16h.01" /> <path d="M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /> <path d="M21.946 12.013H2.054" /> <path d="M6 16h.01" /></symbol>
+<symbol id="i-languages" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6" /> <path d="m4 14 6-6 2-3" /> <path d="M2 5h12" /> <path d="M7 2h1" /> <path d="m22 22-5-10-5 10" /> <path d="M14 18h6" /></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" /> <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" /> <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" /></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2" /> <line x1="8" x2="16" y1="21" y2="21" /> <line x1="12" x2="12" y1="17" y2="21" /></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></symbol>
+<symbol id="i-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /></symbol>
+<symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2" /> <path d="M12 18h.01" /></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /> <path d="M12 2v2" /> <path d="M12 20v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="m17.66 17.66 1.41 1.41" /> <path d="M2 12h2" /> <path d="M20 12h2" /> <path d="m6.34 17.66-1.41 1.41" /> <path d="m19.07 4.93-1.41 1.41" /></symbol>
+<symbol id="i-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19h8" /> <path d="m4 17 6-6-6-6" /></symbol>
+<symbol id="i-android" viewBox="0 0 24 24" fill="currentColor"><path d="M18.4395 5.5586c-.675 1.1664-1.352 2.3318-2.0274 3.498-.0366-.0155-.0742-.0286-.1113-.043-1.8249-.6957-3.484-.8-4.42-.787-1.8551.0185-3.3544.4643-4.2597.8203-.084-.1494-1.7526-3.021-2.0215-3.4864a1.1451 1.1451 0 0 0-.1406-.1914c-.3312-.364-.9054-.4859-1.379-.203-.475.282-.7136.9361-.3886 1.5019 1.9466 3.3696-.0966-.2158 1.9473 3.3593.0172.031-.4946.2642-1.3926 1.0177C2.8987 12.176.452 14.772 0 18.9902h24c-.119-1.1108-.3686-2.099-.7461-3.0683-.7438-1.9118-1.8435-3.2928-2.7402-4.1836a12.1048 12.1048 0 0 0-2.1309-1.6875c.6594-1.122 1.312-2.2559 1.9649-3.3848.2077-.3615.1886-.7956-.0079-1.1191a1.1001 1.1001 0 0 0-.8515-.5332c-.5225-.0536-.9392.3128-1.0488.5449zm-.0391 8.461c.3944.5926.324 1.3306-.1563 1.6503-.4799.3197-1.188.0985-1.582-.4941-.3944-.5927-.324-1.3307.1563-1.6504.4727-.315 1.1812-.1086 1.582.4941zM7.207 13.5273c.4803.3197.5506 1.0577.1563 1.6504-.394.5926-1.1038.8138-1.584.4941-.48-.3197-.5503-1.0577-.1563-1.6504.4008-.6021 1.1087-.8106 1.584-.4941z"/></symbol>
+<symbol id="i-apple" viewBox="0 0 24 24" fill="currentColor"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></symbol>
+<symbol id="i-github" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol>
+<symbol id="i-linux" viewBox="0 0 24 24" fill="currentColor"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 00-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 00-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 01-.004-.021l-.004-.024a1.807 1.807 0 01-.15.706.953.953 0 01-.213.335.71.71 0 00-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 00-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 00-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 00-.205.334 1.18 1.18 0 00-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 01-.018-.2v-.02a1.772 1.772 0 01.15-.768c.082-.22.232-.406.43-.533a.985.985 0 01.594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 00-.166-.267.248.248 0 00-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 00-.12.27.944.944 0 00-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 01-.131.068 2.62 2.62 0 01-.275-.402 1.772 1.772 0 01-.155-.667 1.759 1.759 0 01.08-.668 1.43 1.43 0 01.283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 01.016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 01-.448-.067 3.566 3.566 0 01-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 00-.402-.533 1.45 1.45 0 00-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 00.314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 01.647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 01-.69.468zm-1.082-1.583c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z"/></symbol>
+</svg>
+
+<nav class="topnav"><div class="wrap">
+  <div class="brand"><img class="logo" src="assets/icon.png" alt="" width="26" height="26">ARAM</div>
+  <div class="nlinks">
+    <a href="#runtimes" data-k="nav_what">What</a>
+    <a href="#features" data-k="nav_features">Features</a>
+    <a href="#play" data-k="nav_play">Play</a>
+    <a href="#screens" data-k="nav_screens">Screens</a>
+    <a href="#source" data-k="nav_source">Source</a>
+  </div>
+  <div class="ntools">
+    <button class="icobtn" id="langBtn" title="Language"><svg class="ic"><use href="#i-languages"/></svg><span id="langTxt">한국어</span></button>
+    <button class="icobtn" id="themeBtn" title="Theme" aria-label="Toggle theme"><svg class="ic"><use href="#i-sun" id="themeUse"/></svg></button>
+    <a class="btn primary" href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener"><svg class="ic"><use href="#i-github"/></svg>GitHub</a>
+  </div>
+</div></nav>
+
+<div class="dots" id="dots"></div>
+
+<!-- HOME -->
+<section class="section" id="home"><div class="wrap"><div class="fit">
+  <div class="hero">
+    <div>
+      <span class="eyebrow" data-k="hero_eyebrow">Archived Runtime for ARM Mobiles</span>
+      <h1 data-k="hero_h1" data-html>Bring Korean feature-phone software back to life.</h1>
+      <p class="lead" data-k="hero_lead">ARAM is a cross-platform emulator for Korean feature-phone (WIPI) software, a fast application runtime today, with whole-phone firmware boot as an ongoing research track.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener" data-k="hero_cta1">View on GitHub</a>
+        <a class="btn ghost" href="#play" data-k="hero_cta2">Play in browser</a>
+      </div>
+      <div class="install"><b>$</b><span>go run ./cmd/aram</span></div>
+    </div>
+    <div class="stage">
+      <div class="device"><span class="led"></span><div class="lcd"></div>
+        <div class="keys"><span>MENU</span><span>240×320</span><span>BACK</span></div></div>
+    </div>
+  </div>
+</div></div></section>
+
+<!-- RUNTIMES -->
+<section class="section" id="runtimes"><div class="wrap"><div class="fit">
+  <div class="sec-head">
+    <span class="eyebrow" data-k="rt_eyebrow">Two runtimes, one shell</span>
+    <p data-k="rt_p">Both modes share the frontend, input, audio, profiles, save-state, debugger and compatibility tooling, but they don't pretend to be the same backend.</p>
+  </div>
+  <div class="duo">
+    <div class="rt"><div class="k" data-k="rt_app_k">Application mode</div>
+      <h3 data-k="rt_app_h">Run WIPI packages</h3>
+      <p data-k="rt_app_p">Load a WIPI package, execute its ARM/Thumb guest code, and provide WIPI, carrier, OEM, display, audio, input, storage and timing services through high-level emulation.</p>
+      <span class="badge live" data-k="rt_app_b">Working today</span></div>
+    <div class="rt"><div class="k" data-k="rt_sys_k">System mode</div>
+      <h3 data-k="rt_sys_h">Boot phone firmware</h3>
+      <p data-k="rt_sys_p">Load user-supplied firmware, instantiate a concrete device/SoC profile (SCH-W830, SCH-W860), and progressively boot as hardware coverage grows.</p>
+      <span class="badge exp" data-k="rt_sys_b">Experimental · research</span></div>
+  </div>
+  <div class="steps">
+    <div class="step done"><div class="n">01</div><div class="t" data-k="ms1">Recognized</div></div>
+    <div class="step done"><div class="n">02</div><div class="t" data-k="ms2">Loads</div></div>
+    <div class="step done"><div class="n">03</div><div class="t" data-k="ms3">Executes</div></div>
+    <div class="step done"><div class="n">04</div><div class="t" data-k="ms4">First frame</div></div>
+    <div class="step"><div class="n">05</div><div class="t" data-k="ms5">Playable</div></div>
+    <div class="step"><div class="n">06</div><div class="t" data-k="ms6">Complete</div></div>
+  </div>
+  <p class="cap" data-k="ms_cap">Reference titles reach a deterministic first frame; broad compatibility and firmware boot are roadmap.</p>
+</div></div></section>
+
+<!-- FEATURES -->
+<section class="section" id="features"><div class="wrap"><div class="fit">
+  <div class="sec-head">
+    <span class="eyebrow" data-k="ft_eyebrow">Everything in the shell</span>
+    <h2 data-k="ft_h2">A real emulator, not a demo.</h2>
+  </div>
+  <div class="feat">
+    <div class="fc"><svg class="ficon"><use href="#i-layers"/></svg><h4 data-k="ft1_h">Cross-platform</h4><p data-k="ft1_p">Windows, Linux & macOS desktop; Android via Ebitengine. iOS designed into the boundary.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-cpu"/></svg><h4 data-k="ft2_h">Pure-Go ARM core</h4><p data-k="ft2_p">A bounds-checked ARMv5TE/Thumb interpreter that faults on unknown instructions. Cross-compiles to Android/arm64.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-hard-drive"/></svg><h4 data-k="ft3_h">Save-state & rewind</h4><p data-k="ft3_p">Checksummed states carry CPU context, framebuffer, queued input & counters. Deterministic replay.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-bug"/></svg><h4 data-k="ft4_h">Debugger, cheats, patch</h4><p data-k="ft4_p">The full emulator command model, pause, step, memory, cheats and patches, visible even where a backend is still landing.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-gamepad-2"/></svg><h4 data-k="ft5_h">Remap & virtual keypad</h4><p data-k="ft5_p">Press-to-capture keyboard/gamepad remapping with per-title profiles, plus a responsive on-screen keypad.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-download"/></svg><h4 data-k="ft6_h">Debug bundle & reports</h4><p data-k="ft6_p">Export a redacted debug ZIP and file a GitHub issue in-app, never copying game or firmware bytes.</p></div>
+  </div>
+</div></div></section>
+
+<!-- PLAY -->
+<section class="section" id="play"><div class="wrap"><div class="fit">
+  <div class="sec-head">
+    <span class="eyebrow" data-k="pl_eyebrow">Play in your browser</span>
+    <h2 data-k="pl_h2">Run ARAM without installing anything.</h2>
+    <p data-k="pl_p">The full ARAM frontend, compiled to WebAssembly. Launch it, then open a WIPI / JAR / DAT file you are authorized to use, it loads entirely in your browser, nothing is uploaded.</p>
+  </div>
+  <div class="launch">
+    <div class="launch-visual">
+      <div class="device"><span class="led"></span><div class="lcd"></div>
+        <div class="keys"><span>MENU</span><span>WIPI</span><span>BACK</span></div></div>
+    </div>
+    <div class="launch-body">
+      <div class="launch-actions">
+        <a class="btn primary lg" href="player/index.html"><svg class="ic"><use href="#i-play"/></svg><span data-k="pl_btn">Launch ARAM</span></a>
+      </div>
+      <p class="cap" data-k="pl_note">First launch downloads the runtime (~52 MB). Desktop Chrome, Firefox or Edge recommended. Then File ▸ Open your own authorized file.</p>
+    </div>
+  </div>
+</div></div></section>
+
+<!-- SCREENS -->
+<section class="section" id="screens"><div class="wrap"><div class="fit">
+  <div class="sec-head">
+    <span class="eyebrow" data-k="sc_eyebrow">Screens</span>
+    <h2 data-k="sc_h2">Guest frames & the runtime underneath.</h2>
+    <p data-k="sc_p">Early nightly, application mode. The frontend renders the guest framebuffer at native resolution; the core reports every step as a distinct milestone.</p>
+  </div>
+  <div class="shots">
+    <div class="shotcard">
+      <div class="device"><span class="led"></span><div class="lcd"></div>
+        <div class="keys"><span>MENU</span><span>WIPI</span><span>BACK</span></div></div>
+      <div class="cap" data-k="sc_cap">Application mode · guest framebuffer · 240×320</div>
+    </div>
+    <div class="term"><div class="bar"><i></i><i></i><i></i><span>aram-probe, application mode</span></div>
+<pre><b>aram</b>  › load  <u>authorized-input.dat</u>
+<b>core</b>  › EADS text+bss mapped   sha256 <u>3f9c…a1e0</u>
+<b>core</b>  › CPU backend            <u>ARMv5TE / Thumb  interp v3</u>
+<b>wipi</b>  › services bound         display audio input storage timing
+<b>oem</b>   › hash-keyed services    <u>ok</u>
+<b>run</b>   › bootstrap → setup → start → preload
+<b>run</b>   › first visible frame    <u>ok_frame @ 240×320</u>
+<b>state</b> › snapshot written       <u>checksum ok</u></pre></div>
+  </div>
+  <div class="plats">
+    <span class="plat"><svg class="ic"><use href="#i-monitor"/></svg>Windows x64</span>
+    <span class="plat"><svg class="ic"><use href="#i-linux"/></svg>Linux x64</span>
+    <span class="plat"><svg class="ic"><use href="#i-apple"/></svg>macOS arm64</span>
+    <span class="plat"><svg class="ic"><use href="#i-android"/></svg>Android arm64 / x86_64</span>
+    <span class="plat soon"><svg class="ic"><use href="#i-apple"/></svg><span data-k="sc_ios">iOS · designed</span></span>
+  </div>
+</div></div></section>
+
+<!-- SOURCE + CLOSE -->
+<section class="section" id="source"><div class="wrap"><div class="fit">
+  <div class="sec-head">
+    <span class="eyebrow" data-k="src_eyebrow">Open source</span>
+    <h2 data-k="src_h2">Four repositories, one product.</h2>
+    <p data-k="src_p">The core and frontend stay independent behind contracts; the product integrates them. Everything is on GitHub under mirusu400.</p>
+  </div>
+  <div class="repos">
+    <a class="repo" href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener"><svg class="ic arr"><use href="#i-arrow-up-right"/></svg><div class="rn"><svg class="ic gh"><use href="#i-github"/></svg>mirusu400/<b>aram-emu</b></div><div class="rd" data-k="src_emu">Product · integration adapter, packaging, releases, roadmap.</div></a>
+    <a class="repo" href="https://github.com/mirusu400/aram-core" target="_blank" rel="noopener"><svg class="ic arr"><use href="#i-arrow-up-right"/></svg><div class="rn"><svg class="ic gh"><use href="#i-github"/></svg>mirusu400/<b>aram-core</b></div><div class="rd" data-k="src_core">Headless Go core · loaders, ARM CPU, profiles, WIPI runtime, state.</div></a>
+    <a class="repo" href="https://github.com/mirusu400/aram-frontend" target="_blank" rel="noopener"><svg class="ic arr"><use href="#i-arrow-up-right"/></svg><div class="rn"><svg class="ic gh"><use href="#i-github"/></svg>mirusu400/<b>aram-frontend</b></div><div class="rd" data-k="src_front">Shared UI · desktop & mobile hosts, menus, input, overlays.</div></a>
+    <div class="repo" style="cursor:default"><div class="rn"><svg class="ic gh"><use href="#i-terminal"/></svg>aram-<b>test</b></div><div class="rd" data-k="src_test">Compatibility lab · synthetic + authorized corpora, deltas, triage.</div></div>
+  </div>
+  <div class="closebar">
+    <div><h3 data-k="dl_h">Try the nightly build.</h3><p data-k="dl_p">Windows, Linux, macOS archives + an Android APK on every push to main, with checksums.</p></div>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/mirusu400/aram-emu/releases" target="_blank" rel="noopener" data-k="dl_b1">Download Nightly</a>
+      <a class="btn ghost" href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener" data-k="dl_b2">Read the docs</a>
+    </div>
+  </div>
+  <div class="fnote" data-k="foot_note">ARAM never distributes firmware, commercial games, keys, memory dumps, or device fonts. You provide only material you are authorized to use. Not affiliated with any handset maker or carrier.</div>
+  <div class="fbar">
+    <span>© 2026 ARAM · mirusu400</span>
+    <a href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener">aram-emu</a>
+    <a href="https://github.com/mirusu400/aram-core" target="_blank" rel="noopener">aram-core</a>
+    <a href="https://github.com/mirusu400/aram-frontend" target="_blank" rel="noopener">aram-frontend</a>
+  </div>
+</div></div></section>
+
+<script>
+/* ---------- real guest screenshot (240×320) ---------- */
+document.documentElement.style.setProperty('--shot',
+  "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAAFACAIAAAANimYEAAAEpklEQVR4nOzZP1LjZhyAYSnDGVKlTJM2p0jch5oCypyB2TOkXIqtSW8us2Xu4cyiRMg2MFuA/7w8TwG2RsX3k159NsPF7wN0XEy/vnz6fHV7s95sVuM4DMP0Yr3ZzOetxvHLp8/HW+fbu7q9mV7szP4Rxt+ffXo7Tb38OR8/i/Gvbm++Bb2+v3vpjLnvYRh+/GU87PLe1/r+bnV5vZz92Y6T4+/PPj/MO+YLchbjr+/vHnfon796OrS4nbtvF6d1LIba35ni4+/d99U4zhdheXw4n/Evdt4v96RXHtyqnXk/zvj7X7emI2d3BR6D/vrPK2c8/P9i/PW3gyzpEDbzp+2rsyfHf3b2eYfeP3+6Aqc//jTX1g49z7N8Ojd//nGkFb6X8a+/9w8u7+XW5rT9HezsPZfsS7P/F8BJXoCXPjm2gl7n2v1+D6d53w5iHRr9W9BPf/A+HHs5B7S6vN6a/euxF3RAu7NX7vvq8nr0jxWAE/XDsRcAb0nQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhS/g0AAP//qbakv1z63SMAAAAASUVORK5CYII=)");
+
+/* ---------- i18n ---------- */
+const I18N={
+ nav_what:{en:"What",ko:"소개"},nav_features:{en:"Features",ko:"기능"},nav_play:{en:"Play",ko:"플레이"},
+ nav_screens:{en:"Screens",ko:"화면"},nav_source:{en:"Source",ko:"소스"},
+ hero_eyebrow:{en:"Archived Runtime for ARM Mobiles",ko:"ARM 모바일을 위한 아카이브 런타임"},
+ hero_h1:{en:"Bring Korean feature-phone software back to life.",ko:"한국 피처폰 소프트웨어를 다시 켜다."},
+ hero_lead:{en:"ARAM is a cross-platform emulator for Korean feature-phone (WIPI) software, a fast application runtime today, with whole-phone firmware boot as an ongoing research track.",
+   ko:"ARAM은 한국 피처폰(WIPI) 소프트웨어를 위한 크로스플랫폼 에뮬레이터입니다. 지금은 빠른 애플리케이션 런타임, 그리고 폰 전체 펌웨어 부팅을 연구 트랙으로 진행 중입니다."},
+ hero_cta1:{en:"View on GitHub",ko:"GitHub에서 보기"},hero_cta2:{en:"Play in browser",ko:"브라우저에서 플레이"},
+ rt_eyebrow:{en:"Two runtimes, one shell",ko:"두 런타임, 하나의 셸"},
+ rt_h2:{en:"How ARAM runs the past.",ko:"ARAM이 과거를 실행하는 방식."},
+ rt_p:{en:"Both modes share the frontend, input, audio, profiles, save-state, debugger and compatibility tooling, but they don't pretend to be the same backend.",
+   ko:"두 모드는 프론트엔드·입력·오디오·프로파일·세이브스테이트·디버거·호환성 도구를 공유합니다. 하지만 같은 백엔드인 척하지는 않습니다."},
+ rt_app_k:{en:"Application mode",ko:"애플리케이션 모드"},rt_app_h:{en:"Run WIPI packages",ko:"WIPI 패키지 실행"},
+ rt_app_p:{en:"Load a WIPI package, execute its ARM/Thumb guest code, and provide WIPI, carrier, OEM, display, audio, input, storage and timing services through high-level emulation.",
+   ko:"WIPI 패키지를 불러와 ARM/Thumb 게스트 코드를 실행하고, WIPI·통신사·OEM·디스플레이·오디오·입력·저장·타이밍 서비스를 고수준 에뮬레이션으로 제공합니다."},
+ rt_app_b:{en:"Working today",ko:"지금 동작"},
+ rt_sys_k:{en:"System mode",ko:"시스템 모드"},rt_sys_h:{en:"Boot phone firmware",ko:"폰 펌웨어 부팅"},
+ rt_sys_p:{en:"Load user-supplied firmware, instantiate a concrete device/SoC profile (SCH-W830, SCH-W860), and progressively boot as hardware coverage grows.",
+   ko:"사용자가 제공한 펌웨어를 불러와 구체적 기기/SoC 프로파일(SCH-W830, SCH-W860)을 구성하고, 하드웨어 커버리지가 늘수록 점진적으로 부팅합니다."},
+ rt_sys_b:{en:"Experimental · research",ko:"실험적 · 연구"},
+ ms1:{en:"Recognized",ko:"인식"},ms2:{en:"Loads",ko:"로드"},ms3:{en:"Executes",ko:"실행"},
+ ms4:{en:"First frame",ko:"첫 프레임"},ms5:{en:"Playable",ko:"플레이 가능"},ms6:{en:"Complete",ko:"완료"},
+ ms_cap:{en:"Reference titles reach a deterministic first frame; broad compatibility and firmware boot are roadmap.",
+   ko:"레퍼런스 타이틀은 결정론적 첫 프레임까지 도달합니다. 폭넓은 호환성과 펌웨어 부팅은 로드맵입니다."},
+ ft_eyebrow:{en:"Everything in the shell",ko:"셸에 담긴 모든 것"},
+ ft_h2:{en:"A real emulator, not a demo.",ko:"데모가 아니라 진짜 에뮬레이터."},
+ ft1_h:{en:"Cross-platform",ko:"크로스플랫폼"},ft1_p:{en:"Windows, Linux & macOS desktop; Android via Ebitengine. iOS designed into the boundary.",ko:"Windows·Linux·macOS 데스크톱, Ebitengine으로 Android. iOS는 경계에 설계되어 있습니다."},
+ ft2_h:{en:"Pure-Go ARM core",ko:"순수 Go ARM 코어"},ft2_p:{en:"A bounds-checked ARMv5TE/Thumb interpreter that faults on unknown instructions. Cross-compiles to Android/arm64.",ko:"경계 검사된 ARMv5TE/Thumb 인터프리터. 미지의 명령엔 명확히 실패하고, Android/arm64로 크로스컴파일됩니다."},
+ ft3_h:{en:"Save-state & rewind",ko:"세이브스테이트·되감기"},ft3_p:{en:"Checksummed states carry CPU context, framebuffer, queued input & counters. Deterministic replay.",ko:"체크섬 상태에 CPU 컨텍스트·프레임버퍼·대기 입력·카운터를 담습니다. 결정론적 리플레이."},
+ ft4_h:{en:"Debugger, cheats, patch",ko:"디버거·치트·패치"},ft4_p:{en:"The full emulator command model, pause, step, memory, cheats and patches, visible even where a backend is still landing.",ko:"완전한 에뮬레이터 명령 모델, 일시정지·스텝·메모리·치트·패치, 백엔드가 아직 오는 중이어도 노출됩니다."},
+ ft5_h:{en:"Remap & virtual keypad",ko:"리매핑·가상 키패드"},ft5_p:{en:"Press-to-capture keyboard/gamepad remapping with per-title profiles, plus a responsive on-screen keypad.",ko:"눌러서 캡처하는 키보드/게임패드 리매핑, 타이틀별 프로파일, 반응형 화면 키패드."},
+ ft6_h:{en:"Debug bundle & reports",ko:"디버그 번들·리포트"},ft6_p:{en:"Export a redacted debug ZIP and file a GitHub issue in-app, never copying game or firmware bytes.",ko:"편집된 디버그 ZIP을 내보내고 인앱에서 GitHub 이슈를 등록합니다, 게임·펌웨어 바이트는 절대 복사하지 않습니다."},
+ pl_eyebrow:{en:"Play in your browser",ko:"브라우저에서 플레이"},
+ pl_h2:{en:"Run ARAM without installing anything.",ko:"설치 없이 ARAM 실행."},
+ pl_p:{en:"The full ARAM frontend, compiled to WebAssembly. Launch it, then open a WIPI / JAR / DAT file you are authorized to use, it loads entirely in your browser, nothing is uploaded.",
+   ko:"ARAM 프론트엔드 전체를 WebAssembly로 컴파일했습니다. 실행한 뒤 사용 권한이 있는 WIPI / JAR / DAT 파일을 여세요, 전부 브라우저 안에서 로드되며 아무것도 업로드되지 않습니다."},
+ pl_go:{en:"Launch web emulator",ko:"웹 에뮬레이터 실행"},
+ pl_note:{en:"First launch downloads the runtime (~52 MB). Desktop Chrome, Firefox or Edge recommended. Then File ▸ Open your own authorized file.",
+   ko:"첫 실행 시 런타임(~52 MB)을 내려받습니다. 데스크톱 Chrome·Firefox·Edge 권장. 이후 File ▸ Open 으로 사용 권한이 있는 파일을 여세요."},
+ pl_btn:{en:"Launch ARAM",ko:"ARAM 실행"},pl_fs:{en:"Open in new tab",ko:"새 탭에서 열기"},
+ sc_eyebrow:{en:"Screens",ko:"화면"},sc_h2:{en:"Guest frames & the runtime underneath.",ko:"게스트 프레임과 그 아래 런타임."},
+ sc_p:{en:"Early nightly, application mode. The frontend renders the guest framebuffer at native resolution; the core reports every step as a distinct milestone.",
+   ko:"초기 Nightly, 애플리케이션 모드. 프론트엔드는 게스트 프레임버퍼를 네이티브 해상도로 렌더하고, 코어는 각 단계를 개별 마일스톤으로 보고합니다."},
+ sc_cap:{en:"Application mode · guest framebuffer · 240×320",ko:"애플리케이션 모드 · 게스트 프레임버퍼 · 240×320"},
+ sc_ios:{en:"iOS · designed",ko:"iOS · 설계됨"},
+ src_eyebrow:{en:"Open source",ko:"오픈소스"},src_h2:{en:"Four repositories, one product.",ko:"네 개의 저장소, 하나의 제품."},
+ src_p:{en:"The core and frontend stay independent behind contracts; the product integrates them. Everything is on GitHub under mirusu400.",
+   ko:"코어와 프론트엔드는 계약 뒤에서 독립적으로 유지되고, 제품이 이들을 통합합니다. 모두 mirusu400 아래 GitHub에 있습니다."},
+ src_emu:{en:"Product · integration adapter, packaging, releases, roadmap.",ko:"제품 · 통합 어댑터·패키징·릴리스·로드맵."},
+ src_core:{en:"Headless Go core · loaders, ARM CPU, profiles, WIPI runtime, state.",ko:"헤드리스 Go 코어 · 로더·ARM CPU·프로파일·WIPI 런타임·상태."},
+ src_front:{en:"Shared UI · desktop & mobile hosts, menus, input, overlays.",ko:"공용 UI · 데스크톱·모바일 호스트·메뉴·입력·오버레이."},
+ src_test:{en:"Compatibility lab · synthetic + authorized corpora, deltas, triage.",ko:"호환성 랩 · 합성+승인 코퍼스·델타·트리아지."},
+ dl_h:{en:"Try the nightly build.",ko:"Nightly 빌드 사용해보기."},
+ dl_p:{en:"Windows, Linux, macOS archives + an Android APK on every push to main, with checksums.",ko:"main 푸시마다 Windows·Linux·macOS 아카이브 + Android APK, 체크섬 포함."},
+ dl_b1:{en:"Download Nightly",ko:"Nightly 내려받기"},dl_b2:{en:"Read the docs",ko:"문서 보기"},
+ foot_note:{en:"ARAM never distributes firmware, commercial games, keys, memory dumps, or device fonts. You provide only material you are authorized to use. Not affiliated with any handset maker or carrier.",
+   ko:"ARAM은 펌웨어·상용 게임·키·메모리 덤프·기기 폰트를 배포하지 않습니다. 사용 권한이 있는 자료만 직접 제공하세요. 어떤 제조사·통신사와도 무관합니다."}
+};
+const LS_LANG="aram-lang", LS_THEME="aram-theme";
+let lang = localStorage.getItem(LS_LANG) || ((navigator.language||"en").toLowerCase().startsWith("ko") ? "ko":"en");
+function applyLang(l){
+  lang=l; document.documentElement.lang=l; localStorage.setItem(LS_LANG,l);
+  document.querySelectorAll("[data-k]").forEach(el=>{
+    const t=I18N[el.dataset.k]; if(!t) return;
+    if(el.hasAttribute("data-html")) el.innerHTML=t[l]; else el.textContent=t[l];
+  });
+  document.getElementById("langTxt").textContent = (l==="ko"?"EN":"한국어");
+  requestAnimationFrame(fitAll);
+}
+
+/* ---------- theme ---------- */
+function effTheme(){
+  const set=document.documentElement.getAttribute("data-theme");
+  if(set) return set;
+  return matchMedia("(prefers-color-scheme: light)").matches ? "light":"dark";
+}
+function paintThemeBtn(){ document.getElementById("themeUse").setAttribute("href", effTheme()==="dark" ? "#i-sun" : "#i-moon"); }
+function applyTheme(mode){ // mode: 'dark'|'light'
+  document.documentElement.setAttribute("data-theme",mode); localStorage.setItem(LS_THEME,mode); paintThemeBtn();
+}
+(function initTheme(){ const s=localStorage.getItem(LS_THEME); if(s) document.documentElement.setAttribute("data-theme",s); paintThemeBtn(); })();
+matchMedia("(prefers-color-scheme: light)").addEventListener("change",()=>{ if(!localStorage.getItem(LS_THEME)) paintThemeBtn(); });
+
+document.getElementById("langBtn").addEventListener("click",()=>applyLang(lang==="ko"?"en":"ko"));
+document.getElementById("themeBtn").addEventListener("click",()=>applyTheme(effTheme()==="dark"?"light":"dark"));
+
+/* ---------- one-view fit: scale each section's content to fit the viewport ---------- */
+function fitOne(sec){
+  const fit=sec.querySelector(":scope > .wrap > .fit"); if(!fit) return;
+  if(window.innerWidth<=760 || sec.hasAttribute("data-nofit")){ fit.style.transform=""; return; }
+  fit.style.transform="";
+  const nav=parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav"))||60;
+  const avail=window.innerHeight - nav - 64;         // section vertical padding budget
+  const natural=fit.offsetHeight;
+  if(natural<=0) return;
+  let s=avail/natural;
+  if(s>=1){ fit.style.transform=""; return; }
+  s=Math.max(s,0.6);                                  // don't shrink into unreadable
+  fit.style.transform=`scale(${s.toFixed(3)})`;
+}
+function fitAll(){ document.querySelectorAll(".section").forEach(fitOne); buildDots(); }
+let rt; addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(fitAll,120); });
+
+/* ---------- section dots + active state ---------- */
+const io=new IntersectionObserver((ents)=>{
+  ents.forEach(e=>{ if(e.isIntersecting){ const id=e.target.id;
+    document.querySelectorAll("#dots a").forEach(l=>l.classList.toggle("on", l.getAttribute("href")==="#"+id)); } });
+},{threshold:.5});
+function buildDots(){
+  const dots=document.getElementById("dots"); if(dots.childElementCount) return;
+  document.querySelectorAll(".section").forEach(s=>{
+    const a=document.createElement("a"); a.href="#"+s.id; a.title=s.id; dots.appendChild(a);
+    io.observe(s);
+  });
+}
+
+/* ---------- boot ---------- */
+applyLang(lang);
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitAll); }
+addEventListener("load",fitAll);
+</script>
+</body>
+</html>
