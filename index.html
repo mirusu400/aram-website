@@ -216,6 +216,22 @@
   .repo .arr{width:15px;height:15px}
   .launch a.ext{display:inline-flex;align-items:center;gap:6px;color:var(--accent-ink);font-size:12px;margin-left:14px}
   .launch a.ext .ic{width:13px;height:13px}
+  /* ---------- download ---------- */
+  .dlgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:28px}
+  @media(max-width:640px){.dlgrid{grid-template-columns:1fr}}
+  .oscard{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);
+    border-radius:10px;padding:18px 20px;color:var(--ink);transition:.15s}
+  .oscard:hover{border-color:var(--accent)}
+  .oscard .os{width:26px;height:26px;flex:none}
+  .oscard .meta{display:flex;flex-direction:column;line-height:1.25}
+  .oscard .meta b{font-family:var(--fdisp);font-weight:600;font-size:16px}
+  .oscard .meta span{font-family:var(--m);font-size:11.5px;color:var(--body)}
+  .oscard .dl{width:18px;height:18px;margin-left:auto;color:var(--accent-ink);flex:none}
+  .dlmore{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:20px;font-size:13.5px}
+  .dlmore a{color:var(--accent-ink)}.dlmore a:hover{text-decoration:underline}
+  a.plat{cursor:pointer}
+  a.plat:hover{border-color:var(--accent);color:var(--ink)}
+
   /* ---------- mobile: readability over one-view fit ---------- */
   @media(max-width:760px){
     html{scroll-snap-type:none}
@@ -254,10 +270,11 @@
 <nav class="topnav"><div class="wrap">
   <div class="brand"><img class="logo" src="assets/icon.png" alt="" width="26" height="26">ARAM</div>
   <div class="nlinks">
-    <a href="#runtimes" data-k="nav_what">What</a>
     <a href="#features" data-k="nav_features">Features</a>
+    <a href="#runtimes" data-k="nav_what">What</a>
     <a href="#play" data-k="nav_play">Play</a>
     <a href="#screens" data-k="nav_screens">Screens</a>
+    <a href="#download" data-k="nav_download">Download</a>
     <a href="#source" data-k="nav_source">Source</a>
   </div>
   <div class="ntools">
@@ -277,8 +294,9 @@
       <h1 data-k="hero_h1" data-html>Bring Korean feature-phone software back to life.</h1>
       <p class="lead" data-k="hero_lead">ARAM is a cross-platform emulator for Korean feature-phone (WIPI) software, a fast application runtime today, with whole-phone firmware boot as an ongoing research track.</p>
       <div class="cta">
-        <a class="btn primary" href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener" data-k="hero_cta1">View on GitHub</a>
+        <a class="btn primary" href="#download"><svg class="ic"><use href="#i-download"/></svg><span data-k="hero_cta_dl">Download</span></a>
         <a class="btn ghost" href="#play" data-k="hero_cta2">Play in browser</a>
+        <a class="btn ghost" href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener" data-k="hero_cta1">View on GitHub</a>
       </div>
       <div class="install"><b>$</b><span>go run ./cmd/aram</span></div>
     </div>
@@ -286,6 +304,22 @@
       <div class="device"><span class="led"></span><div class="lcd"></div>
         <div class="keys"><span>MENU</span><span>240×320</span><span>BACK</span></div></div>
     </div>
+  </div>
+</div></div></section>
+
+<!-- FEATURES -->
+<section class="section" id="features"><div class="wrap"><div class="fit">
+  <div class="sec-head">
+    <span class="eyebrow" data-k="ft_eyebrow">What ARAM can do</span>
+    <h2 data-k="ft_h2">A real emulator, not a demo.</h2>
+  </div>
+  <div class="feat">
+    <div class="fc"><svg class="ficon"><use href="#i-layers"/></svg><h4 data-k="ft1_h">Cross-platform</h4><p data-k="ft1_p">Windows, Linux & macOS desktop; Android via Ebitengine. iOS designed into the boundary.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-cpu"/></svg><h4 data-k="ft2_h">Pure-Go ARM core</h4><p data-k="ft2_p">A bounds-checked ARMv5TE/Thumb interpreter that faults on unknown instructions. Cross-compiles to Android/arm64.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-hard-drive"/></svg><h4 data-k="ft3_h">Save-state & rewind</h4><p data-k="ft3_p">Checksummed states carry CPU context, framebuffer, queued input & counters. Deterministic replay.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-bug"/></svg><h4 data-k="ft4_h">Debugger, cheats, patch</h4><p data-k="ft4_p">The full emulator command model, pause, step, memory, cheats and patches, visible even where a backend is still landing.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-gamepad-2"/></svg><h4 data-k="ft5_h">Remap & virtual keypad</h4><p data-k="ft5_p">Press-to-capture keyboard/gamepad remapping with per-title profiles, plus a responsive on-screen keypad.</p></div>
+    <div class="fc"><svg class="ficon"><use href="#i-download"/></svg><h4 data-k="ft6_h">Debug bundle & reports</h4><p data-k="ft6_p">Export a redacted debug ZIP and file a GitHub issue in-app, never copying game or firmware bytes.</p></div>
   </div>
 </div></div></section>
 
@@ -314,22 +348,6 @@
     <div class="step"><div class="n">06</div><div class="t" data-k="ms6">Complete</div></div>
   </div>
   <p class="cap" data-k="ms_cap">Reference titles reach a deterministic first frame; broad compatibility and firmware boot are roadmap.</p>
-</div></div></section>
-
-<!-- FEATURES -->
-<section class="section" id="features"><div class="wrap"><div class="fit">
-  <div class="sec-head">
-    <span class="eyebrow" data-k="ft_eyebrow">Everything in the shell</span>
-    <h2 data-k="ft_h2">A real emulator, not a demo.</h2>
-  </div>
-  <div class="feat">
-    <div class="fc"><svg class="ficon"><use href="#i-layers"/></svg><h4 data-k="ft1_h">Cross-platform</h4><p data-k="ft1_p">Windows, Linux & macOS desktop; Android via Ebitengine. iOS designed into the boundary.</p></div>
-    <div class="fc"><svg class="ficon"><use href="#i-cpu"/></svg><h4 data-k="ft2_h">Pure-Go ARM core</h4><p data-k="ft2_p">A bounds-checked ARMv5TE/Thumb interpreter that faults on unknown instructions. Cross-compiles to Android/arm64.</p></div>
-    <div class="fc"><svg class="ficon"><use href="#i-hard-drive"/></svg><h4 data-k="ft3_h">Save-state & rewind</h4><p data-k="ft3_p">Checksummed states carry CPU context, framebuffer, queued input & counters. Deterministic replay.</p></div>
-    <div class="fc"><svg class="ficon"><use href="#i-bug"/></svg><h4 data-k="ft4_h">Debugger, cheats, patch</h4><p data-k="ft4_p">The full emulator command model, pause, step, memory, cheats and patches, visible even where a backend is still landing.</p></div>
-    <div class="fc"><svg class="ficon"><use href="#i-gamepad-2"/></svg><h4 data-k="ft5_h">Remap & virtual keypad</h4><p data-k="ft5_p">Press-to-capture keyboard/gamepad remapping with per-title profiles, plus a responsive on-screen keypad.</p></div>
-    <div class="fc"><svg class="ficon"><use href="#i-download"/></svg><h4 data-k="ft6_h">Debug bundle & reports</h4><p data-k="ft6_p">Export a redacted debug ZIP and file a GitHub issue in-app, never copying game or firmware bytes.</p></div>
-  </div>
 </div></div></section>
 
 <!-- PLAY -->
@@ -377,15 +395,39 @@
 <b>state</b> › snapshot written       <u>checksum ok</u></pre></div>
   </div>
   <div class="plats">
-    <span class="plat"><svg class="ic"><use href="#i-monitor"/></svg>Windows x64</span>
-    <span class="plat"><svg class="ic"><use href="#i-linux"/></svg>Linux x64</span>
-    <span class="plat"><svg class="ic"><use href="#i-apple"/></svg>macOS arm64</span>
-    <span class="plat"><svg class="ic"><use href="#i-android"/></svg>Android arm64 / x86_64</span>
+    <a class="plat" href="#download"><svg class="ic"><use href="#i-monitor"/></svg>Windows x64</a>
+    <a class="plat" href="#download"><svg class="ic"><use href="#i-linux"/></svg>Linux x64</a>
+    <a class="plat" href="#download"><svg class="ic"><use href="#i-apple"/></svg>macOS arm64</a>
+    <a class="plat" href="#download"><svg class="ic"><use href="#i-android"/></svg>Android arm64 / x86_64</a>
     <span class="plat soon"><svg class="ic"><use href="#i-apple"/></svg><span data-k="sc_ios">iOS · designed</span></span>
   </div>
 </div></div></section>
 
-<!-- SOURCE + CLOSE -->
+<!-- DOWNLOAD -->
+<section class="section" id="download"><div class="wrap"><div class="fit">
+  <div class="sec-head">
+    <span class="eyebrow" data-k="dlx_eyebrow">Download</span>
+    <h2 data-k="dlx_h2">Get the latest nightly.</h2>
+    <p data-k="dlx_p">Direct downloads of the rolling nightly build. Always the newest, rebuilt on every push to main.</p>
+  </div>
+  <div class="dlgrid">
+    <a class="oscard" href="https://github.com/mirusu400/aram-emu/releases/download/nightly/aram-windows-amd64.zip">
+      <svg class="os"><use href="#i-monitor"/></svg><div class="meta"><b>Windows</b><span>x64 · .zip</span></div><svg class="dl"><use href="#i-download"/></svg></a>
+    <a class="oscard" href="https://github.com/mirusu400/aram-emu/releases/download/nightly/aram-macos-arm64.tar.gz">
+      <svg class="os"><use href="#i-apple"/></svg><div class="meta"><b>macOS</b><span>arm64 · .tar.gz</span></div><svg class="dl"><use href="#i-download"/></svg></a>
+    <a class="oscard" href="https://github.com/mirusu400/aram-emu/releases/download/nightly/aram-linux-amd64.tar.gz">
+      <svg class="os"><use href="#i-linux"/></svg><div class="meta"><b>Linux</b><span>x64 · .tar.gz</span></div><svg class="dl"><use href="#i-download"/></svg></a>
+    <a class="oscard" href="https://github.com/mirusu400/aram-emu/releases/download/nightly/aram-android-universal.apk">
+      <svg class="os"><use href="#i-android"/></svg><div class="meta"><b>Android</b><span>arm64 / x86_64 · .apk</span></div><svg class="dl"><use href="#i-download"/></svg></a>
+  </div>
+  <div class="dlmore">
+    <a href="#play" data-k="dlx_browser">Run it in your browser</a>
+    <a href="https://github.com/mirusu400/aram-emu/releases/download/nightly/SHA256SUMS.txt">SHA-256 checksums</a>
+    <a href="https://github.com/mirusu400/aram-emu/releases" target="_blank" rel="noopener" data-k="dlx_all">All releases on GitHub</a>
+  </div>
+</div></div></section>
+
+<!-- SOURCE -->
 <section class="section" id="source"><div class="wrap"><div class="fit">
   <div class="sec-head">
     <span class="eyebrow" data-k="src_eyebrow">Open source</span>
@@ -397,13 +439,6 @@
     <a class="repo" href="https://github.com/mirusu400/aram-core" target="_blank" rel="noopener"><svg class="ic arr"><use href="#i-arrow-up-right"/></svg><div class="rn"><svg class="ic gh"><use href="#i-github"/></svg>mirusu400/<b>aram-core</b></div><div class="rd" data-k="src_core">Headless Go core · loaders, ARM CPU, profiles, WIPI runtime, state.</div></a>
     <a class="repo" href="https://github.com/mirusu400/aram-frontend" target="_blank" rel="noopener"><svg class="ic arr"><use href="#i-arrow-up-right"/></svg><div class="rn"><svg class="ic gh"><use href="#i-github"/></svg>mirusu400/<b>aram-frontend</b></div><div class="rd" data-k="src_front">Shared UI · desktop & mobile hosts, menus, input, overlays.</div></a>
     <div class="repo" style="cursor:default"><div class="rn"><svg class="ic gh"><use href="#i-terminal"/></svg>aram-<b>test</b></div><div class="rd" data-k="src_test">Compatibility lab · synthetic + authorized corpora, deltas, triage.</div></div>
-  </div>
-  <div class="closebar">
-    <div><h3 data-k="dl_h">Try the nightly build.</h3><p data-k="dl_p">Windows, Linux, macOS archives + an Android APK on every push to main, with checksums.</p></div>
-    <div class="cta">
-      <a class="btn primary" href="https://github.com/mirusu400/aram-emu/releases" target="_blank" rel="noopener" data-k="dl_b1">Download Nightly</a>
-      <a class="btn ghost" href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener" data-k="dl_b2">Read the docs</a>
-    </div>
   </div>
   <div class="fnote" data-k="foot_note">ARAM never distributes firmware, commercial games, keys, memory dumps, or device fonts. You provide only material you are authorized to use. Not affiliated with any handset maker or carrier.</div>
   <div class="fbar">
@@ -422,12 +457,12 @@ document.documentElement.style.setProperty('--shot',
 /* ---------- i18n ---------- */
 const I18N={
  nav_what:{en:"What",ko:"소개"},nav_features:{en:"Features",ko:"기능"},nav_play:{en:"Play",ko:"플레이"},
- nav_screens:{en:"Screens",ko:"화면"},nav_source:{en:"Source",ko:"소스"},
+ nav_screens:{en:"Screens",ko:"화면"},nav_download:{en:"Download",ko:"다운로드"},nav_source:{en:"Source",ko:"소스"},
  hero_eyebrow:{en:"Archived Runtime for ARM Mobiles",ko:"ARM 모바일을 위한 아카이브 런타임"},
  hero_h1:{en:"Bring Korean feature-phone software back to life.",ko:"한국 피처폰 소프트웨어를 다시 켜다."},
  hero_lead:{en:"ARAM is a cross-platform emulator for Korean feature-phone (WIPI) software, a fast application runtime today, with whole-phone firmware boot as an ongoing research track.",
    ko:"ARAM은 한국 피처폰(WIPI) 소프트웨어를 위한 크로스플랫폼 에뮬레이터입니다. 지금은 빠른 애플리케이션 런타임, 그리고 폰 전체 펌웨어 부팅을 연구 트랙으로 진행 중입니다."},
- hero_cta1:{en:"View on GitHub",ko:"GitHub에서 보기"},hero_cta2:{en:"Play in browser",ko:"브라우저에서 플레이"},
+ hero_cta1:{en:"View on GitHub",ko:"GitHub에서 보기"},hero_cta2:{en:"Play in browser",ko:"브라우저에서 플레이"},hero_cta_dl:{en:"Download",ko:"다운로드"},
  rt_eyebrow:{en:"Two runtimes, one shell",ko:"두 런타임, 하나의 셸"},
  rt_h2:{en:"How ARAM runs the past.",ko:"ARAM이 과거를 실행하는 방식."},
  rt_p:{en:"Both modes share the frontend, input, audio, profiles, save-state, debugger and compatibility tooling, but they don't pretend to be the same backend.",
@@ -444,7 +479,7 @@ const I18N={
  ms4:{en:"First frame",ko:"첫 프레임"},ms5:{en:"Playable",ko:"플레이 가능"},ms6:{en:"Complete",ko:"완료"},
  ms_cap:{en:"Reference titles reach a deterministic first frame; broad compatibility and firmware boot are roadmap.",
    ko:"레퍼런스 타이틀은 결정론적 첫 프레임까지 도달합니다. 폭넓은 호환성과 펌웨어 부팅은 로드맵입니다."},
- ft_eyebrow:{en:"Everything in the shell",ko:"셸에 담긴 모든 것"},
+ ft_eyebrow:{en:"What ARAM can do",ko:"ARAM으로 할 수 있는 것"},
  ft_h2:{en:"A real emulator, not a demo.",ko:"데모가 아니라 진짜 에뮬레이터."},
  ft1_h:{en:"Cross-platform",ko:"크로스플랫폼"},ft1_p:{en:"Windows, Linux & macOS desktop; Android via Ebitengine. iOS designed into the boundary.",ko:"Windows·Linux·macOS 데스크톱, Ebitengine으로 Android. iOS는 경계에 설계되어 있습니다."},
  ft2_h:{en:"Pure-Go ARM core",ko:"순수 Go ARM 코어"},ft2_p:{en:"A bounds-checked ARMv5TE/Thumb interpreter that faults on unknown instructions. Cross-compiles to Android/arm64.",ko:"경계 검사된 ARMv5TE/Thumb 인터프리터. 미지의 명령엔 명확히 실패하고, Android/arm64로 크로스컴파일됩니다."},
@@ -465,6 +500,11 @@ const I18N={
    ko:"초기 Nightly, 애플리케이션 모드. 프론트엔드는 게스트 프레임버퍼를 네이티브 해상도로 렌더하고, 코어는 각 단계를 개별 마일스톤으로 보고합니다."},
  sc_cap:{en:"Application mode · guest framebuffer · 240×320",ko:"애플리케이션 모드 · 게스트 프레임버퍼 · 240×320"},
  sc_ios:{en:"iOS · designed",ko:"iOS · 설계됨"},
+ dlx_eyebrow:{en:"Download",ko:"다운로드"},
+ dlx_h2:{en:"Get the latest nightly.",ko:"최신 Nightly 받기."},
+ dlx_p:{en:"Direct downloads of the rolling nightly build. Always the newest, rebuilt on every push to main.",ko:"롤링 Nightly 빌드 직접 다운로드. main에 push될 때마다 다시 빌드되는 항상 최신 버전입니다."},
+ dlx_browser:{en:"Run it in your browser",ko:"브라우저에서 실행"},
+ dlx_all:{en:"All releases on GitHub",ko:"GitHub의 전체 릴리스"},
  src_eyebrow:{en:"Open source",ko:"오픈소스"},src_h2:{en:"Four repositories, one product.",ko:"네 개의 저장소, 하나의 제품."},
  src_p:{en:"The core and frontend stay independent behind contracts; the product integrates them. Everything is on GitHub under mirusu400.",
    ko:"코어와 프론트엔드는 계약 뒤에서 독립적으로 유지되고, 제품이 이들을 통합합니다. 모두 mirusu400 아래 GitHub에 있습니다."},
