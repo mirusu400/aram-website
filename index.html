@@ -227,6 +227,11 @@
   .oscard .meta b{font-family:var(--fdisp);font-weight:600;font-size:16px}
   .oscard .meta span{font-family:var(--m);font-size:11.5px;color:var(--body)}
   .oscard .dl{width:18px;height:18px;margin-left:auto;color:var(--accent-ink);flex:none}
+  .dltabs{display:inline-flex;gap:4px;margin-top:24px;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+  .dltab{font-family:var(--fdisp);font-weight:600;font-size:13px;color:var(--body);background:transparent;border:0;border-radius:999px;padding:8px 20px;cursor:pointer;transition:.15s}
+  .dltab:hover{color:var(--ink)}
+  .dltab.on{background:var(--accent);color:var(--onaccent)}
+  .dlchan{font-family:var(--m);font-size:12.5px;color:var(--body);margin-top:12px}
   .dlmore{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:20px;font-size:13.5px}
   .dlmore a{color:var(--accent-ink)}.dlmore a:hover{text-decoration:underline}
   a.plat{cursor:pointer}
@@ -407,22 +412,27 @@
 <section class="section" id="download"><div class="wrap"><div class="fit">
   <div class="sec-head">
     <span class="eyebrow" data-k="dlx_eyebrow">Download</span>
-    <h2 data-k="dlx_h2">Get the latest nightly.</h2>
-    <p data-k="dlx_p">Direct downloads of the rolling nightly build. Always the newest, rebuilt on every push to main.</p>
+    <h2 data-k="dlx_h2">Download ARAM.</h2>
+    <p data-k="dlx_p">Choose a channel, then your platform. Both links always point to the newest build.</p>
   </div>
+  <div class="dltabs" role="tablist">
+    <button class="dltab on" data-ch="stable" data-k="dlx_tab_stable">Stable</button>
+    <button class="dltab" data-ch="nightly" data-k="dlx_tab_nightly">Nightly</button>
+  </div>
+  <p class="dlchan" id="dlChan" data-k="dlx_stable">Recommended. The latest tagged release, stable and tested.</p>
   <div class="dlgrid">
-    <a class="oscard" href="https://github.com/mirusu400/aram-emu/releases/download/nightly/aram-windows-amd64.zip">
+    <a class="oscard" data-file="aram-windows-amd64.zip" href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-windows-amd64.zip">
       <svg class="os"><use href="#i-monitor"/></svg><div class="meta"><b>Windows</b><span>x64 · .zip</span></div><svg class="dl"><use href="#i-download"/></svg></a>
-    <a class="oscard" href="https://github.com/mirusu400/aram-emu/releases/download/nightly/aram-macos-arm64.tar.gz">
+    <a class="oscard" data-file="aram-macos-arm64.tar.gz" href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-macos-arm64.tar.gz">
       <svg class="os"><use href="#i-apple"/></svg><div class="meta"><b>macOS</b><span>arm64 · .tar.gz</span></div><svg class="dl"><use href="#i-download"/></svg></a>
-    <a class="oscard" href="https://github.com/mirusu400/aram-emu/releases/download/nightly/aram-linux-amd64.tar.gz">
+    <a class="oscard" data-file="aram-linux-amd64.tar.gz" href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-linux-amd64.tar.gz">
       <svg class="os"><use href="#i-linux"/></svg><div class="meta"><b>Linux</b><span>x64 · .tar.gz</span></div><svg class="dl"><use href="#i-download"/></svg></a>
-    <a class="oscard" href="https://github.com/mirusu400/aram-emu/releases/download/nightly/aram-android-universal.apk">
+    <a class="oscard" data-file="aram-android-universal.apk" href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-android-universal.apk">
       <svg class="os"><use href="#i-android"/></svg><div class="meta"><b>Android</b><span>arm64 / x86_64 · .apk</span></div><svg class="dl"><use href="#i-download"/></svg></a>
   </div>
   <div class="dlmore">
     <a href="#play" data-k="dlx_browser">Run it in your browser</a>
-    <a href="https://github.com/mirusu400/aram-emu/releases/download/nightly/SHA256SUMS.txt">SHA-256 checksums</a>
+    <a id="dlSums" href="https://github.com/mirusu400/aram-emu/releases/latest/download/SHA256SUMS.txt">SHA-256 checksums</a>
     <a href="https://github.com/mirusu400/aram-emu/releases" target="_blank" rel="noopener" data-k="dlx_all">All releases on GitHub</a>
   </div>
 </div></div></section>
@@ -501,8 +511,11 @@ const I18N={
  sc_cap:{en:"Application mode · guest framebuffer · 240×320",ko:"애플리케이션 모드 · 게스트 프레임버퍼 · 240×320"},
  sc_ios:{en:"iOS · designed",ko:"iOS · 설계됨"},
  dlx_eyebrow:{en:"Download",ko:"다운로드"},
- dlx_h2:{en:"Get the latest nightly.",ko:"최신 Nightly 받기."},
- dlx_p:{en:"Direct downloads of the rolling nightly build. Always the newest, rebuilt on every push to main.",ko:"롤링 Nightly 빌드 직접 다운로드. main에 push될 때마다 다시 빌드되는 항상 최신 버전입니다."},
+ dlx_h2:{en:"Download ARAM.",ko:"ARAM 다운로드."},
+ dlx_p:{en:"Choose a channel, then your platform. Both links always point to the newest build.",ko:"채널을 고르고 플랫폼을 선택하세요. 두 링크 모두 항상 최신 빌드를 가리킵니다."},
+ dlx_tab_stable:{en:"Stable",ko:"안정판"},dlx_tab_nightly:{en:"Nightly",ko:"개발판"},
+ dlx_stable:{en:"Recommended. The latest tagged release, stable and tested.",ko:"권장. 최신 태그 릴리스로 안정적이고 검증된 버전입니다."},
+ dlx_nightly:{en:"Bleeding edge, rebuilt on every push to main. May be unstable.",ko:"최신 개발판. main에 push될 때마다 다시 빌드됩니다. 불안정할 수 있습니다."},
  dlx_browser:{en:"Run it in your browser",ko:"브라우저에서 실행"},
  dlx_all:{en:"All releases on GitHub",ko:"GitHub의 전체 릴리스"},
  src_eyebrow:{en:"Open source",ko:"오픈소스"},src_h2:{en:"Four repositories, one product.",ko:"네 개의 저장소, 하나의 제품."},
@@ -576,8 +589,26 @@ function buildDots(){
   });
 }
 
+/* ---------- download channel (stable / nightly) ---------- */
+const CH={
+  stable:{base:"https://github.com/mirusu400/aram-emu/releases/latest/download/",note:"dlx_stable"},
+  nightly:{base:"https://github.com/mirusu400/aram-emu/releases/download/nightly/",note:"dlx_nightly"}
+};
+function setChannel(ch){
+  const c=CH[ch]||CH.stable;
+  document.querySelectorAll("#download .oscard").forEach(a=>a.href=c.base+a.dataset.file);
+  const sums=document.getElementById("dlSums"); if(sums) sums.href=c.base+"SHA256SUMS.txt";
+  document.querySelectorAll(".dltab").forEach(t=>t.classList.toggle("on",t.dataset.ch===ch));
+  const note=document.getElementById("dlChan");
+  if(note){ note.dataset.k=c.note; const tr=I18N[c.note]; if(tr) note.textContent=tr[lang]; }
+  try{ localStorage.setItem("aram-ch",ch); }catch(e){}
+}
+document.querySelectorAll(".dltab").forEach(t=>t.addEventListener("click",()=>setChannel(t.dataset.ch)));
+
 /* ---------- boot ---------- */
 applyLang(lang);
+let ch0="stable"; try{ ch0=localStorage.getItem("aram-ch")||"stable"; }catch(e){}
+setChannel(ch0);
 if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitAll); }
 addEventListener("load",fitAll);
 </script>
