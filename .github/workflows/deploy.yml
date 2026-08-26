@@ -4,8 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Fired by aram-emu right after it publishes a new `nightly` release,
+  # so the site always serves the latest runtime within minutes.
+  repository_dispatch:
+    types: [nightly-updated]
   schedule:
-    # Rebuild daily so the site picks up the latest aram-emu `nightly` wasm.
+    # Safety net in case a dispatch is missed.
     - cron: "0 6 * * *"
 
 permissions:
