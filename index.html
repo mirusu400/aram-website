@@ -151,7 +151,9 @@
     background:var(--surface2);border:1px solid var(--line);padding:16px 14px 34px}
   .device .led{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:28px;height:4px;border-radius:2px;background:var(--accent)}
   .lcd{position:relative;width:100%;height:100%;border-radius:6px;overflow:hidden;background:#000;border:1px solid rgba(0,0,0,.5)}
-  .lcd::before{content:"";position:absolute;inset:0;background:var(--shot) center/cover no-repeat;image-rendering:pixelated}
+  .lcdreel{display:flex;width:100%;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none}
+  .lcdreel::-webkit-scrollbar{display:none}
+  .lcdreel img{flex:0 0 100%;width:100%;height:100%;object-fit:contain;scroll-snap-align:center;image-rendering:pixelated;background:#000}
   .lcd::after{content:"";position:absolute;inset:0;pointer-events:none;
     background:repeating-linear-gradient(to bottom,transparent 0 2px,var(--scan) 2px 3px)}
   .device .keys{position:absolute;left:0;right:0;bottom:11px;display:flex;justify-content:space-between;padding:0 22px;
@@ -278,28 +280,6 @@
   a.plat{cursor:pointer}
   a.plat:hover{border-color:var(--accent);color:var(--ink)}
 
-  /* ---------- screenshot carousel ---------- */
-  .carousel{position:relative;margin-top:26px;display:flex;flex-direction:column;align-items:center}
-  .cframe{position:relative;width:100%;max-width:520px;overflow:hidden}
-  .ctrack{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
-  .cslide{flex:0 0 100%;display:flex;flex-direction:column;align-items:center;gap:14px;padding:2px 0}
-  .cphone{position:relative;width:min(230px,60vw);aspect-ratio:240/320;background:#000;
-    border:1px solid var(--line);border-radius:22px;padding:15px 12px 30px}
-  .cphone::after{content:"";position:absolute;top:9px;left:50%;transform:translateX(-50%);width:26px;height:4px;border-radius:2px;background:var(--accent)}
-  .cphone img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;border-radius:4px;background:#000}
-  .cslide figcaption{font-family:var(--fdisp);font-weight:600;font-size:15px;color:var(--ink);text-align:center}
-  .cslide figcaption span{color:var(--body);font-weight:400;font-family:var(--m);font-size:12px}
-  .cbtn{position:absolute;top:calc(50% - 22px);transform:translateY(-50%);z-index:3;width:40px;height:40px;border-radius:50%;
-    border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 88%,transparent);color:var(--ink);
-    cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;backdrop-filter:blur(4px)}
-  .cbtn:hover{border-color:var(--accent);color:var(--accent-ink)}
-  .cbtn .ic{width:20px;height:20px}
-  .cbtn.prev{left:0}.cbtn.next{right:0}
-  .cdots{display:flex;gap:8px;margin-top:18px}
-  .cdots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:var(--line);cursor:pointer;transition:.15s}
-  .cdots button:hover{background:var(--mute)}
-  .cdots button.on{background:var(--accent);transform:scale(1.3)}
-
   /* ---------- mobile: readability over one-view fit ---------- */
   @media(max-width:760px){
     html{scroll-snap-type:none}
@@ -343,7 +323,6 @@
     <a href="#features" data-k="nav_features">Features</a>
     <a href="#runtimes" data-k="nav_what">What</a>
     <a href="#play" data-k="nav_play">Play</a>
-    <a href="#screens" data-k="nav_screens">Screens</a>
     <a href="#download" data-k="nav_download">Download</a>
     <a href="#source" data-k="nav_source">Source</a>
   </div>
@@ -371,7 +350,14 @@
       <div class="install"><b>$</b><span>go run ./cmd/aram</span></div>
     </div>
     <div class="stage">
-      <div class="device"><span class="led"></span><div class="lcd"></div>
+      <div class="device"><span class="led"></span><div class="lcd"><div class="lcdreel">
+          <img src="assets/shots/shot-01.png" width="240" height="320" alt="붕어빵 타이쿤 3 running in the ARAM feature-phone emulator">
+          <img src="assets/shots/shot-02.png" width="176" height="220" alt="미니게임천국 2 running in the ARAM WIPI emulator">
+          <img src="assets/shots/shot-03.png" width="176" height="220" alt="아노티아 연대기 running in ARAM">
+          <img src="assets/shots/shot-04.png" width="240" height="320" alt="리듬스타 running in ARAM">
+          <img src="assets/shots/shot-05.png" width="176" height="220" alt="Epic Chronicle Perfect Edition running in ARAM">
+          <img src="assets/shots/shot-06.png" width="120" height="160" alt="Dragon Knight EX running in ARAM">
+        </div></div>
         <div class="keys"><span>MENU</span><span>240×320</span><span>BACK</span></div></div>
     </div>
   </div>
@@ -429,7 +415,14 @@
   </div>
   <div class="launch">
     <div class="launch-visual">
-      <div class="device"><span class="led"></span><div class="lcd"></div>
+      <div class="device"><span class="led"></span><div class="lcd"><div class="lcdreel">
+          <img src="assets/shots/shot-01.png" width="240" height="320" alt="붕어빵 타이쿤 3 running in the ARAM feature-phone emulator">
+          <img src="assets/shots/shot-02.png" width="176" height="220" alt="미니게임천국 2 running in the ARAM WIPI emulator">
+          <img src="assets/shots/shot-03.png" width="176" height="220" alt="아노티아 연대기 running in ARAM">
+          <img src="assets/shots/shot-04.png" width="240" height="320" alt="리듬스타 running in ARAM">
+          <img src="assets/shots/shot-05.png" width="176" height="220" alt="Epic Chronicle Perfect Edition running in ARAM">
+          <img src="assets/shots/shot-06.png" width="120" height="160" alt="Dragon Knight EX running in ARAM">
+        </div></div>
         <div class="keys"><span>MENU</span><span>WIPI</span><span>BACK</span></div></div>
     </div>
     <div class="launch-body">
@@ -442,36 +435,6 @@
       </div>
       <p class="cap" data-k="pl_note">First launch downloads the runtime (~52 MB). Desktop Chrome, Firefox or Edge recommended. Then File ▸ Open your own authorized file.</p>
     </div>
-  </div>
-</div></div></section>
-
-<!-- SCREENS -->
-<section class="section" id="screens"><div class="wrap"><div class="fit">
-  <div class="sec-head">
-    <span class="eyebrow" data-k="sc_eyebrow">Screenshots</span>
-    <p data-k="sc_p">Real Korean feature-phone games, booted and running in ARAM. Slide through a few titles.</p>
-  </div>
-  <div class="carousel" id="carousel">
-    <div class="cframe">
-      <button class="cbtn prev" id="cPrev" aria-label="Previous"><svg class="ic"><use href="#i-chevron-left"/></svg></button>
-      <div class="ctrack" id="ctrack">
-        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-01.png" width="240" height="320" loading="lazy" alt="붕어빵 타이쿤 3 running in the ARAM feature-phone emulator"></div><figcaption>붕어빵 타이쿤 3 <span>· COM2US</span></figcaption></figure>
-        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-02.png" width="176" height="220" loading="lazy" alt="미니게임천국 2 running in the ARAM WIPI emulator"></div><figcaption>미니게임천국 2 <span>· COM2US</span></figcaption></figure>
-        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-03.png" width="176" height="220" loading="lazy" alt="아노티아 연대기 running in the ARAM feature-phone emulator"></div><figcaption>아노티아 연대기 <span>· COM2US</span></figcaption></figure>
-        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-04.png" width="240" height="320" loading="lazy" alt="리듬스타 running in the ARAM feature-phone emulator"></div><figcaption>리듬스타 <span>· ANB Games</span></figcaption></figure>
-        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-05.png" width="176" height="220" loading="lazy" alt="Epic Chronicle Perfect Edition running in the ARAM emulator"></div><figcaption>Epic Chronicle <span>· Perfect Edition</span></figcaption></figure>
-        <figure class="cslide"><div class="cphone"><img src="assets/shots/shot-06.png" width="120" height="160" loading="lazy" alt="Dragon Knight EX running in the ARAM feature-phone emulator"></div><figcaption>Dragon Knight EX <span>· PMJ</span></figcaption></figure>
-      </div>
-      <button class="cbtn next" id="cNext" aria-label="Next"><svg class="ic"><use href="#i-chevron-right"/></svg></button>
-    </div>
-    <div class="cdots" id="cdots"></div>
-  </div>
-  <div class="plats">
-    <a class="plat" href="#download"><svg class="ic"><use href="#i-monitor"/></svg>Windows x64</a>
-    <a class="plat" href="#download"><svg class="ic"><use href="#i-linux"/></svg>Linux x64</a>
-    <a class="plat" href="#download"><svg class="ic"><use href="#i-apple"/></svg>macOS arm64</a>
-    <a class="plat" href="#download"><svg class="ic"><use href="#i-android"/></svg>Android arm64 / x86_64</a>
-    <span class="plat soon"><svg class="ic"><use href="#i-apple"/></svg><span data-k="sc_ios">iOS · designed</span></span>
   </div>
 </div></div></section>
 
@@ -674,30 +637,20 @@ function setChannel(ch){
 }
 document.querySelectorAll(".dltab").forEach(t=>t.addEventListener("click",()=>setChannel(t.dataset.ch)));
 
-/* ---------- screenshot carousel ---------- */
-(function(){
-  const track=document.getElementById("ctrack"); if(!track) return;
-  const n=track.children.length, dotsWrap=document.getElementById("cdots"), car=document.getElementById("carousel");
-  let idx=0, timer=null;
-  for(let i=0;i<n;i++){ const b=document.createElement("button"); b.setAttribute("aria-label","Slide "+(i+1));
-    b.addEventListener("click",()=>{go(i);restart();}); dotsWrap.appendChild(b); }
-  const dots=[...dotsWrap.children];
-  function go(i){ idx=(i+n)%n; track.style.transform="translateX("+(-idx*100)+"%)";
-    dots.forEach((d,j)=>d.classList.toggle("on",j===idx)); }
-  document.getElementById("cPrev").addEventListener("click",()=>{go(idx-1);restart();});
-  document.getElementById("cNext").addEventListener("click",()=>{go(idx+1);restart();});
+/* ---------- in-device screenshot slideshow (swipe on mobile) ---------- */
+document.querySelectorAll(".lcdreel").forEach(reel=>{
+  const count=reel.children.length; if(count<2) return;
   const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function start(){ if(!reduce&&!timer) timer=setInterval(()=>go(idx+1),4500); }
-  function stop(){ if(timer){clearInterval(timer);timer=null;} }
-  function restart(){ stop(); start(); }
-  car.addEventListener("mouseenter",stop); car.addEventListener("mouseleave",start);
-  car.addEventListener("focusin",stop); car.addEventListener("focusout",start);
-  let x0=null; const frame=car.querySelector(".cframe");
-  frame.addEventListener("pointerdown",e=>{x0=e.clientX;});
-  frame.addEventListener("pointerup",e=>{ if(x0===null)return; const dx=e.clientX-x0;
-    if(Math.abs(dx)>40){ dx<0?go(idx+1):go(idx-1); restart(); } x0=null; });
-  go(0); start();
-})();
+  let i=0, timer=null, paused=false, st=null;
+  function adv(){ if(paused) return; i=(i+1)%count; reel.scrollTo({left:i*reel.clientWidth, behavior:"smooth"}); }
+  function start(){ if(!reduce && !timer) timer=setInterval(adv,3500); }
+  reel.addEventListener("pointerenter",()=>{ paused=true; });
+  reel.addEventListener("pointerleave",()=>{ paused=false; });
+  reel.addEventListener("pointerdown",()=>{ paused=true; });
+  window.addEventListener("pointerup",()=>{ clearTimeout(st); st=setTimeout(()=>{ paused=false; },3000); });
+  reel.addEventListener("scroll",()=>{ clearTimeout(st); st=setTimeout(()=>{ i=Math.round(reel.scrollLeft/reel.clientWidth); },150); });
+  start();
+});
 
 /* ---------- boot ---------- */
 applyLang(lang);
