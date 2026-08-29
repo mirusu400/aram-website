@@ -50,6 +50,7 @@
   </div>
 </div>
 
+<script src="permalink.js"></script>
 <script>
 (async function () {
   const boot = document.getElementById("boot");
@@ -64,11 +65,28 @@
   try { localStorage.setItem("aram-ch", ch); } catch (e) {}
   const active = document.getElementById(ch === "stable" ? "chStable" : "chNightly");
   if (active) active.classList.add("on");
+  if (globalThis.ARAMPermalink) {
+    document.getElementById("chStable").href = ARAMPermalink.withChannel(location.href, "stable");
+    document.getElementById("chNightly").href = ARAMPermalink.withChannel(location.href, "nightly");
+  }
 
   function fail(message) {
     spinner.style.display = "none";
     status.className = "err";
     status.textContent = message;
+  }
+
+  if (!globalThis.ARAMPermalink) {
+    fail("Failed to load the permalink helper.");
+    return;
+  }
+
+  let initialSpec;
+  try {
+    initialSpec = ARAMPermalink.parse(location.search, location.href);
+  } catch (e) {
+    fail(e && e.message ? e.message : String(e));
+    return;
   }
 
   status.textContent = "Loading ARAM (" + ch + ")…";
@@ -96,8 +114,23 @@
 
   const go = new Go();
   try {
-    status.textContent = "Downloading " + ch + " build…";
-    const result = await WebAssembly.instantiateStreaming(fetch(ch + "/aram.wasm"), go.importObject);
+    status.textContent = initialSpec
+      ? "Downloading " + initialSpec.name + " and the " + ch + " build…"
+      : "Downloading " + ch + " build…";
+    const wasmPromise = WebAssembly.instantiateStreaming(
+      fetch(ch + "/aram.wasm"),
+      go.importObject,
+    );
+    const packagePromise = initialSpec
+      ? ARAMPermalink.fetchPackage(initialSpec)
+      : Promise.resolve(null);
+    const [result, initialPackage] = await Promise.all([wasmPromise, packagePromise]);
+    if (initialPackage) {
+      // The ARAM frontend consumes and deletes this value synchronously when
+      // the Go/WASM runtime starts, then opens it through OpenRequest.Data.
+      globalThis.__aramInitialPackage = initialPackage;
+      status.textContent = "Starting " + initialPackage.name + "…";
+    }
     requestAnimationFrame(() => requestAnimationFrame(() => boot.classList.add("hidden")));
     await go.run(result.instance);
   } catch (e) {

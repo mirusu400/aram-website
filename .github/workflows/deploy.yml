@@ -27,6 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Test player permalink contract
+        run: node --test player/permalink.test.js
+
       - name: Fetch WebAssembly runtime from aram-emu nightly release
         run: bash scripts/sync-player.sh
 
