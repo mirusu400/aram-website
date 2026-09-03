@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { buildSite } from "./build-site.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const slugs = ["guide", "compatibility", "faq", "releases", "troubleshooting"];
+const slugs = ["guide", "compatibility", "faq", "releases", "troubleshooting", "privacy"];
 
 function metadata(html, name) {
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -53,6 +53,7 @@ test("localized build emits distinct, indexable Korean and English pages", async
     canonicals.add(canonical);
     assert.doesNotMatch(html, /<meta name="keywords"/);
     assert.doesNotMatch(html, /navigator\.language|applyLang\(/);
+    assert.doesNotMatch(html, /assets\/analytics\.js/);
     assert.doesNotThrow(() => jsonLD(html), `${relativePath} contains invalid JSON-LD`);
   }
 
@@ -76,13 +77,46 @@ test("sitemap contains every canonical page and no player variants", async (cont
   await buildSite(temporaryRoot);
   const sitemap = await readFile(path.join(temporaryRoot, "sitemap.xml"), "utf8");
   const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  assert.equal(locations.length, 12);
-  assert.equal(new Set(locations).size, 12);
+  assert.equal(locations.length, 14);
+  assert.equal(new Set(locations).size, 14);
   assert.ok(locations.includes("https://aram.mir.sh/"));
   assert.ok(locations.includes("https://aram.mir.sh/en/"));
   assert.ok(locations.every((location) => !location.includes("/player") && !location.includes("?")));
-  assert.equal((sitemap.match(/hreflang="ko"/g) || []).length, 12);
-  assert.equal((sitemap.match(/hreflang="en"/g) || []).length, 12);
+  assert.equal((sitemap.match(/hreflang="ko"/g) || []).length, 14);
+  assert.equal((sitemap.match(/hreflang="en"/g) || []).length, 14);
+});
+
+test("analytics is opt-in, query-free, and excluded from the player", async (context) => {
+  const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "aram-analytics-"));
+  context.after(async () => rm(temporaryRoot, { recursive: true, force: true }));
+  await buildSite(temporaryRoot, { measurementId: "G-TEST12345" });
+
+  for (const relativePath of ["index.html", "en/index.html", "privacy/index.html", "en/guide/index.html"]) {
+    const html = await readFile(path.join(temporaryRoot, relativePath), "utf8");
+    assert.match(html, /data-measurement-id="G-TEST12345"/);
+    assert.match(html, /<link rel="stylesheet" href="\/assets\/analytics\.css">/);
+    assert.match(html, /id="analyticsAccept"/);
+    assert.match(html, /id="analyticsDecline"/);
+  }
+
+  const runtime = await readFile(path.join(projectRoot, "assets", "analytics.js"), "utf8");
+  assert.match(runtime, /return `\$\{location\.origin\}\$\{location\.pathname\}`/);
+  assert.doesNotMatch(runtime, /page_location:\s*location\.href/);
+  assert.match(runtime, /send_page_view: false/);
+  assert.match(runtime, /page_referrer: pageReferrer\(\)/);
+  assert.match(runtime, /ad_storage: "denied"/);
+  assert.match(runtime, /allow_google_signals: false/);
+  assert.match(runtime, /cookie_domain: "aram\.mir\.sh"/);
+  for (const eventName of ["web_player_launch", "download_click", "language_switch", "github_click"]) {
+    assert.match(runtime, new RegExp(`"${eventName}"`));
+  }
+
+  const player = await readFile(path.join(projectRoot, "player", "index.html"), "utf8");
+  assert.doesNotMatch(player, /analytics|googletagmanager|gtag/i);
+  await assert.rejects(
+    buildSite(path.join(temporaryRoot, "invalid"), { measurementId: "UA-NOT-GA4" }),
+    /GA_MEASUREMENT_ID/,
+  );
 });
 
 test("social cards have the declared dimensions and player stays out of search", async () => {

@@ -306,6 +306,7 @@
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
+{{ANALYTICS_HEAD}}
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
@@ -509,6 +510,7 @@
     <a href="https://github.com/mirusu400/aram-frontend" target="_blank" rel="noopener">aram-frontend</a>
     <a href="{{LOCALE_PREFIX}}guide/" data-k="nav_guide">Guide</a>
     <a href="{{LOCALE_PREFIX}}faq/" data-k="nav_faq">FAQ</a>
+    <a href="{{LOCALE_PREFIX}}privacy/" data-k="nav_privacy">Privacy</a>
   </div>
 </div></div></section>
 
@@ -522,7 +524,7 @@ const I18N={
  nav_what:{en:"What",ko:"소개"},nav_features:{en:"Features",ko:"기능"},nav_play:{en:"Play",ko:"플레이"},
  nav_screens:{en:"Screens",ko:"화면"},nav_download:{en:"Download",ko:"다운로드"},nav_source:{en:"Source",ko:"소스"},
  nav_guide:{en:"Guide",ko:"사용법"},nav_compatibility:{en:"Compatibility",ko:"호환성"},nav_faq:{en:"FAQ",ko:"자주 묻는 질문"},
- nav_releases:{en:"Releases",ko:"릴리스"},nav_troubleshooting:{en:"Troubleshooting",ko:"문제 해결"},
+ nav_releases:{en:"Releases",ko:"릴리스"},nav_troubleshooting:{en:"Troubleshooting",ko:"문제 해결"},nav_privacy:{en:"Privacy",ko:"개인정보"},
  hero_eyebrow:{en:"Archived Runtime for ARM Mobiles",ko:"ARM 모바일을 위한 아카이브 런타임"},
  hero_h1:{en:"Bring Korean feature-phone software back to life.",ko:"한국 피처폰 소프트웨어를 다시 켜다."},
  hero_lead:{en:"ARAM is a cross-platform emulator that runs Korean feature-phone games and apps.",
@@ -673,5 +675,6 @@ setChannel(ch0);
 if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitAll); }
 addEventListener("load",fitAll);
 </script>
+{{ANALYTICS_BODY}}
 </body>
 </html>

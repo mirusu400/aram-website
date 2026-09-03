@@ -368,4 +368,79 @@ export const pages = [
       },
     },
   },
+  {
+    slug: "privacy",
+    locales: {
+      ko: {
+        title: "ARAM 개인정보 및 분석 안내",
+        description: "ARAM 웹사이트의 Google Analytics 동의 방식, 수집하는 페이지·클릭 정보, 수집하지 않는 파일 정보와 동의 철회 방법을 안내합니다.",
+        eyebrow: "PRIVACY & ANALYTICS",
+        heading: "개인정보 및 분석 안내",
+        lead: "ARAM은 명시적으로 동의한 방문자에 한해서만 최소한의 웹사이트 이용 통계를 수집합니다.",
+        body: `
+    <p><strong>시행일: 2026년 9월 3일</strong></p>
+    <h2>동의하기 전에는 수집하지 않습니다</h2>
+    <p>ARAM은 사용자가 분석을 허용하기 전에는 Google Analytics 스크립트를 내려받거나 Google에 분석 요청을 보내지 않습니다. 동의 여부는 현재 브라우저의 <code>localStorage</code>에 <code>granted</code> 또는 <code>denied</code>로만 저장됩니다.</p>
+
+    <h2>동의하면 수집하는 정보</h2>
+    <ul>
+      <li>쿼리 문자열과 해시를 제거한 페이지 경로 및 페이지 제목</li>
+      <li>브라우저·운영체제·화면 크기 같은 일반적인 기기 정보</li>
+      <li>대략적인 지역, 방문 출처와 방문 시각</li>
+      <li>다운로드 플랫폼과 안정판·Nightly 채널</li>
+      <li>웹 플레이어 실행, 언어 전환, ARAM GitHub 저장소 링크 클릭</li>
+    </ul>
+    <p>이 정보는 어떤 문서가 유용한지, 어떤 플랫폼 다운로드가 필요한지, 사용자가 어디에서 막히는지를 파악해 ARAM을 개선하는 용도로만 사용합니다. 외부 리퍼러는 경로 없이 출처 도메인까지만 전송합니다.</p>
+
+    <h2>수집하지 않는 정보</h2>
+    <div class="callout"><strong>게임·펌웨어 파일, 파일명, 게임명, 패키지 URL, SHA-256 해시, 메모리 내용은 수집하지 않습니다.</strong> 웹 플레이어 경로에는 Analytics 코드를 넣지 않으며, 다른 페이지의 URL도 쿼리 문자열을 제거해서 전송합니다.</div>
+    <p>광고 저장소, 광고 사용자 데이터, 광고 개인화와 Google Signals는 코드에서 비활성화합니다. ARAM은 자체 사용자 계정이나 Analytics용 사용자 ID를 만들지 않습니다. Google Analytics 웹 스트림의 <strong>향상된 측정</strong>도 비활성화해 링크 URL이나 파일명을 포함하는 자동 이벤트가 별도로 생성되지 않도록 운영합니다.</p>
+
+    <h2>Google Analytics와 쿠키</h2>
+    <p>동의한 경우 Google Analytics 4가 방문을 구분하기 위해 <code>_ga</code> 계열 쿠키를 설정할 수 있습니다. 사이트는 쿠키 만료 기간을 최대 180일로 요청합니다. 분석 데이터는 Google이 처리하며 실제 이벤트 데이터 보관 기간은 ARAM의 Google Analytics 속성 설정을 따릅니다.</p>
+    <p>자세한 처리 방식은 <a href="https://policies.google.com/privacy">Google 개인정보처리방침</a>과 <a href="https://support.google.com/analytics/answer/6004245">Google Analytics 데이터 보호 안내</a>에서 확인할 수 있습니다.</p>
+
+    <h2>동의 철회</h2>
+    <p>화면 왼쪽 아래의 <strong>분석 설정</strong>을 누르고 거부를 선택하면 저장된 동의가 변경되고 ARAM 도메인의 <code>_ga</code> 계열 쿠키를 삭제한 뒤 페이지를 다시 불러옵니다. 이후에는 다시 허용하기 전까지 Analytics를 로드하지 않습니다.</p>
+
+    <h2>문의</h2>
+    <p>개인정보 또는 분석 방식에 관한 질문은 <a href="https://github.com/mirusu400/aram-website/issues">aram-website GitHub 이슈</a>로 남길 수 있습니다.</p>`,
+      },
+      en: {
+        title: "ARAM Privacy and Analytics Notice",
+        description: "Learn how ARAM asks for Google Analytics consent, which page and click data it collects, which file data it excludes, and how to withdraw consent.",
+        eyebrow: "PRIVACY & ANALYTICS",
+        heading: "Privacy and analytics notice",
+        lead: "ARAM collects minimal website usage statistics only from visitors who explicitly allow analytics.",
+        body: `
+    <p><strong>Effective date: September 3, 2026</strong></p>
+    <h2>Nothing is sent before consent</h2>
+    <p>ARAM does not download the Google Analytics script or send an analytics request to Google before you allow analytics. The choice itself is stored in this browser's <code>localStorage</code> only as <code>granted</code> or <code>denied</code>.</p>
+
+    <h2>Information collected after consent</h2>
+    <ul>
+      <li>Page paths with query strings and fragments removed, plus page titles</li>
+      <li>General device information such as browser, operating system, and screen size</li>
+      <li>Approximate region, referral source, and visit time</li>
+      <li>Download platform and Stable or Nightly channel</li>
+      <li>Web-player launches, language switches, and clicks to ARAM GitHub repositories</li>
+    </ul>
+    <p>This information is used only to understand which documents are useful, which platform downloads people need, and where visitors encounter problems so ARAM can improve. External referrers are reduced to their origin without a path.</p>
+
+    <h2>Information not collected</h2>
+    <div class="callout"><strong>ARAM does not collect game or firmware files, filenames, game names, package URLs, SHA-256 hashes, or memory contents.</strong> Analytics code is absent from the web player, and URLs sent from other pages have their query strings removed.</div>
+    <p>Ad storage, ad user data, ad personalization, and Google Signals are disabled in code. ARAM does not create user accounts or analytics user IDs. <strong>Enhanced measurement</strong> is also kept disabled in the Google Analytics web stream so it does not independently create automatic events containing link URLs or filenames.</p>
+
+    <h2>Google Analytics and cookies</h2>
+    <p>After consent, Google Analytics 4 may set <code>_ga</code> family cookies to distinguish visits. The site requests a maximum cookie lifetime of 180 days. Google processes analytics data, and actual event-data retention follows the ARAM Google Analytics property setting.</p>
+    <p>Read the <a href="https://policies.google.com/privacy">Google Privacy Policy</a> and <a href="https://support.google.com/analytics/answer/6004245">Google Analytics data safeguards</a> for details.</p>
+
+    <h2>Withdraw consent</h2>
+    <p>Select <strong>Analytics settings</strong> at the lower left of a page and choose Decline. ARAM changes the saved choice, removes <code>_ga</code> family cookies for its domain, and reloads the page. Analytics stays disabled until you allow it again.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about privacy or analytics can be filed in the <a href="https://github.com/mirusu400/aram-website/issues">aram-website GitHub issue tracker</a>.</p>`,
+      },
+    },
+  },
 ];

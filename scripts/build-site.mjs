@@ -55,6 +55,7 @@ const articleLabels = {
     downloadLabel: "다운로드",
     releasesLabel: "릴리스",
     troubleshootingLabel: "문제 해결",
+    privacyLabel: "개인정보",
     footerText: "© 2026 ARAM · ARAM은 상용 게임이나 펌웨어를 배포하지 않습니다. 사용 권한이 있는 자료만 직접 제공하세요.",
   },
   en: {
@@ -66,9 +67,46 @@ const articleLabels = {
     downloadLabel: "Download",
     releasesLabel: "Releases",
     troubleshootingLabel: "Troubleshooting",
+    privacyLabel: "Privacy",
     footerText: "© 2026 ARAM · ARAM does not distribute commercial games or firmware. Provide only material you are authorized to use.",
   },
 };
+
+function analyticsMarkup(rawMeasurementId, language, localePrefix) {
+  const measurementId = rawMeasurementId.trim();
+  if (!measurementId) return { head: "", body: "" };
+  if (!/^G-[A-Z0-9]+$/.test(measurementId)) {
+    throw new Error("GA_MEASUREMENT_ID must look like G-XXXXXXXXXX.");
+  }
+  const copy = language === "ko"
+    ? {
+        message: "ARAM은 동의한 경우에만 Google Analytics로 쿼리를 제외한 페이지 경로와 다운로드·링크 클릭을 집계합니다. 파일명, 게임명, 패키지 URL과 해시는 수집하지 않습니다.",
+        privacy: "개인정보 안내",
+        accept: "분석 허용",
+        decline: "거부",
+        later: "나중에",
+        settings: "분석 설정",
+      }
+    : {
+        message: "ARAM uses Google Analytics only after consent to count query-free page paths and download or link clicks. It does not collect filenames, game names, package URLs, or hashes.",
+        privacy: "Privacy notice",
+        accept: "Allow analytics",
+        decline: "Decline",
+        later: "Later",
+        settings: "Analytics settings",
+      };
+  const body = `<aside class="analytics-consent" id="analyticsConsent" role="dialog" aria-labelledby="analyticsConsentText" hidden>
+  <p id="analyticsConsentText">${copy.message} <a href="${localePrefix}privacy/">${copy.privacy}</a></p>
+  <div class="analytics-consent-actions">
+    <button type="button" id="analyticsAccept">${copy.accept}</button>
+    <button type="button" id="analyticsDecline">${copy.decline}</button>
+    <button type="button" id="analyticsLater">${copy.later}</button>
+  </div>
+</aside>
+<button class="analytics-settings" type="button" id="analyticsSettings" hidden>${copy.settings}</button>
+<script src="/assets/analytics.js" data-measurement-id="${measurementId}"></script>`;
+  return { head: '<link rel="stylesheet" href="/assets/analytics.css">', body };
+}
 
 function replaceTokens(source, values, sourceName) {
   let result = source;
@@ -175,7 +213,7 @@ ${items}
 `;
 }
 
-export async function buildSite(outputDirectory) {
+export async function buildSite(outputDirectory, { measurementId = "" } = {}) {
   const destination = path.resolve(outputDirectory);
   const [landingTemplate, articleTemplate] = await Promise.all([
     readFile(path.join(projectRoot, "site", "index.template.html"), "utf8"),
@@ -187,6 +225,7 @@ export async function buildSite(outputDirectory) {
 
   for (const language of ["ko", "en"]) {
     const locale = localeConfig[language];
+    const analytics = analyticsMarkup(measurementId, language, locale.localePrefix);
     const values = {
       LANG: language,
       TITLE: locale.title,
@@ -204,6 +243,8 @@ export async function buildSite(outputDirectory) {
       OG_IMAGE_ALT: locale.ogImageAlt,
       RESOURCES_LABEL: locale.resourcesLabel,
       DOWNLOAD_URL: `${locale.canonical}#download`,
+      ANALYTICS_HEAD: analytics.head,
+      ANALYTICS_BODY: analytics.body,
     };
     const localized = localizeDataElements(landingTemplate, language, dictionary);
     const rendered = replaceTokens(localized, values, "landing page");
@@ -226,6 +267,7 @@ export async function buildSite(outputDirectory) {
       const page = pageDefinition.locales[language];
       const locale = localeConfig[language];
       const labels = articleLabels[language];
+      const analytics = analyticsMarkup(measurementId, language, locale.localePrefix);
       const canonical = language === "ko" ? koURL : enURL;
       const alternateURL = language === "ko" ? enURL : koURL;
       const rendered = replaceTokens(articleTemplate, {
@@ -255,11 +297,14 @@ export async function buildSite(outputDirectory) {
         DOWNLOAD_LABEL: labels.downloadLabel,
         RELEASES_LABEL: labels.releasesLabel,
         TROUBLESHOOTING_LABEL: labels.troubleshootingLabel,
+        PRIVACY_LABEL: labels.privacyLabel,
         FOOTER_TEXT: labels.footerText,
         EYEBROW: page.eyebrow,
         HEADING: page.heading,
         LEAD: page.lead,
         BODY: page.body.trim(),
+        ANALYTICS_HEAD: analytics.head,
+        ANALYTICS_BODY: analytics.body,
       }, `${language}/${pageDefinition.slug}`);
       const relativeParts = language === "ko" ? [pageDefinition.slug, "index.html"] : ["en", pageDefinition.slug, "index.html"];
       const outputPath = path.join(destination, ...relativeParts);
@@ -276,6 +321,6 @@ export async function buildSite(outputDirectory) {
 const invokedPath = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : "";
 if (import.meta.url === invokedPath) {
   const destination = process.argv[2] || path.join(projectRoot, "_site");
-  await buildSite(destination);
+  await buildSite(destination, { measurementId: process.env.GA_MEASUREMENT_ID || "" });
   console.log(`Built localized site in ${path.resolve(destination)}`);
 }

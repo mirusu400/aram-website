@@ -14,6 +14,7 @@ in-browser build of the emulator.
 | `scripts/build-og-image.py` | Rebuilds the two 1200×630 social cards from the logo and real screenshots. |
 | `assets/icon.png` | Brand icon (from `aram-frontend`). |
 | `assets/og-{ko,en}.png` | Localized Open Graph and X/Twitter preview cards. |
+| `assets/analytics.{js,css}` | Consent-first GA4 loader and privacy-preserving event allowlist. |
 | `player/` | In-browser ARAM (Ebitengine → WebAssembly), including the checked-in permalink loader. |
 | `player/aram.wasm`, `player/wasm_exec.js` | **Not committed**, ~52 MB runtime, fetched from the `aram-emu` **nightly** release at deploy time. |
 | `scripts/sync-player.{ps1,sh}` | Download the runtime from the nightly release into `player/`. |
@@ -41,7 +42,33 @@ results.
 Run the complete static SEO and player contract checks with:
 
 ```powershell
-node --test player/permalink.test.js scripts/seo.test.mjs
+node --test player/permalink.test.js scripts/analytics.test.mjs scripts/seo.test.mjs
+```
+
+## Analytics
+
+Analytics is optional at build time. The GitHub Actions repository secret
+`GA_MEASUREMENT_ID` must be configured on **`mirusu400/aram-website`**. When it
+contains a GA4 web-stream ID such as `G-XXXXXXXXXX`, the generated landing and
+documentation pages include the consent UI. A missing value produces pages with
+no analytics markup.
+
+The Google script is not requested until the visitor opts in. Page locations
+exclude query strings and fragments, external referrers are reduced to their
+origin, event parameters come from a small allowlist, and `/player/` never
+includes the analytics loader. The measurement ID is expected to be visible in
+deployed HTML; never use a Measurement Protocol API secret in the client-side
+build.
+
+In the GA4 web stream settings, turn **Enhanced measurement** off. Otherwise
+GA4 can independently emit download and outbound-click events containing link
+URLs or filenames outside this site's event allowlist.
+
+For a local consent-flow build:
+
+```powershell
+$env:GA_MEASUREMENT_ID = "G-XXXXXXXXXX"
+node scripts/build-site.mjs _site
 ```
 
 ## Deploy (GitHub Pages)

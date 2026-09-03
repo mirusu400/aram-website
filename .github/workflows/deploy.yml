@@ -29,11 +29,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Test player permalink contract
-        run: node --test player/permalink.test.js scripts/seo.test.mjs
+      - name: Test static site and player contracts
+        run: node --test player/permalink.test.js scripts/analytics.test.mjs scripts/seo.test.mjs
 
       - name: Build localized search pages
         run: node scripts/build-site.mjs _site
+        env:
+          GA_MEASUREMENT_ID: ${{ secrets.GA_MEASUREMENT_ID }}
 
       - name: Fetch WebAssembly runtime from aram-emu nightly release
         run: bash scripts/sync-player.sh
