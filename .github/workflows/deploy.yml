@@ -5,14 +5,15 @@ on:
     branches: [main]
   workflow_dispatch:
   # Fired by aram-emu right after it publishes a new `nightly` release,
-  # so the site always serves the latest runtime within minutes.
+  # or finishes attaching assets to a stable release.
   repository_dispatch:
-    types: [nightly-updated]
+    types: [nightly-updated, release-published]
   schedule:
     # Safety net in case a dispatch is missed.
     - cron: "0 6 * * *"
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -29,8 +30,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Sync published stable release notes
+        run: node scripts/sync-releases.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Test static site and player contracts
-        run: node --test player/permalink.test.js scripts/analytics.test.mjs scripts/seo.test.mjs
+        run: node --test player/permalink.test.js scripts/analytics.test.mjs scripts/indexnow.test.mjs scripts/releases.test.mjs scripts/seo.test.mjs
 
       - name: Build localized search pages
         run: node scripts/build-site.mjs _site
@@ -43,12 +49,18 @@ jobs:
       - name: Assemble site
         run: |
           cp robots.txt _site/
+          cp 6c4e0a03d58b41e7a9f2c0bd7835e146.txt _site/
           cp -r assets _site/
           cp -r player _site/
           echo aram.mir.sh > _site/CNAME
           touch _site/.nojekyll
 
       - uses: actions/configure-pages@v5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-sitemap
+          path: _site/sitemap.xml
+          retention-days: 1
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
@@ -60,5 +72,13 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
       - id: deployment
         uses: actions/deploy-pages@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: indexnow-sitemap
+          path: _indexnow
+      - name: Notify IndexNow about the deployed URLs
+        continue-on-error: true
+        run: node scripts/submit-indexnow.mjs _indexnow/sitemap.xml 6c4e0a03d58b41e7a9f2c0bd7835e146.txt

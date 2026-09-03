@@ -403,11 +403,11 @@
   <div class="duo">
     <div class="rt"><div class="k" data-k="rt_app_k">Application mode</div>
       <h3 data-k="rt_app_h">Run apps and games</h3>
-      <p data-k="rt_app_p">Load a WIPI app or game and ARAM runs it directly, providing the phone services it needs: display, sound, input, storage and timing.</p>
+      <p data-k="rt_app_p">Load a WIPI, SKVM, or Raptor-family app and ARAM provides the phone services it needs. Exact results vary by title and profile.</p>
       <span class="badge live" data-k="rt_app_b">Working today</span></div>
     <div class="rt"><div class="k" data-k="rt_sys_k">System mode</div>
       <h3 data-k="rt_sys_h">Boot a whole phone</h3>
-      <p data-k="rt_sys_p">Load a real phone's firmware and ARAM boots the entire device, one supported model at a time (SCH-W830, SCH-W860).</p>
+      <p data-k="rt_sys_p">With authorized firmware, v0.2.0 cold-boots verified SCH-W770, W830, and W860 builds; selected other models reach a narrower bootloader milestone.</p>
       <span class="badge exp" data-k="rt_sys_b">Experimental · research</span></div>
   </div>
   <div class="steps">
@@ -418,7 +418,7 @@
     <div class="step"><div class="n">05</div><div class="t" data-k="ms5">Playable</div></div>
     <div class="step"><div class="n">06</div><div class="t" data-k="ms6">Complete</div></div>
   </div>
-  <p class="cap" data-k="ms_cap">A few reference titles already reach their first frame. Wide game support and full phone boot are still to come.</p>
+  <p class="cap" data-k="ms_cap">Each result belongs to an exact ARAM version, date, runtime or handset profile, and input identity. A release feature is not a blanket playability claim.</p>
 </div></div></section>
 
 <!-- PLAY -->
@@ -426,7 +426,7 @@
   <div class="sec-head">
     <span class="eyebrow" data-k="pl_eyebrow">Play in your browser</span>
     <h2 data-k="pl_h2">Run ARAM without installing anything.</h2>
-    <p data-k="pl_p">The full ARAM frontend, compiled to WebAssembly. Launch it, then open a WIPI / JAR / DAT file you are authorized to use, it loads entirely in your browser, nothing is uploaded.</p>
+    <p data-k="pl_p">The full ARAM frontend, compiled to WebAssembly. Launch it, then open an authorized WIPI, SKVM, Raptor, JAR, or DAT-family input; normal file opening stays in your browser.</p>
   </div>
   <div class="launch">
     <div class="launch-visual">
@@ -497,9 +497,11 @@
   </div>
   <nav class="resource-links" aria-label="{{RESOURCES_LABEL}}">
     <a href="{{LOCALE_PREFIX}}guide/" data-k="nav_guide">Guide</a>
+    <a href="{{LOCALE_PREFIX}}download/" data-k="nav_download">Download</a>
     <a href="{{LOCALE_PREFIX}}compatibility/" data-k="nav_compatibility">Compatibility</a>
     <a href="{{LOCALE_PREFIX}}faq/" data-k="nav_faq">FAQ</a>
     <a href="{{LOCALE_PREFIX}}releases/" data-k="nav_releases">Releases</a>
+    <a href="{{LOCALE_PREFIX}}press/" data-k="nav_press">Press</a>
     <a href="{{LOCALE_PREFIX}}troubleshooting/" data-k="nav_troubleshooting">Troubleshooting</a>
   </nav>
   <div class="fnote" data-k="foot_note">ARAM never distributes firmware, commercial games, keys, memory dumps, or device fonts. You provide only material you are authorized to use. Not affiliated with any handset maker or carrier.</div>
@@ -509,7 +511,9 @@
     <a href="https://github.com/mirusu400/aram-core" target="_blank" rel="noopener">aram-core</a>
     <a href="https://github.com/mirusu400/aram-frontend" target="_blank" rel="noopener">aram-frontend</a>
     <a href="{{LOCALE_PREFIX}}guide/" data-k="nav_guide">Guide</a>
+    <a href="{{LOCALE_PREFIX}}download/" data-k="nav_download">Download</a>
     <a href="{{LOCALE_PREFIX}}faq/" data-k="nav_faq">FAQ</a>
+    <a href="{{LOCALE_PREFIX}}press/" data-k="nav_press">Press</a>
     <a href="{{LOCALE_PREFIX}}privacy/" data-k="nav_privacy">Privacy</a>
   </div>
 </div></div></section>
@@ -524,28 +528,28 @@ const I18N={
  nav_what:{en:"What",ko:"소개"},nav_features:{en:"Features",ko:"기능"},nav_play:{en:"Play",ko:"플레이"},
  nav_screens:{en:"Screens",ko:"화면"},nav_download:{en:"Download",ko:"다운로드"},nav_source:{en:"Source",ko:"소스"},
  nav_guide:{en:"Guide",ko:"사용법"},nav_compatibility:{en:"Compatibility",ko:"호환성"},nav_faq:{en:"FAQ",ko:"자주 묻는 질문"},
- nav_releases:{en:"Releases",ko:"릴리스"},nav_troubleshooting:{en:"Troubleshooting",ko:"문제 해결"},nav_privacy:{en:"Privacy",ko:"개인정보"},
+ nav_releases:{en:"Releases",ko:"릴리스"},nav_press:{en:"Press",ko:"보도자료"},nav_troubleshooting:{en:"Troubleshooting",ko:"문제 해결"},nav_privacy:{en:"Privacy",ko:"개인정보"},
  hero_eyebrow:{en:"Archived Runtime for ARM Mobiles",ko:"ARM 모바일을 위한 아카이브 런타임"},
  hero_h1:{en:"Bring Korean feature-phone software back to life.",ko:"한국 피처폰 소프트웨어를 다시 켜다."},
- hero_lead:{en:"ARAM is a cross-platform emulator that runs Korean feature-phone games and apps.",
-   ko:"ARAM은 한국 피처폰 게임과 앱을 다시 실행하는 크로스플랫폼 에뮬레이터입니다."},
+ hero_lead:{en:"ARAM Emulator runs Korean feature-phone WIPI, SKVM, and Raptor games and apps across desktop, Android, and the web.",
+   ko:"ARAM Emulator는 한국 피처폰의 WIPI·SKVM·Raptor 게임과 앱을 PC·Android·웹에서 다시 실행하는 오픈소스 에뮬레이터입니다."},
  hero_cta1:{en:"View on GitHub",ko:"GitHub에서 보기"},hero_cta2:{en:"Play in browser",ko:"브라우저에서 플레이"},hero_cta_dl:{en:"Download",ko:"다운로드"},
  rt_eyebrow:{en:"Two ways to run",ko:"두 가지 실행 방식"},
  rt_h2:{en:"How ARAM runs the past.",ko:"ARAM이 과거를 실행하는 방식."},
  rt_p:{en:"ARAM runs old software two different ways. Both share the same screen, controls, saves and tools, but each uses the engine that fits the job.",
    ko:"ARAM은 옛 소프트웨어를 두 가지 방식으로 실행합니다. 화면·조작·저장·도구는 똑같이 쓰지만, 각 방식은 그 일에 맞는 엔진을 씁니다."},
  rt_app_k:{en:"Application mode",ko:"애플리케이션 모드"},rt_app_h:{en:"Run apps and games",ko:"앱·게임 실행"},
- rt_app_p:{en:"Load a WIPI app or game and ARAM runs it directly, providing the phone services it needs: display, sound, input, storage and timing.",
-   ko:"WIPI 앱이나 게임을 불러오면 ARAM이 바로 실행하고, 화면·소리·입력·저장·타이밍 등 폰 기능을 대신 제공합니다."},
+ rt_app_p:{en:"Load a WIPI, SKVM, or Raptor-family app and ARAM provides the phone services it needs. Exact results vary by title and profile.",
+   ko:"WIPI·SKVM·Raptor 계열 앱을 불러오면 ARAM이 필요한 폰 서비스를 제공합니다. 정확한 결과는 타이틀과 프로필마다 다릅니다."},
  rt_app_b:{en:"Working today",ko:"지금 동작"},
  rt_sys_k:{en:"System mode",ko:"시스템 모드"},rt_sys_h:{en:"Boot a whole phone",ko:"폰 통째로 부팅"},
- rt_sys_p:{en:"Load a real phone's firmware and ARAM boots the entire device, one supported model at a time (SCH-W830, SCH-W860).",
-   ko:"실제 폰의 펌웨어를 불러와 기기를 통째로 부팅합니다. 지원 기종(SCH-W830, SCH-W860)부터 하나씩."},
+ rt_sys_p:{en:"With authorized firmware, v0.2.0 cold-boots verified SCH-W770, W830, and W860 builds; selected other models reach a narrower bootloader milestone.",
+   ko:"사용 권한이 있는 펌웨어로 v0.2.0은 검증된 SCH-W770·W830·W860 빌드를 콜드 부팅하며, 일부 다른 기종은 더 좁은 부트로더 단계까지 도달합니다."},
  rt_sys_b:{en:"Experimental · research",ko:"실험적 · 연구"},
  ms1:{en:"Recognized",ko:"인식"},ms2:{en:"Loads",ko:"로드"},ms3:{en:"Executes",ko:"실행"},
  ms4:{en:"First frame",ko:"첫 프레임"},ms5:{en:"Playable",ko:"플레이 가능"},ms6:{en:"Complete",ko:"완료"},
- ms_cap:{en:"A few reference titles already reach their first frame. Wide game support and full phone boot are still to come.",
-   ko:"일부 레퍼런스 타이틀은 이미 첫 화면까지 도달했습니다. 폭넓은 게임 지원과 폰 완전 부팅은 아직 진행 중입니다."},
+ ms_cap:{en:"Each result belongs to an exact ARAM version, date, runtime or handset profile, and input identity. A release feature is not a blanket playability claim.",
+   ko:"각 결과는 정확한 ARAM 버전·날짜·런타임 또는 기종 프로필·입력 식별자에만 해당합니다. 릴리스 기능은 모든 타이틀의 플레이 보장이 아닙니다."},
  ft_eyebrow:{en:"What ARAM can do",ko:"ARAM으로 할 수 있는 것"},
  ft_h2:{en:"A real emulator, not a demo.",ko:"데모가 아니라 진짜 에뮬레이터."},
  ft1_h:{en:"Cross-platform",ko:"크로스플랫폼"},ft1_p:{en:"Windows, Linux & macOS desktop; Android via Ebitengine. iOS designed into the boundary.",ko:"Windows·Linux·macOS 데스크톱, Ebitengine으로 Android. iOS는 경계에 설계되어 있습니다."},
@@ -556,8 +560,8 @@ const I18N={
  ft6_h:{en:"Debug bundle & reports",ko:"디버그 번들·리포트"},ft6_p:{en:"Export a redacted debug ZIP and file a GitHub issue in-app, never copying game or firmware bytes.",ko:"편집된 디버그 ZIP을 내보내고 인앱에서 GitHub 이슈를 등록합니다, 게임·펌웨어 바이트는 절대 복사하지 않습니다."},
  pl_eyebrow:{en:"Play in your browser",ko:"브라우저에서 플레이"},
  pl_h2:{en:"Run ARAM without installing anything.",ko:"설치 없이 ARAM 실행."},
- pl_p:{en:"The full ARAM frontend, compiled to WebAssembly. Launch it, then open a WIPI / JAR / DAT file you are authorized to use, it loads entirely in your browser, nothing is uploaded.",
-   ko:"ARAM 프론트엔드 전체를 WebAssembly로 컴파일했습니다. 실행한 뒤 사용 권한이 있는 WIPI / JAR / DAT 파일을 여세요, 전부 브라우저 안에서 로드되며 아무것도 업로드되지 않습니다."},
+ pl_p:{en:"The full ARAM frontend, compiled to WebAssembly. Launch it, then open an authorized WIPI, SKVM, Raptor, JAR, or DAT-family input; normal file opening stays in your browser.",
+   ko:"전체 ARAM 프론트엔드를 WebAssembly로 빌드했습니다. 실행 후 사용 권한이 있는 WIPI·SKVM·Raptor·JAR·DAT 계열 입력을 열면 일반 파일 열기는 브라우저 안에서 처리됩니다."},
  pl_go:{en:"Launch web emulator",ko:"웹 에뮬레이터 실행"},
  pl_note:{en:"First launch downloads the runtime (~52 MB). Desktop Chrome, Firefox or Edge recommended. Then File ▸ Open your own authorized file.",
    ko:"첫 실행 시 런타임(~52 MB)을 내려받습니다. 데스크톱 Chrome·Firefox·Edge 권장. 이후 File ▸ Open 으로 사용 권한이 있는 파일을 여세요."},

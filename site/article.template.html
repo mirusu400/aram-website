@@ -73,6 +73,13 @@
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:22px 0}
   .card{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:18px 20px}
   .card h3{margin-top:0}.card p:last-child{margin-bottom:0}
+  .release-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:22px 0}
+  .release-card{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:18px 20px}
+  .release-card h3{margin:12px 0 6px}.release-card p{margin:0 0 10px}
+  .release-meta{display:flex;justify-content:space-between;gap:12px;color:var(--mute);font-size:12px}
+  .release-notes{border-top:1px solid var(--line)}
+  .release-notes pre{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:16px}
+  .release-notes pre code{border:0;padding:0;background:transparent}
   .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px;margin:22px 0}
   table{width:100%;border-collapse:collapse;min-width:620px;background:var(--surface)}
   th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -90,7 +97,7 @@
   .related a{text-decoration:none;color:var(--body);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px}
   footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--mute);font-size:12px}
   footer a{color:var(--body);text-underline-offset:3px}
-  @media(max-width:720px){.nav a:not(.lang){display:none}.grid{grid-template-columns:1fr}main{padding-top:52px}.lead{font-size:17px}}
+  @media(max-width:720px){.nav a:not(.lang){display:none}.grid,.release-list{grid-template-columns:1fr}main{padding-top:52px}.lead{font-size:17px}}
   @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 {{ANALYTICS_HEAD}}
@@ -102,7 +109,7 @@
     <a href="{{LOCALE_PREFIX}}guide/">{{GUIDE_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}compatibility/">{{COMPATIBILITY_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}faq/">FAQ</a>
-    <a href="{{HOME_PATH}}#download">{{DOWNLOAD_LABEL}}</a>
+    <a href="{{LOCALE_PREFIX}}download/">{{DOWNLOAD_LABEL}}</a>
     <a class="lang" href="{{ALTERNATE_URL}}" hreflang="{{ALTERNATE_LANG}}" lang="{{ALTERNATE_LANG}}">{{LANGUAGE_LABEL}}</a>
   </nav>
 </div></header>
@@ -118,7 +125,9 @@
     <a href="{{LOCALE_PREFIX}}guide/">{{GUIDE_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}compatibility/">{{COMPATIBILITY_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}faq/">FAQ</a>
+    <a href="{{LOCALE_PREFIX}}download/">{{DOWNLOAD_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}releases/">{{RELEASES_LABEL}}</a>
+    <a href="{{LOCALE_PREFIX}}press/">{{PRESS_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}troubleshooting/">{{TROUBLESHOOTING_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}privacy/">{{PRIVACY_LABEL}}</a>
   </nav>

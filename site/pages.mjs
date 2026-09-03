@@ -1,7 +1,9 @@
+import { extraPages } from "./extra-pages.mjs";
+
 const koFaq = [
   {
     question: "ARAM은 무엇인가요?",
-    answer: "ARAM은 2000년대 한국 피처폰의 WIPI 게임과 앱을 현대 환경에서 실행하기 위한 무료 오픈소스 에뮬레이터입니다. Windows, macOS, Linux, Android와 웹 브라우저를 대상으로 개발되고 있습니다.",
+    answer: "ARAM은 2000년대 한국 피처폰의 WIPI·SKVM·Raptor 계열 게임과 앱을 현대 환경에서 실행하기 위한 무료 오픈소스 에뮬레이터입니다. Windows, macOS, Linux, Android와 웹 브라우저를 대상으로 개발되고 있습니다.",
   },
   {
     question: "게임이나 펌웨어 파일도 제공하나요?",
@@ -13,7 +15,7 @@ const koFaq = [
   },
   {
     question: "어떤 파일 형식을 열 수 있나요?",
-    answer: "현재 제품은 WIPI 애플리케이션 패키지와 JAR, DAT 입력을 다룹니다. 컨테이너를 인식했다고 해서 모든 타이틀이 완전히 플레이 가능하다는 뜻은 아니므로 호환성 단계도 함께 확인해야 합니다.",
+    answer: "현재 제품은 WIPI·SKVM·Raptor 계열 애플리케이션 패키지와 JAR, DAT 입력을 다룹니다. 컨테이너를 인식했다고 해서 모든 타이틀이 완전히 플레이 가능하다는 뜻은 아니므로 호환성 단계도 함께 확인해야 합니다.",
   },
   {
     question: "모든 피처폰 게임이 실행되나요?",
@@ -36,7 +38,7 @@ const koFaq = [
 const enFaq = [
   {
     question: "What is ARAM?",
-    answer: "ARAM is a free, open-source emulator for Korean feature-phone WIPI games and applications from the 2000s. It targets Windows, macOS, Linux, Android, and modern web browsers.",
+    answer: "ARAM is a free, open-source emulator for Korean feature-phone WIPI, SKVM, and Raptor-family games and applications from the 2000s. It targets Windows, macOS, Linux, Android, and modern web browsers.",
   },
   {
     question: "Does ARAM provide games or firmware?",
@@ -48,7 +50,7 @@ const enFaq = [
   },
   {
     question: "Which input formats can it open?",
-    answer: "The current product handles WIPI application packages and JAR or DAT inputs. Recognizing a container does not mean that every title is fully playable, so check the reported compatibility milestone too.",
+    answer: "The current product handles WIPI, SKVM, and Raptor-family application packages and JAR or DAT inputs. Recognizing a container does not mean that every title is fully playable, so check the reported compatibility milestone too.",
   },
   {
     question: "Can it run every Korean feature-phone game?",
@@ -73,18 +75,19 @@ function faqBody(items, intro, links) {
 }
 
 export const pages = [
+  ...extraPages,
   {
     slug: "guide",
     locales: {
       ko: {
-        title: "ARAM 사용법 - 피처폰 WIPI 게임 실행 가이드",
-        description: "ARAM에서 소유한 WIPI·JAR·DAT 피처폰 파일을 브라우저나 Windows, macOS, Linux, Android에서 여는 방법을 안내합니다.",
+        title: "피처폰 게임 하는 법 - ARAM WIPI·SKVM 에뮬레이터 가이드",
+        description: "ARAM에서 소유한 WIPI·SKVM·Raptor 피처폰 게임과 JAR·DAT 입력을 브라우저, Windows, macOS, Linux, Android에서 실행하는 방법입니다.",
         eyebrow: "GETTING STARTED",
         heading: "ARAM으로 피처폰 게임 실행하기",
         lead: "설치 없이 웹에서 시작하거나 운영체제용 앱을 내려받아, 사용 권한이 있는 WIPI 파일을 직접 열 수 있습니다.",
         body: `
     <h2>시작하기 전에</h2>
-    <p>ARAM은 한국 피처폰 소프트웨어를 보존하고 연구하기 위한 에뮬레이터입니다. <strong>게임이나 펌웨어 원본은 포함하지 않으며</strong>, 직접 소유하거나 사용 허가를 받은 입력만 사용해야 합니다.</p>
+    <p>피처폰은 흔히 <strong>피쳐폰</strong>으로도 검색됩니다. ARAM은 한국 피처폰의 WIPI·SKVM·Raptor 게임과 소프트웨어를 보존하고 연구하기 위한 에뮬레이터입니다. <strong>게임이나 펌웨어 원본은 포함하지 않으며</strong>, 직접 소유하거나 사용 허가를 받은 입력만 사용해야 합니다.</p>
     <div class="callout">처음이라면 브라우저 버전으로 화면과 메뉴를 먼저 확인해 보세요. 첫 실행에서는 약 52MB의 WebAssembly 런타임을 내려받기 때문에 네트워크 상태에 따라 잠시 걸릴 수 있습니다.</div>
 
     <h2>브라우저에서 실행</h2>
@@ -104,11 +107,11 @@ export const pages = [
 
     <h2>실행 결과를 읽는 법</h2>
     <p>ARAM은 성공을 과장하지 않기 위해 <strong>인식 → 로드 → 실행 → 첫 프레임 → 플레이 가능 → 완료</strong>를 서로 다른 단계로 기록합니다. 특정 파일이 열렸다는 사실만으로 모든 기능이나 전체 플레이가 보장되지는 않습니다.</p>
-    <div class="actions"><a class="button primary" href="/#download">ARAM 다운로드</a><a class="button" href="/compatibility/">호환성 기준 보기</a><a class="button" href="/troubleshooting/">문제 해결</a></div>`,
+    <div class="actions"><a class="button primary" href="/download/">ARAM 다운로드</a><a class="button" href="/compatibility/">호환성 기준 보기</a><a class="button" href="/troubleshooting/">문제 해결</a></div>`,
       },
       en: {
-        title: "How to Use ARAM - Korean WIPI Emulator Guide",
-        description: "Learn how to open authorized WIPI, JAR, and DAT feature-phone files with ARAM in a browser or on Windows, macOS, Linux, and Android.",
+        title: "How to Run Feature-Phone Games - ARAM WIPI and SKVM Guide",
+        description: "Learn how to open authorized WIPI, SKVM, Raptor, JAR, and DAT feature-phone inputs with ARAM in a browser or on Windows, macOS, Linux, and Android.",
         eyebrow: "GETTING STARTED",
         heading: "Run Korean feature-phone software with ARAM",
         lead: "Start in the browser with no installation, or download the native app and open a WIPI file you own or are authorized to use.",
@@ -134,7 +137,7 @@ export const pages = [
 
     <h2>Understand compatibility results</h2>
     <p>ARAM keeps <strong>recognized → loads → executes → first frame → playable → complete</strong> as separate milestones. Opening a file does not by itself prove that every feature or a complete playthrough works.</p>
-    <div class="actions"><a class="button primary" href="/en/#download">Download ARAM</a><a class="button" href="/en/compatibility/">Read compatibility criteria</a><a class="button" href="/en/troubleshooting/">Troubleshoot a problem</a></div>`,
+    <div class="actions"><a class="button primary" href="/en/download/">Download ARAM</a><a class="button" href="/en/compatibility/">Read compatibility criteria</a><a class="button" href="/en/troubleshooting/">Troubleshoot a problem</a></div>`,
       },
     },
   },
@@ -142,17 +145,27 @@ export const pages = [
     slug: "compatibility",
     locales: {
       ko: {
-        title: "ARAM 호환성 - WIPI 게임·피처폰 지원 현황",
-        description: "ARAM의 WIPI 애플리케이션 모드, 피처폰 시스템 모드, 지원 플랫폼과 호환성 단계가 무엇을 의미하는지 확인하세요.",
+        title: "ARAM 지원 게임과 기종 - WIPI·SKVM·Raptor 호환성",
+        description: "ARAM v0.2.0에서 검증한 WIPI·SKVM·Raptor 실행 범위, 삼성 피처폰 기종별 펌웨어 도달 단계와 호환성 기록 기준을 확인하세요.",
         eyebrow: "COMPATIBILITY",
         heading: "지원 현황을 정확하게 읽는 법",
-        lead: "같은 게임 이름이라도 통신사·기기·빌드 해시에 따라 동작이 달라질 수 있어, ARAM은 호환성을 단계별로 기록합니다.",
+        lead: "같은 게임 이름이라도 통신사·기기·빌드 해시에 따라 결과가 달라집니다. ARAM은 버전과 검증 날짜를 밝히고, 실제로 도달한 단계까지만 지원 범위로 기록합니다.",
         body: `
     <h2>두 가지 실행 모드</h2>
     <div class="grid">
-      <div class="card"><h3>애플리케이션 모드</h3><p>WIPI 앱이나 게임을 직접 로드하고 화면, 소리, 입력, 저장소, 타이밍 같은 휴대폰 서비스를 에뮬레이션합니다. 현재 사용 가능한 주 실행 방식입니다.</p></div>
-      <div class="card"><h3>시스템 모드</h3><p>사용자가 제공한 실제 휴대폰 펌웨어로 기기 전체를 부팅하는 연구 트랙입니다. SCH-W830과 SCH-W860 지원이 진행 중이며 아직 실험적입니다.</p></div>
+      <div class="card"><h3>애플리케이션 모드</h3><p>KTF WIPI, SKT SKVM, LGT Raptor 계열 앱이나 게임을 직접 로드하고 화면, 소리, 입력, 저장소, 타이밍 같은 휴대폰 서비스를 에뮬레이션합니다. 타이틀마다 필요한 통신사·기기 서비스가 달라 결과도 다릅니다.</p></div>
+      <div class="card"><h3>시스템 모드</h3><p>사용자가 제공한 실제 삼성 피처폰 펌웨어로 기기 전체를 부팅하는 실험적 연구 트랙입니다. 완전한 콜드 부팅과 부트로더 핸드오프는 서로 다른 검증 단계입니다.</p></div>
     </div>
+
+    <h2>v0.2.0 시스템 모드 검증 현황</h2>
+    <p><strong>검증 버전:</strong> ARAM v0.2.0 · <strong>코어:</strong> <code>e624402</code> · <strong>검증일:</strong> 2026-09-02</p>
+    <div class="table-wrap"><table><thead><tr><th>기종·빌드</th><th>확인된 단계</th><th>아직 일반화할 수 없는 범위</th></tr></thead><tbody>
+      <tr><td>SCH-W830 DL21·DA18</td><td>새 미디어 프로비저닝, 전원 재시작, 홈 화면, 검증된 키 입력과 내장 앱 실행</td><td>카메라·통신·Bluetooth와 임의의 내장·다운로드 앱</td></tr>
+      <tr><td>SCH-W770 DA05</td><td>새 미디어 프로비저닝, 전원 재시작, 물리 HOLD 입력, SKT 홈 화면</td><td>남은 조작 키와 임의 앱</td></tr>
+      <tr><td>SCH-W860 DA06</td><td>새 미디어 프로비저닝, 전원 재시작, 홈 화면</td><td>기종 고유 키패드와 임의 앱</td></tr>
+      <tr><td>SCH-W210·W240·W270·W290·W300·W330·W390·W420·W460</td><td>정확한 펌웨어 세트에서 QCSBL→OEMSBL 진입</td><td>콜드 부팅, 화면, 입력, 파일시스템과 앱 호환성</td></tr>
+    </tbody></table></div>
+    <p>근거는 v0.2.0에 포함된 코어의 <a href="https://github.com/mirusu400/aram-core/blob/e624402/docs/system-firmware-progress.md">시스템 펌웨어 진행 기록</a>입니다. 원본 펌웨어 바이트나 개인 경로는 공개하지 않습니다.</p>
 
     <h2>호환성 단계</h2>
     <div class="table-wrap"><table><thead><tr><th>단계</th><th>의미</th><th>보장하지 않는 것</th></tr></thead><tbody>
@@ -164,31 +177,50 @@ export const pages = [
       <tr><td><strong>완료</strong></td><td>정해진 검증 범위에서 전체 동작을 확인함</td><td>다른 통신사·버전 빌드</td></tr>
     </tbody></table></div>
 
-    <h2>현재 지원 범위</h2>
+    <h2>애플리케이션 호환성 기록 범위</h2>
     <ul>
       <li><strong>호스트:</strong> Windows, macOS, Linux, Android, 웹 브라우저</li>
-      <li><strong>입력:</strong> WIPI 애플리케이션 패키지와 JAR·DAT 계열 입력</li>
+      <li><strong>입력:</strong> WIPI·SKVM·Raptor 계열 애플리케이션 패키지와 JAR·DAT 입력</li>
       <li><strong>CPU 기준:</strong> ARMv5TE 및 Thumb 명령을 다루는 이식 가능한 Go 코어</li>
       <li><strong>도구:</strong> 상태 저장, 되감기, 입력 매핑, 디버거, 치트와 패치, 호환성 리포트의 제품 경계</li>
     </ul>
     <div class="callout">메인 페이지의 스크린샷은 ARAM에서 렌더링된 실제 예시지만, 모든 버전의 타이틀이 끝까지 플레이 가능하다는 목록은 아닙니다.</div>
+
+    <h2>게임별 공개 기록에 필요한 항목</h2>
+    <div class="table-wrap"><table><thead><tr><th>필드</th><th>기록 내용</th></tr></thead><tbody>
+      <tr><td>식별</td><td>게임·앱 이름, 통신사 또는 런타임, 입력 형식, 개인정보를 제외한 이미지 SHA-256</td></tr>
+      <tr><td>환경</td><td>ARAM 버전, 테스트 날짜, 운영체제와 선택한 기기·통신사 프로필</td></tr>
+      <tr><td>결과</td><td>인식 → 로드 → 실행 → 첫 프레임 → 플레이 가능 → 완료 중 실제 도달 단계</td></tr>
+      <tr><td>근거</td><td>재현 순서, 알려진 문제, 관련 릴리스·테스트·GitHub 이슈</td></tr>
+    </tbody></table></div>
+    <p>현재 공개 보고서만으로 검증할 수 없는 게임 이름은 개별 페이지로 만들지 않습니다. 정확한 버전·해시·재현 절차가 갖춰진 결과부터 검색 가능한 HTML 기록으로 추가합니다.</p>
 
     <h2>정확한 리포트를 보내는 방법</h2>
     <p>타이틀 이름만 적기보다 ARAM 버전, 플랫폼, 입력의 이미지 SHA-256, 도달한 단계, 보이는 오류를 함께 남기면 재현 가능성이 높아집니다. 원본 게임이나 펌웨어 바이트는 첨부하지 마세요.</p>
     <div class="actions"><a class="button primary" href="/guide/">실행 가이드</a><a class="button" href="https://github.com/mirusu400/aram-emu/issues">GitHub 이슈</a></div>`,
       },
       en: {
-        title: "ARAM Compatibility - WIPI Games and Feature Phones",
-        description: "Understand ARAM application mode, experimental handset system mode, supported hosts, inputs, and the exact meaning of each compatibility milestone.",
+        title: "ARAM Supported Games and Phones - WIPI, SKVM and Raptor Compatibility",
+        description: "See ARAM v0.2.0 WIPI, SKVM, and Raptor support boundaries, verified Samsung handset firmware milestones, hosts, inputs, and compatibility criteria.",
         eyebrow: "COMPATIBILITY",
         heading: "Read support status without overclaiming it",
-        lead: "Builds with the same game title can differ by carrier, handset, and image hash, so ARAM records compatibility as explicit milestones.",
+        lead: "Builds with the same title can differ by carrier, handset, and image hash. ARAM names the version and verification date and reports only the milestone that was actually reached.",
         body: `
     <h2>Two runtime modes</h2>
     <div class="grid">
-      <div class="card"><h3>Application mode</h3><p>Loads a WIPI app or game directly and emulates handset services such as display, audio, input, storage, and timing. This is the primary usable path today.</p></div>
-      <div class="card"><h3>System mode</h3><p>Researches booting a complete handset from user-supplied firmware. SCH-W830 and SCH-W860 work is in progress and remains experimental.</p></div>
+      <div class="card"><h3>Application mode</h3><p>Loads KTF WIPI, SKT SKVM, and LGT Raptor-family apps or games directly and emulates services such as display, audio, input, storage, and timing. Results vary because titles depend on different carrier and handset services.</p></div>
+      <div class="card"><h3>System mode</h3><p>Researches booting a complete Samsung handset from user-supplied firmware. A full cold boot and a bootloader handoff are distinct verification milestones.</p></div>
     </div>
+
+    <h2>v0.2.0 system-mode verification</h2>
+    <p><strong>ARAM version:</strong> v0.2.0 · <strong>core:</strong> <code>e624402</code> · <strong>verified:</strong> September 2, 2026</p>
+    <div class="table-wrap"><table><thead><tr><th>Handset and build</th><th>Verified milestone</th><th>Not generalized</th></tr></thead><tbody>
+      <tr><td>SCH-W830 DL21 and DA18</td><td>Fresh-media provisioning, power-cycle cold boot, home screen, verified keys, and a built-in app</td><td>Camera, cellular, Bluetooth, and arbitrary built-in or downloaded apps</td></tr>
+      <tr><td>SCH-W770 DA05</td><td>Fresh-media provisioning, power-cycle cold boot, physical HOLD input, and the SKT home screen</td><td>Remaining controls and arbitrary apps</td></tr>
+      <tr><td>SCH-W860 DA06</td><td>Fresh-media provisioning, power-cycle cold boot, and the home screen</td><td>Its model-specific keypad and arbitrary apps</td></tr>
+      <tr><td>SCH-W210, W240, W270, W290, W300, W330, W390, W420, and W460</td><td>QCSBL-to-OEMSBL entry for an exact firmware set</td><td>Cold boot, display, input, filesystem, and app compatibility</td></tr>
+    </tbody></table></div>
+    <p>The evidence is the <a href="https://github.com/mirusu400/aram-core/blob/e624402/docs/system-firmware-progress.md">system firmware progress record</a> included with v0.2.0. It publishes no firmware bytes or private paths.</p>
 
     <h2>Compatibility milestones</h2>
     <div class="table-wrap"><table><thead><tr><th>Milestone</th><th>What it proves</th><th>What it does not prove</th></tr></thead><tbody>
@@ -200,14 +232,23 @@ export const pages = [
       <tr><td><strong>Complete</strong></td><td>The defined verification scope was completed</td><td>A different carrier or build</td></tr>
     </tbody></table></div>
 
-    <h2>Current support boundary</h2>
+    <h2>Application compatibility record boundary</h2>
     <ul>
       <li><strong>Hosts:</strong> Windows, macOS, Linux, Android, and web browsers</li>
-      <li><strong>Inputs:</strong> WIPI application packages and JAR or DAT family inputs</li>
+      <li><strong>Inputs:</strong> WIPI, SKVM, and Raptor-family application packages plus JAR or DAT inputs</li>
       <li><strong>CPU baseline:</strong> a portable Go core covering ARMv5TE and Thumb execution</li>
       <li><strong>Product tools:</strong> state, rewind, input mapping, debugger, cheats and patches, and compatibility reporting boundaries</li>
     </ul>
     <div class="callout">Screenshots on the landing page are real rendered examples. They are not a promise that every build of each pictured title is playable from start to finish.</div>
+
+    <h2>Required fields for a public game record</h2>
+    <div class="table-wrap"><table><thead><tr><th>Field</th><th>Recorded value</th></tr></thead><tbody>
+      <tr><td>Identity</td><td>Game or app name, carrier or runtime, input format, and privacy-safe image SHA-256</td></tr>
+      <tr><td>Environment</td><td>ARAM version, test date, operating system, and selected device or carrier profile</td></tr>
+      <tr><td>Result</td><td>The reached recognized → loads → executes → first frame → playable → complete milestone</td></tr>
+      <tr><td>Evidence</td><td>Reproduction steps, known issues, and a related release, test, or GitHub issue</td></tr>
+    </tbody></table></div>
+    <p>ARAM does not create a title page from an unverified name alone. A searchable HTML record is added only after an exact version, hash, and reproduction procedure are available.</p>
 
     <h2>Write a reproducible report</h2>
     <p>Include the ARAM version, platform, input image SHA-256, reached milestone, and visible error instead of relying on a title name alone. Never attach the original game or firmware bytes.</p>
@@ -242,11 +283,11 @@ export const pages = [
     slug: "releases",
     locales: {
       ko: {
-        title: "ARAM 다운로드 및 릴리스 - 안정판·개발판",
-        description: "Windows, macOS, Linux, Android와 브라우저용 ARAM 안정판·Nightly 개발판을 선택하고 SHA-256 체크섬을 확인하세요.",
+        title: "ARAM 릴리스 노트와 변경 내역 - 버전별 기록",
+        description: "ARAM 안정판과 Nightly 채널의 차이, 버전별 공개일, 다운로드 파일과 공식 GitHub 릴리스 노트를 검색 가능한 HTML로 확인하세요.",
         eyebrow: "DOWNLOADS & RELEASES",
-        heading: "ARAM 버전 선택과 다운로드",
-        lead: "일상 사용은 안정판, 가장 최근의 호환성 개선 확인은 Nightly 개발판을 선택하세요.",
+        heading: "ARAM 버전별 릴리스 노트",
+        lead: "안정판의 변경 사항과 다운로드 파일을 버전별로 확인하세요. 새 GitHub 릴리스가 발행되면 이 페이지와 개별 버전 글이 자동으로 갱신됩니다.",
         body: `
     <h2>어떤 채널을 선택할까요?</h2>
     <div class="grid">
@@ -269,11 +310,11 @@ export const pages = [
     <div class="actions"><a class="button primary" href="https://github.com/mirusu400/aram-emu/releases/latest">안정판 다운로드</a><a class="button" href="https://github.com/mirusu400/aram-emu/releases/tag/nightly">Nightly 다운로드</a><a class="button" href="/guide/">설치 후 사용법</a></div>`,
       },
       en: {
-        title: "ARAM Downloads and Releases - Stable and Nightly",
-        description: "Choose ARAM Stable or Nightly for Windows, macOS, Linux, Android, and the browser, and verify downloads with SHA-256 checksums.",
+        title: "ARAM Release Notes and Changelog by Version",
+        description: "Compare ARAM Stable and Nightly, then browse searchable version pages with publication dates, downloads, and official GitHub release notes.",
         eyebrow: "DOWNLOADS & RELEASES",
-        heading: "Choose and download an ARAM build",
-        lead: "Use Stable for normal use and Nightly when you need the most recent compatibility work.",
+        heading: "ARAM release notes by version",
+        lead: "Review Stable changes and downloads by version. A new GitHub release automatically updates this page and publishes a dedicated version article.",
         body: `
     <h2>Which channel should you choose?</h2>
     <div class="grid">

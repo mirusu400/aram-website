@@ -10,7 +10,11 @@ in-browser build of the emulator.
 | `site/index.template.html` | Landing-page template. The build emits static Korean `/` and English `/en/` variants. |
 | `site/article.template.html` | Shared layout for the searchable guide, compatibility, FAQ, releases, and troubleshooting pages. |
 | `site/pages.mjs` | Korean and English article metadata and content. |
+| `site/extra-pages.mjs` | Dedicated Korean and English download and press-kit pages. |
+| `site/releases.json` | Offline snapshot of public Stable release metadata; refreshed from GitHub during deployment. |
 | `scripts/build-site.mjs` | Generates localized HTML and `sitemap.xml` into the deploy directory. |
+| `scripts/sync-releases.mjs` | Fetches non-draft, non-Nightly `aram-emu` releases for versioned HTML articles. |
+| `scripts/submit-indexnow.mjs` | Submits the deployed canonical URLs to IndexNow. |
 | `scripts/build-og-image.py` | Rebuilds the two 1200×630 social cards from the logo and real screenshots. |
 | `assets/icon.png` | Brand icon (from `aram-frontend`). |
 | `assets/og-{ko,en}.png` | Localized Open Graph and X/Twitter preview cards. |
@@ -42,7 +46,7 @@ results.
 Run the complete static SEO and player contract checks with:
 
 ```powershell
-node --test player/permalink.test.js scripts/analytics.test.mjs scripts/seo.test.mjs
+node --test player/permalink.test.js scripts/analytics.test.mjs scripts/indexnow.test.mjs scripts/releases.test.mjs scripts/seo.test.mjs
 ```
 
 ## Analytics
@@ -77,9 +81,18 @@ Live at **https://aram.mir.sh/** (custom domain; the deploy writes `CNAME`).
 
 One-time: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
-Every push to `main`, a `repository_dispatch` from `aram-emu` (sent right after it
-publishes a new `nightly`), and a daily safety-net cron fetch the latest nightly
-`aram.wasm` and deploy. No large binaries live in git history.
+Every push to `main`, a `repository_dispatch` from `aram-emu`, and a daily
+safety-net cron rebuild the site. Nightly dispatches refresh the web runtime.
+Stable-release dispatches fetch GitHub release metadata and automatically publish
+searchable `/releases/<version>/` and `/en/releases/<version>/` articles after the
+release assets are attached. No large binaries live in git history.
+
+After GitHub Pages reports a successful deployment, the workflow submits every
+canonical URL in the generated sitemap to IndexNow. The public verification key
+is deployed at `/6c4e0a03d58b41e7a9f2c0bd7835e146.txt`; it is intentionally public
+and is not a credential. Google Search Console and Naver Search Advisor ownership,
+sitemap submission, and priority URL requests still require their respective
+account consoles.
 
 ## Package permalinks
 

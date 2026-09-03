@@ -8,7 +8,9 @@ import { fileURLToPath } from "node:url";
 import { buildSite } from "./build-site.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const slugs = ["guide", "compatibility", "faq", "releases", "troubleshooting", "privacy"];
+const slugs = ["download", "press", "guide", "compatibility", "faq", "releases", "troubleshooting", "privacy"];
+const storedReleases = JSON.parse(await readFile(path.join(projectRoot, "site", "releases.json"), "utf8"));
+const releaseSlugs = storedReleases.map((release) => release.slug);
 
 function metadata(html, name) {
   const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -32,6 +34,9 @@ test("localized build emits distinct, indexable Korean and English pages", async
   const expected = ["index.html", "en/index.html"];
   for (const slug of slugs) {
     expected.push(`${slug}/index.html`, `en/${slug}/index.html`);
+  }
+  for (const slug of releaseSlugs) {
+    expected.push(`releases/${slug}/index.html`, `en/releases/${slug}/index.html`);
   }
 
   const canonicals = new Set();
@@ -69,6 +74,24 @@ test("localized build emits distinct, indexable Korean and English pages", async
   const koFAQ = await readFile(path.join(temporaryRoot, "faq/index.html"), "utf8");
   const schemas = jsonLD(koFAQ);
   assert.ok(schemas.some((schema) => schema["@type"] === "FAQPage"));
+
+  const koDownload = await readFile(path.join(temporaryRoot, "download/index.html"), "utf8");
+  assert.match(koDownload, /피처폰 게임 에뮬레이터 PC·안드로이드 다운로드/);
+  assert.match(koDownload, /피쳐폰/);
+  const koCompatibility = await readFile(path.join(temporaryRoot, "compatibility/index.html"), "utf8");
+  assert.match(koCompatibility, /ARAM v0\.2\.0/);
+  assert.match(koCompatibility, /2026-09-02/);
+  assert.match(koCompatibility, /QCSBL→OEMSBL/);
+  const koPress = await readFile(path.join(temporaryRoot, "press/index.html"), "utf8");
+  assert.match(koPress, /ARAM Emulator 미디어 키트/);
+  assert.match(koPress, /assets\/shots\/shot-06\.png/);
+
+  if (releaseSlugs.includes("v0-2-0")) {
+    const release = await readFile(path.join(temporaryRoot, "releases/v0-2-0/index.html"), "utf8");
+    assert.match(release, /공식 릴리스 노트/);
+    assert.match(release, /릴리스가 발표한 변경 사항/);
+    assert.match(release, /GitHub Release/);
+  }
 });
 
 test("sitemap contains every canonical page and no player variants", async (context) => {
@@ -77,13 +100,14 @@ test("sitemap contains every canonical page and no player variants", async (cont
   await buildSite(temporaryRoot);
   const sitemap = await readFile(path.join(temporaryRoot, "sitemap.xml"), "utf8");
   const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  assert.equal(locations.length, 14);
-  assert.equal(new Set(locations).size, 14);
+  const expectedCount = (1 + slugs.length + releaseSlugs.length) * 2;
+  assert.equal(locations.length, expectedCount);
+  assert.equal(new Set(locations).size, expectedCount);
   assert.ok(locations.includes("https://aram.mir.sh/"));
   assert.ok(locations.includes("https://aram.mir.sh/en/"));
   assert.ok(locations.every((location) => !location.includes("/player") && !location.includes("?")));
-  assert.equal((sitemap.match(/hreflang="ko"/g) || []).length, 14);
-  assert.equal((sitemap.match(/hreflang="en"/g) || []).length, 14);
+  assert.equal((sitemap.match(/hreflang="ko"/g) || []).length, expectedCount);
+  assert.equal((sitemap.match(/hreflang="en"/g) || []).length, expectedCount);
 });
 
 test("analytics is opt-in, query-free, and excluded from the player", async (context) => {
