@@ -7,8 +7,13 @@ in-browser build of the emulator.
 
 | Path | Notes |
 |---|---|
-| `index.html` | Landing page. Self-contained: Pretendard via CDN, inline SVG icon sprite, ko/en + dark/light. |
+| `site/index.template.html` | Landing-page template. The build emits static Korean `/` and English `/en/` variants. |
+| `site/article.template.html` | Shared layout for the searchable guide, compatibility, FAQ, releases, and troubleshooting pages. |
+| `site/pages.mjs` | Korean and English article metadata and content. |
+| `scripts/build-site.mjs` | Generates localized HTML and `sitemap.xml` into the deploy directory. |
+| `scripts/build-og-image.py` | Rebuilds the two 1200×630 social cards from the logo and real screenshots. |
 | `assets/icon.png` | Brand icon (from `aram-frontend`). |
+| `assets/og-{ko,en}.png` | Localized Open Graph and X/Twitter preview cards. |
 | `player/` | In-browser ARAM (Ebitengine → WebAssembly), including the checked-in permalink loader. |
 | `player/aram.wasm`, `player/wasm_exec.js` | **Not committed**, ~52 MB runtime, fetched from the `aram-emu` **nightly** release at deploy time. |
 | `scripts/sync-player.{ps1,sh}` | Download the runtime from the nightly release into `player/`. |
@@ -22,8 +27,21 @@ to serve from a CDN. So it is pulled at build time and served same-origin.
 
 ```powershell
 pwsh scripts/sync-player.ps1      # or: bash scripts/sync-player.sh
-python -m http.server 8000
+node scripts/build-site.mjs _site
+Copy-Item robots.txt _site/
+Copy-Item -Recurse assets,player _site/
+python -m http.server 8000 -d _site
 # open http://localhost:8000/
+```
+
+The player is intentionally `noindex`: searchable pages explain the product and
+link to it, while channel and package query-string variants stay out of search
+results.
+
+Run the complete static SEO and player contract checks with:
+
+```powershell
+node --test player/permalink.test.js scripts/seo.test.mjs
 ```
 
 ## Deploy (GitHub Pages)
@@ -50,7 +68,7 @@ SHA-256 with Web Crypto, and then passes the bytes directly to the WebAssembly
 frontend. The package is never uploaded to an ARAM application server. The
 source host must allow a cross-origin browser request (CORS).
 
-Run the permalink contract tests with:
+Run only the permalink contract tests with:
 
 ```powershell
 node --test player/permalink.test.js

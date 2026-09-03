@@ -1,33 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{LANG}}">
 <head>
 <meta charset="utf-8">
-<title>ARAM, Korean Feature-Phone (WIPI) Emulator</title>
-<meta name="description" content="ARAM is a free, open-source emulator for Korean feature-phone (WIPI) games and apps. Play 2000s feature-phone software on Windows, macOS, Linux, Android, or right in your browser. 한국 피처폰(WIPI) 게임과 앱을 PC·모바일·브라우저에서 무료로 실행하는 오픈소스 에뮬레이터.">
-<meta name="keywords" content="feature phone emulator, WIPI emulator, Korean feature phone emulator, feature phone games, WIPI games, ARM mobile emulator, browser emulator, retro mobile emulator, 피처폰 에뮬레이터, WIPI 에뮬레이터, 피처폰 게임, 피처폰 게임 에뮬레이터, 브라우저 에뮬레이터, 옛날 휴대폰 게임, 2000년대 피처폰">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESCRIPTION}}">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="mirusu400">
 <meta name="theme-color" content="#00d992">
 <meta name="naver-site-verification" content="b104d53fff2042a51b4d818fb87bf0dccdf84e44" />
-<link rel="icon" type="image/png" href="assets/icon.png">
-<link rel="apple-touch-icon" href="assets/icon.png">
-<link rel="canonical" href="https://aram.mir.sh/">
+<link rel="icon" type="image/png" href="/assets/icon.png">
+<link rel="apple-touch-icon" href="/assets/icon.png">
+<link rel="canonical" href="{{CANONICAL}}">
 <link rel="alternate" hreflang="ko" href="https://aram.mir.sh/">
-<link rel="alternate" hreflang="en" href="https://aram.mir.sh/">
+<link rel="alternate" hreflang="en" href="https://aram.mir.sh/en/">
 <link rel="alternate" hreflang="x-default" href="https://aram.mir.sh/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ARAM">
-<meta property="og:locale" content="ko_KR">
-<meta property="og:locale:alternate" content="en_US">
-<meta property="og:url" content="https://aram.mir.sh/">
-<meta property="og:title" content="ARAM, Korean Feature-Phone (WIPI) Emulator">
-<meta property="og:description" content="Play Korean feature-phone (WIPI) games and apps on Windows, macOS, Linux, Android, or in your browser. Free and open source.">
-<meta property="og:image" content="https://aram.mir.sh/assets/icon.png">
-<meta property="og:image:alt" content="ARAM emulator logo">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ARAM, Korean Feature-Phone (WIPI) Emulator">
-<meta name="twitter:description" content="Play Korean feature-phone (WIPI) games and apps on Windows, macOS, Linux, Android, or in your browser. Free and open source.">
-<meta name="twitter:image" content="https://aram.mir.sh/assets/icon.png">
+<meta property="og:locale" content="{{OG_LOCALE}}">
+<meta property="og:locale:alternate" content="{{OG_ALTERNATE_LOCALE}}">
+<meta property="og:url" content="{{CANONICAL}}">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:image" content="{{OG_IMAGE}}">
+<meta property="og:image:secure_url" content="{{OG_IMAGE}}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{OG_IMAGE_ALT}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:description" content="{{DESCRIPTION}}">
+<meta name="twitter:image" content="{{OG_IMAGE}}">
+<meta name="twitter:image:alt" content="{{OG_IMAGE_ALT}}">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,16 +40,21 @@
   "alternateName": ["Archived Runtime for ARM Mobiles", "피처폰 에뮬레이터"],
   "applicationCategory": "GameApplication",
   "operatingSystem": "Windows, macOS, Linux, Android, Web Browser",
-  "description": "Free, open-source emulator for Korean feature-phone (WIPI) games and apps. Runs on desktop, Android, and directly in the browser.",
-  "url": "https://aram.mir.sh/",
-  "downloadUrl": "https://aram.mir.sh/#download",
-  "installUrl": "https://aram.mir.sh/#download",
+  "description": "{{DESCRIPTION}}",
+  "url": "{{CANONICAL}}",
+  "downloadUrl": "{{DOWNLOAD_URL}}",
+  "installUrl": "{{DOWNLOAD_URL}}",
   "image": "https://aram.mir.sh/assets/icon.png",
-  "inLanguage": ["ko", "en"],
+  "inLanguage": "{{LANG}}",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": { "@type": "Person", "name": "mirusu400", "url": "https://github.com/mirusu400" },
-  "sameAs": ["https://github.com/mirusu400/aram-emu"],
+  "sameAs": [
+    "https://github.com/mirusu400/aram-emu",
+    "https://github.com/mirusu400/aram-core",
+    "https://github.com/mirusu400/aram-frontend",
+    "https://github.com/mirusu400/aram-cheat"
+  ],
   "keywords": "feature phone emulator, WIPI emulator, Korean feature phone, 피처폰 에뮬레이터"
 }
 </script>
@@ -53,6 +62,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": "https://aram.mir.sh/#website",
   "name": "ARAM",
   "url": "https://aram.mir.sh/",
   "inLanguage": ["ko", "en"]
@@ -225,6 +235,9 @@
   a.repo:hover{border-color:var(--accent)}
   .repo .rn{font-family:var(--m);font-size:14px;color:var(--ink)}.repo .rn b{color:var(--accent-ink);font-weight:400}
   .repo .rd{color:var(--body);font-size:13.5px;margin-top:8px}.repo .arr{float:right;color:var(--body)}
+  .resource-links{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+  .resource-links a{font-size:13px;color:var(--body);border:1px solid var(--line);border-radius:999px;padding:7px 12px;transition:.15s}
+  .resource-links a:hover{color:var(--ink);border-color:var(--accent)}
   .closebar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
     margin-top:24px;padding:22px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
   .closebar h3{font-weight:600;font-size:20px}.closebar p{color:var(--body);font-size:14px;margin-top:4px}
@@ -319,7 +332,7 @@
 </svg>
 
 <nav class="topnav"><div class="wrap">
-  <div class="brand"><img class="logo" src="assets/icon.png" alt="" width="26" height="26">ARAM</div>
+  <a class="brand" href="{{HOME_PATH}}"><img class="logo" src="/assets/icon.png" alt="" width="26" height="26">ARAM</a>
   <div class="nlinks">
     <a href="#features" data-k="nav_features">Features</a>
     <a href="#runtimes" data-k="nav_what">What</a>
@@ -328,7 +341,7 @@
     <a href="#source" data-k="nav_source">Source</a>
   </div>
   <div class="ntools">
-    <button class="icobtn" id="langBtn" title="Language"><svg class="ic"><use href="#i-languages"/></svg><span id="langTxt">한국어</span></button>
+    <a class="icobtn" href="{{ALTERNATE_URL}}" hreflang="{{ALTERNATE_LANG}}" lang="{{ALTERNATE_LANG}}" title="{{LANGUAGE_TITLE}}" aria-label="{{LANGUAGE_TITLE}}"><svg class="ic"><use href="#i-languages"/></svg><span>{{LANGUAGE_LABEL}}</span></a>
     <button class="icobtn" id="themeBtn" title="Theme" aria-label="Toggle theme"><svg class="ic"><use href="#i-sun" id="themeUse"/></svg></button>
     <a class="btn primary" href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener"><svg class="ic"><use href="#i-github"/></svg>GitHub</a>
   </div>
@@ -352,12 +365,12 @@
     </div>
     <div class="stage">
       <div class="device"><span class="led"></span><div class="lcd"><div class="lcdreel">
-          <img src="assets/shots/shot-01.png" width="240" height="320" alt="붕어빵 타이쿤 3 running in the ARAM feature-phone emulator">
-          <img src="assets/shots/shot-02.png" width="176" height="220" alt="미니게임천국 2 running in the ARAM WIPI emulator">
-          <img src="assets/shots/shot-03.png" width="176" height="220" alt="아노티아 연대기 running in ARAM">
-          <img src="assets/shots/shot-04.png" width="240" height="320" alt="리듬스타 running in ARAM">
-          <img src="assets/shots/shot-05.png" width="176" height="220" alt="Epic Chronicle Perfect Edition running in ARAM">
-          <img src="assets/shots/shot-06.png" width="120" height="160" alt="Dragon Knight EX running in ARAM">
+          <img src="/assets/shots/shot-01.png" width="240" height="320" alt="붕어빵 타이쿤 3 running in the ARAM feature-phone emulator">
+          <img src="/assets/shots/shot-02.png" width="176" height="220" alt="미니게임천국 2 running in the ARAM WIPI emulator">
+          <img src="/assets/shots/shot-03.png" width="176" height="220" alt="아노티아 연대기 running in ARAM">
+          <img src="/assets/shots/shot-04.png" width="240" height="320" alt="리듬스타 running in ARAM">
+          <img src="/assets/shots/shot-05.png" width="176" height="220" alt="Epic Chronicle Perfect Edition running in ARAM">
+          <img src="/assets/shots/shot-06.png" width="120" height="160" alt="Dragon Knight EX running in ARAM">
         </div></div>
         <div class="keys"><span>MENU</span><span>240×320</span><span>BACK</span></div></div>
     </div>
@@ -417,12 +430,12 @@
   <div class="launch">
     <div class="launch-visual">
       <div class="device"><span class="led"></span><div class="lcd"><div class="lcdreel">
-          <img src="assets/shots/shot-01.png" width="240" height="320" alt="붕어빵 타이쿤 3 running in the ARAM feature-phone emulator">
-          <img src="assets/shots/shot-02.png" width="176" height="220" alt="미니게임천국 2 running in the ARAM WIPI emulator">
-          <img src="assets/shots/shot-03.png" width="176" height="220" alt="아노티아 연대기 running in ARAM">
-          <img src="assets/shots/shot-04.png" width="240" height="320" alt="리듬스타 running in ARAM">
-          <img src="assets/shots/shot-05.png" width="176" height="220" alt="Epic Chronicle Perfect Edition running in ARAM">
-          <img src="assets/shots/shot-06.png" width="120" height="160" alt="Dragon Knight EX running in ARAM">
+          <img src="/assets/shots/shot-01.png" width="240" height="320" alt="붕어빵 타이쿤 3 running in the ARAM feature-phone emulator">
+          <img src="/assets/shots/shot-02.png" width="176" height="220" alt="미니게임천국 2 running in the ARAM WIPI emulator">
+          <img src="/assets/shots/shot-03.png" width="176" height="220" alt="아노티아 연대기 running in ARAM">
+          <img src="/assets/shots/shot-04.png" width="240" height="320" alt="리듬스타 running in ARAM">
+          <img src="/assets/shots/shot-05.png" width="176" height="220" alt="Epic Chronicle Perfect Edition running in ARAM">
+          <img src="/assets/shots/shot-06.png" width="120" height="160" alt="Dragon Knight EX running in ARAM">
         </div></div>
         <div class="keys"><span>MENU</span><span>WIPI</span><span>BACK</span></div></div>
     </div>
@@ -432,7 +445,7 @@
         <button class="dltab" data-ch="nightly" data-k="dlx_tab_nightly">Nightly</button>
       </div>
       <div class="launch-actions">
-        <a id="playLaunch" class="btn primary lg" href="player/?ch=stable"><svg class="ic"><use href="#i-play"/></svg><span data-k="pl_btn">Launch ARAM</span></a>
+        <a id="playLaunch" class="btn primary lg" href="/player/?ch=stable"><svg class="ic"><use href="#i-play"/></svg><span data-k="pl_btn">Launch ARAM</span></a>
       </div>
       <p class="cap" data-k="pl_note">First launch downloads the runtime (~52 MB). Desktop Chrome, Firefox or Edge recommended. Then File ▸ Open your own authorized file.</p>
     </div>
@@ -462,7 +475,7 @@
       <svg class="os"><use href="#i-android"/></svg><div class="meta"><b>Android</b><span>arm64 / x86_64 · .apk</span></div><svg class="dl"><use href="#i-download"/></svg></a>
   </div>
   <div class="dlmore">
-    <a id="dlBrowser" href="player/?ch=stable" data-k="dlx_browser">Run it in your browser</a>
+    <a id="dlBrowser" href="/player/?ch=stable" data-k="dlx_browser">Run it in your browser</a>
     <a id="dlSums" href="https://github.com/mirusu400/aram-emu/releases/latest/download/SHA256SUMS.txt">SHA-256 checksums</a>
     <a href="https://github.com/mirusu400/aram-emu/releases" target="_blank" rel="noopener" data-k="dlx_all">All releases on GitHub</a>
   </div>
@@ -481,12 +494,21 @@
     <a class="repo" href="https://github.com/mirusu400/aram-frontend" target="_blank" rel="noopener"><svg class="ic arr"><use href="#i-arrow-up-right"/></svg><div class="rn"><svg class="ic gh"><use href="#i-github"/></svg>mirusu400/<b>aram-frontend</b></div><div class="rd" data-k="src_front">Shared UI · desktop & mobile hosts, menus, input, overlays.</div></a>
     <a class="repo" href="https://github.com/mirusu400/aram-cheat" target="_blank" rel="noopener"><svg class="ic arr"><use href="#i-arrow-up-right"/></svg><div class="rn"><svg class="ic gh"><use href="#i-github"/></svg>mirusu400/<b>aram-cheat</b></div><div class="rd" data-k="src_cheat">Cheat database · one document per title, keyed by the loaded-image SHA-256.</div></a>
   </div>
+  <nav class="resource-links" aria-label="{{RESOURCES_LABEL}}">
+    <a href="{{LOCALE_PREFIX}}guide/" data-k="nav_guide">Guide</a>
+    <a href="{{LOCALE_PREFIX}}compatibility/" data-k="nav_compatibility">Compatibility</a>
+    <a href="{{LOCALE_PREFIX}}faq/" data-k="nav_faq">FAQ</a>
+    <a href="{{LOCALE_PREFIX}}releases/" data-k="nav_releases">Releases</a>
+    <a href="{{LOCALE_PREFIX}}troubleshooting/" data-k="nav_troubleshooting">Troubleshooting</a>
+  </nav>
   <div class="fnote" data-k="foot_note">ARAM never distributes firmware, commercial games, keys, memory dumps, or device fonts. You provide only material you are authorized to use. Not affiliated with any handset maker or carrier.</div>
   <div class="fbar">
     <span>© 2026 ARAM · mirusu400</span>
     <a href="https://github.com/mirusu400/aram-emu" target="_blank" rel="noopener">aram-emu</a>
     <a href="https://github.com/mirusu400/aram-core" target="_blank" rel="noopener">aram-core</a>
     <a href="https://github.com/mirusu400/aram-frontend" target="_blank" rel="noopener">aram-frontend</a>
+    <a href="{{LOCALE_PREFIX}}guide/" data-k="nav_guide">Guide</a>
+    <a href="{{LOCALE_PREFIX}}faq/" data-k="nav_faq">FAQ</a>
   </div>
 </div></div></section>
 
@@ -499,6 +521,8 @@ document.documentElement.style.setProperty('--shot',
 const I18N={
  nav_what:{en:"What",ko:"소개"},nav_features:{en:"Features",ko:"기능"},nav_play:{en:"Play",ko:"플레이"},
  nav_screens:{en:"Screens",ko:"화면"},nav_download:{en:"Download",ko:"다운로드"},nav_source:{en:"Source",ko:"소스"},
+ nav_guide:{en:"Guide",ko:"사용법"},nav_compatibility:{en:"Compatibility",ko:"호환성"},nav_faq:{en:"FAQ",ko:"자주 묻는 질문"},
+ nav_releases:{en:"Releases",ko:"릴리스"},nav_troubleshooting:{en:"Troubleshooting",ko:"문제 해결"},
  hero_eyebrow:{en:"Archived Runtime for ARM Mobiles",ko:"ARM 모바일을 위한 아카이브 런타임"},
  hero_h1:{en:"Bring Korean feature-phone software back to life.",ko:"한국 피처폰 소프트웨어를 다시 켜다."},
  hero_lead:{en:"ARAM is a cross-platform emulator that runs Korean feature-phone games and apps.",
@@ -562,17 +586,8 @@ const I18N={
  foot_note:{en:"ARAM never distributes firmware, commercial games, keys, memory dumps, or device fonts. You provide only material you are authorized to use. Not affiliated with any handset maker or carrier.",
    ko:"ARAM은 펌웨어·상용 게임·키·메모리 덤프·기기 폰트를 배포하지 않습니다. 사용 권한이 있는 자료만 직접 제공하세요. 어떤 제조사·통신사와도 무관합니다."}
 };
-const LS_LANG="aram-lang", LS_THEME="aram-theme";
-let lang = localStorage.getItem(LS_LANG) || ((navigator.language||"en").toLowerCase().startsWith("ko") ? "ko":"en");
-function applyLang(l){
-  lang=l; document.documentElement.lang=l; localStorage.setItem(LS_LANG,l);
-  document.querySelectorAll("[data-k]").forEach(el=>{
-    const t=I18N[el.dataset.k]; if(!t) return;
-    if(el.hasAttribute("data-html")) el.innerHTML=t[l]; else el.textContent=t[l];
-  });
-  document.getElementById("langTxt").textContent = (l==="ko"?"EN":"한국어");
-  requestAnimationFrame(fitAll);
-}
+const LS_THEME="aram-theme";
+const lang="{{LANG}}";
 
 /* ---------- theme ---------- */
 function effTheme(){
@@ -587,7 +602,6 @@ function applyTheme(mode){ // mode: 'dark'|'light'
 (function initTheme(){ const s=localStorage.getItem(LS_THEME); if(s) document.documentElement.setAttribute("data-theme",s); paintThemeBtn(); })();
 matchMedia("(prefers-color-scheme: light)").addEventListener("change",()=>{ if(!localStorage.getItem(LS_THEME)) paintThemeBtn(); });
 
-document.getElementById("langBtn").addEventListener("click",()=>applyLang(lang==="ko"?"en":"ko"));
 document.getElementById("themeBtn").addEventListener("click",()=>applyTheme(effTheme()==="dark"?"light":"dark"));
 
 /* ---------- one-view fit: scale each section's content to fit the viewport ---------- */
@@ -630,8 +644,8 @@ function setChannel(ch){
   document.querySelectorAll("#download .oscard").forEach(a=>a.href=c.base+a.dataset.file);
   const sums=document.getElementById("dlSums"); if(sums) sums.href=c.base+"SHA256SUMS.txt";
   document.querySelectorAll(".dltab").forEach(t=>t.classList.toggle("on",t.dataset.ch===ch));
-  const pl=document.getElementById("playLaunch"); if(pl) pl.href="player/?ch="+ch;
-  const br=document.getElementById("dlBrowser"); if(br) br.href="player/?ch="+ch;
+  const pl=document.getElementById("playLaunch"); if(pl) pl.href="/player/?ch="+ch;
+  const br=document.getElementById("dlBrowser"); if(br) br.href="/player/?ch="+ch;
   const note=document.getElementById("dlChan");
   if(note){ note.dataset.k=c.note; const tr=I18N[c.note]; if(tr) note.textContent=tr[lang]; }
   try{ localStorage.setItem("aram-ch",ch); }catch(e){}
@@ -654,7 +668,6 @@ document.querySelectorAll(".lcdreel").forEach(reel=>{
 });
 
 /* ---------- boot ---------- */
-applyLang(lang);
 let ch0="stable"; try{ ch0=localStorage.getItem("aram-ch")||"stable"; }catch(e){}
 setChannel(ch0);
 if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitAll); }

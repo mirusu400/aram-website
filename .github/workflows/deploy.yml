@@ -26,18 +26,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Test player permalink contract
-        run: node --test player/permalink.test.js
+        run: node --test player/permalink.test.js scripts/seo.test.mjs
+
+      - name: Build localized search pages
+        run: node scripts/build-site.mjs _site
 
       - name: Fetch WebAssembly runtime from aram-emu nightly release
         run: bash scripts/sync-player.sh
 
       - name: Assemble site
         run: |
-          mkdir -p _site
-          cp index.html _site/
-          cp robots.txt sitemap.xml _site/
+          cp robots.txt _site/
           cp -r assets _site/
           cp -r player _site/
           echo aram.mir.sh > _site/CNAME

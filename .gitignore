@@ -13,3 +13,5 @@ player/BUILD-INFO.txt
 
 # local dev servers / scratch
 *.log
+_site/
+__pycache__/

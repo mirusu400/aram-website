@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="mirusu400">
+<meta name="theme-color" content="#00d992">
+<link rel="icon" type="image/png" href="/assets/icon.png">
+<link rel="apple-touch-icon" href="/assets/icon.png">
+<link rel="canonical" href="{{CANONICAL}}">
+<link rel="alternate" hreflang="ko" href="{{KO_URL}}">
+<link rel="alternate" hreflang="en" href="{{EN_URL}}">
+<link rel="alternate" hreflang="x-default" href="{{KO_URL}}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ARAM">
+<meta property="og:locale" content="{{OG_LOCALE}}">
+<meta property="og:locale:alternate" content="{{OG_ALTERNATE_LOCALE}}">
+<meta property="og:url" content="{{CANONICAL}}">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:image" content="{{OG_IMAGE}}">
+<meta property="og:image:secure_url" content="{{OG_IMAGE}}">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{OG_IMAGE_ALT}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:description" content="{{DESCRIPTION}}">
+<meta name="twitter:image" content="{{OG_IMAGE}}">
+<meta name="twitter:image:alt" content="{{OG_IMAGE_ALT}}">
+<script type="application/ld+json">{{WEBPAGE_SCHEMA}}</script>
+{{EXTRA_SCHEMA}}
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<style>
+  :root{color-scheme:dark;--bg:#101010;--surface:#171717;--surface2:#1c1c1c;--ink:#f2f2f2;--body:#bdbdbd;--mute:#8b949e;--line:#302f2d;--accent:#00d992;--onaccent:#06140d;--max:850px;--f:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif}
+  @media(prefers-color-scheme:light){:root{color-scheme:light;--bg:#fff;--surface:#f5f7f6;--surface2:#eceeed;--ink:#0d1211;--body:#4a534e;--mute:#727b76;--line:#e4e7e4;--accent:#058b63;--onaccent:#fff}}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);line-height:1.72;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{width:min(var(--max),calc(100% - 40px));margin:0 auto}
+  header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  header .wrap{height:62px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:750;letter-spacing:.12em}
+  .brand img{width:27px;height:27px;image-rendering:pixelated}
+  .nav{display:flex;align-items:center;gap:17px;font-size:13px;color:var(--body)}
+  .nav a{text-decoration:none}.nav a:hover{color:var(--ink)}
+  .lang{border:1px solid var(--line);border-radius:7px;padding:6px 10px;color:var(--ink)!important}
+  main{padding:76px 0 92px}
+  .crumbs{font-size:13px;color:var(--mute);display:flex;gap:8px;align-items:center;margin-bottom:34px}
+  .crumbs a{text-decoration:none}.crumbs a:hover{color:var(--ink)}
+  .eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1,h2,h3{line-height:1.18;letter-spacing:-.025em;text-wrap:balance}
+  h1{font-size:clamp(34px,6vw,57px);margin:17px 0 18px}
+  h2{font-size:clamp(24px,4vw,32px);margin:56px 0 15px;padding-top:8px}
+  h3{font-size:19px;margin:28px 0 8px}
+  .lead{font-size:19px;color:var(--body);max-width:65ch;margin:0}
+  article{margin-top:55px}
+  article p,article li{color:var(--body)}
+  article strong{color:var(--ink)}
+  article a{color:var(--accent);text-underline-offset:3px}
+  article ul,article ol{padding-left:24px}
+  article li+li{margin-top:7px}
+  .callout{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:18px 20px;margin:24px 0;color:var(--body)}
+  .steps{counter-reset:step;display:grid;gap:13px;padding:0!important;list-style:none}
+  .steps>li{counter-increment:step;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:18px 20px 18px 58px;position:relative}
+  .steps>li::before{content:counter(step);position:absolute;left:18px;top:18px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--onaccent);font-size:12px;font-weight:800}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:22px 0}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:18px 20px}
+  .card h3{margin-top:0}.card p:last-child{margin-bottom:0}
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px;margin:22px 0}
+  table{width:100%;border-collapse:collapse;min-width:620px;background:var(--surface)}
+  th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;letter-spacing:.06em;color:var(--ink);background:var(--surface2)}
+  td{color:var(--body)}tr:last-child td{border-bottom:0}
+  code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em;background:var(--surface2);border:1px solid var(--line);border-radius:4px;padding:2px 5px;color:var(--ink)}
+  details{border-top:1px solid var(--line);padding:19px 0}
+  details:last-of-type{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer;font-weight:700;color:var(--ink)}
+  details p{margin-bottom:0}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+  .button{display:inline-flex;align-items:center;text-decoration:none!important;border:1px solid var(--line);border-radius:7px;padding:10px 15px;color:var(--ink)!important;font-weight:650}
+  .button.primary{background:var(--accent);border-color:var(--accent);color:var(--onaccent)!important}
+  .related{border-top:1px solid var(--line);margin-top:64px;padding-top:28px;display:flex;flex-wrap:wrap;gap:9px}
+  .related a{text-decoration:none;color:var(--body);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px}
+  footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--mute);font-size:12px}
+  @media(max-width:720px){.nav a:not(.lang){display:none}.grid{grid-template-columns:1fr}main{padding-top:52px}.lead{font-size:17px}}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="brand" href="{{HOME_PATH}}"><img src="/assets/icon.png" alt="" width="27" height="27">ARAM</a>
+  <nav class="nav" aria-label="{{NAV_LABEL}}">
+    <a href="{{LOCALE_PREFIX}}guide/">{{GUIDE_LABEL}}</a>
+    <a href="{{LOCALE_PREFIX}}compatibility/">{{COMPATIBILITY_LABEL}}</a>
+    <a href="{{LOCALE_PREFIX}}faq/">FAQ</a>
+    <a href="{{HOME_PATH}}#download">{{DOWNLOAD_LABEL}}</a>
+    <a class="lang" href="{{ALTERNATE_URL}}" hreflang="{{ALTERNATE_LANG}}" lang="{{ALTERNATE_LANG}}">{{LANGUAGE_LABEL}}</a>
+  </nav>
+</div></header>
+<main class="wrap">
+  <nav class="crumbs" aria-label="{{BREADCRUMB_LABEL}}"><a href="{{HOME_PATH}}">ARAM</a><span aria-hidden="true">/</span><span>{{BREADCRUMB_CURRENT}}</span></nav>
+  <div class="eyebrow">{{EYEBROW}}</div>
+  <h1>{{HEADING}}</h1>
+  <p class="lead">{{LEAD}}</p>
+  <article>
+{{BODY}}
+  </article>
+  <nav class="related" aria-label="{{RELATED_LABEL}}">
+    <a href="{{LOCALE_PREFIX}}guide/">{{GUIDE_LABEL}}</a>
+    <a href="{{LOCALE_PREFIX}}compatibility/">{{COMPATIBILITY_LABEL}}</a>
+    <a href="{{LOCALE_PREFIX}}faq/">FAQ</a>
+    <a href="{{LOCALE_PREFIX}}releases/">{{RELEASES_LABEL}}</a>
+    <a href="{{LOCALE_PREFIX}}troubleshooting/">{{TROUBLESHOOTING_LABEL}}</a>
+  </nav>
+</main>
+<footer><div class="wrap">{{FOOTER_TEXT}}</div></footer>
+</body>
+</html>
