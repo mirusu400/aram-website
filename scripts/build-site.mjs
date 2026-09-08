@@ -6,6 +6,7 @@ import vm from "node:vm";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { pages } from "../site/pages.mjs";
+import { loadBlog, writeFeeds } from "./blog.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const baseURL = "https://aram.mir.sh";
@@ -160,8 +161,8 @@ function webpageSchema(page, language, canonical, koURL, enURL) {
         { "@type": "ListItem", position: 2, name: page.heading, item: canonical },
       ],
     },
-    translationOfWork: language === "en" ? { "@id": `${koURL}#webpage` } : undefined,
-    workTranslation: language === "ko" ? { "@id": `${enURL}#webpage` } : undefined,
+    translationOfWork: language === "en" && koURL ? { "@id": `${koURL}#webpage` } : undefined,
+    workTranslation: language === "ko" && enURL ? { "@id": `${enURL}#webpage` } : undefined,
   };
 }
 
@@ -203,9 +204,9 @@ function sitemapXML(entries) {
   const items = entries.map(({ canonical, koURL, enURL, lastmod }) => `  <url>
     <loc>${xmlEscape(canonical)}</loc>
     <lastmod>${lastmod}</lastmod>
-    <xhtml:link rel="alternate" hreflang="ko" href="${xmlEscape(koURL)}"/>
-    <xhtml:link rel="alternate" hreflang="en" href="${xmlEscape(enURL)}"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(koURL)}"/>
+    ${koURL ? `<xhtml:link rel="alternate" hreflang="ko" href="${xmlEscape(koURL)}"/>` : ""}
+    ${enURL ? `<xhtml:link rel="alternate" hreflang="en" href="${xmlEscape(enURL)}"/>` : ""}
+    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(koURL || enURL)}"/>
   </url>`).join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -417,7 +418,7 @@ function releasePage(release, language) {
   };
 }
 
-export async function buildSite(outputDirectory, { measurementId = "", releases = null } = {}) {
+export async function buildSite(outputDirectory, { measurementId = "", releases = null, blogDirectory = path.join(projectRoot, "site", "blog") } = {}) {
   const destination = path.resolve(outputDirectory);
   const [landingTemplate, articleTemplate, storedReleases] = await Promise.all([
     readFile(path.join(projectRoot, "site", "index.template.html"), "utf8"),
@@ -425,6 +426,7 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
     releases === null ? loadStoredReleases() : Promise.resolve(releases.map(storedRelease)),
   ]);
   const dictionary = extractDictionary(landingTemplate);
+  const blog = await loadBlog(blogDirectory, renderReleaseMarkdown);
   const sitemapEntries = [];
   const landingLastmod = sourceLastModified(["site/index.template.html", "scripts/build-site.mjs"]);
 
@@ -447,6 +449,7 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
       OG_IMAGE: locale.ogImage,
       OG_IMAGE_ALT: locale.ogImageAlt,
       RESOURCES_LABEL: locale.resourcesLabel,
+      BLOG_LABEL: language === "ko" ? "블로그" : "Blog",
       DOWNLOAD_URL: language === "ko" ? `${baseURL}/download/` : `${baseURL}/en/download/`,
       ANALYTICS_HEAD: analytics.head,
       ANALYTICS_BODY: analytics.body,
@@ -465,10 +468,10 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
   }
 
   const articleLastmod = sourceLastModified(["site/article.template.html", "site/pages.mjs", "scripts/build-site.mjs"]);
-  for (const pageDefinition of pages) {
-    const koURL = `${baseURL}/${pageDefinition.slug}/`;
-    const enURL = `${baseURL}/en/${pageDefinition.slug}/`;
-    for (const language of ["ko", "en"]) {
+  for (const pageDefinition of [...pages, ...blog.pages]) {
+    const koURL = pageDefinition.locales.ko ? `${baseURL}/${pageDefinition.slug}/` : "";
+    const enURL = pageDefinition.locales.en ? `${baseURL}/en/${pageDefinition.slug}/` : "";
+    for (const language of Object.keys(pageDefinition.locales)) {
       const page = pageDefinition.locales[language];
       const locale = localeConfig[language];
       const labels = articleLabels[language];
@@ -478,7 +481,28 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
       const body = pageDefinition.slug === "releases"
         ? `${page.body.trim()}\n${releaseListHTML(storedReleases, language)}`
         : page.body.trim();
-      const rendered = replaceTokens(articleTemplate, {
+      let template = articleTemplate;
+      if (!koURL) template = template.replace('<link rel="alternate" hreflang="ko" href="{{KO_URL}}">', "");
+      if (!enURL) template = template.replace('<link rel="alternate" hreflang="en" href="{{EN_URL}}">', "");
+      if (!alternateURL) template = template.replace(/    <a class="lang"[^\n]+\n/, "").replace('<meta property="og:locale:alternate" content="{{OG_ALTERNATE_LOCALE}}">', "");
+      template = template.replace('<link rel="alternate" hreflang="x-default" href="{{KO_URL}}">', `<link rel="alternate" hreflang="x-default" href="${koURL || enURL}">`);
+      if (pageDefinition.blog) {
+        template = template.replace("</head>", `<link rel="alternate" type="application/rss+xml" title="ARAM Blog" href="${locale.localePrefix}blog/feed.xml">\n</head>`);
+      }
+      if (page.post) {
+        if (page.post.image) template = template.replace(/<meta property="og:image:(?:type|width|height)"[^>]*>\n/g, "");
+        template = template.replace('<meta property="og:type" content="website">', `<meta property="og:type" content="article">\n<meta property="article:published_time" content="${page.post.published}T00:00:00+09:00">\n<meta property="article:modified_time" content="${page.post.modified}T00:00:00+09:00">`)
+          .replace('<meta name="author" content="mirusu400">', `<meta name="author" content="${escapeHTML(page.post.author)}">`)
+          .replace('<span>{{BREADCRUMB_CURRENT}}</span>', `<a href="${locale.localePrefix}blog/">${language === "ko" ? "블로그" : "Blog"}</a><span aria-hidden="true">/</span><span>{{BREADCRUMB_CURRENT}}</span>`);
+      }
+      const schema = webpageSchema(page, language, canonical, koURL, enURL);
+      if (page.post) {
+        schema.name = page.post.title;
+        schema.description = page.post.description;
+        schema.breadcrumb.itemListElement[1] = { "@type": "ListItem", position: 2, name: "Blog", item: `${baseURL}${locale.localePrefix}blog/` };
+        schema.breadcrumb.itemListElement.push({ "@type": "ListItem", position: 3, name: page.post.title, item: canonical });
+      }
+      const rendered = replaceTokens(template, {
         LANG: language,
         TITLE: page.title,
         DESCRIPTION: page.description,
@@ -492,10 +516,11 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
         LANGUAGE_LABEL: locale.languageLabel,
         OG_LOCALE: locale.ogLocale,
         OG_ALTERNATE_LOCALE: locale.ogAlternateLocale,
-        OG_IMAGE: locale.ogImage,
-        OG_IMAGE_ALT: locale.ogImageAlt,
-        WEBPAGE_SCHEMA: prettyJSON(webpageSchema(page, language, canonical, koURL, enURL)),
-        EXTRA_SCHEMA: faqSchema(page.faq, language, canonical),
+        OG_IMAGE: page.image || locale.ogImage,
+        OG_IMAGE_ALT: page.post ? escapeHTML(page.post.title) : locale.ogImageAlt,
+        WEBPAGE_SCHEMA: prettyJSON(schema),
+        EXTRA_SCHEMA: page.schema ? `<script type="application/ld+json">${prettyJSON(page.schema)}</script>` : faqSchema(page.faq, language, canonical),
+        BLOG_LABEL: language === "ko" ? "블로그" : "Blog",
         NAV_LABEL: labels.navLabel,
         BREADCRUMB_LABEL: labels.breadcrumbLabel,
         BREADCRUMB_CURRENT: page.heading,
@@ -519,7 +544,7 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
       const outputPath = path.join(destination, ...relativeParts);
       await mkdir(path.dirname(outputPath), { recursive: true });
       await writeFile(outputPath, rendered, "utf8");
-      sitemapEntries.push({ canonical, koURL, enURL, lastmod: articleLastmod });
+      sitemapEntries.push({ canonical, koURL, enURL, lastmod: page.lastmod || articleLastmod });
     }
   }
 
@@ -551,6 +576,7 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
         OG_IMAGE_ALT: locale.ogImageAlt,
         WEBPAGE_SCHEMA: prettyJSON(webpageSchema(page, language, canonical, koURL, enURL)),
         EXTRA_SCHEMA: "",
+        BLOG_LABEL: language === "ko" ? "블로그" : "Blog",
         NAV_LABEL: labels.navLabel,
         BREADCRUMB_LABEL: labels.breadcrumbLabel,
         BREADCRUMB_CURRENT: page.heading,
@@ -581,6 +607,7 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
   }
 
   await mkdir(destination, { recursive: true });
+  await writeFeeds(destination, blog.posts);
   await writeFile(path.join(destination, "sitemap.xml"), sitemapXML(sitemapEntries), "utf8");
 }
 

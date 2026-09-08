@@ -49,7 +49,30 @@ Run the complete static SEO and player contract checks with:
 node --test player/permalink.test.js scripts/analytics.test.mjs scripts/indexnow.test.mjs scripts/releases.test.mjs scripts/seo.test.mjs
 ```
 
-## Analytics
+## Blog authoring
+
+Add a UTF-8 `.md` file to `site/blog/`, using `reading-compatibility.ko.md` as
+the example. Each file starts with JSON metadata between two `---` lines:
+`slug`, `lang` (`ko` or `en`), `title`, `description`, `author`, `published`,
+and `modified` (YYYY-MM-DD). Optional `draft: true` excludes a post from the
+build; future publication dates are also excluded. Use the same slug for a
+translation. Only published translations receive alternate-language links.
+
+The lightweight Markdown renderer supports headings, paragraphs, unordered
+lists, bold, inline code, fenced code blocks, and absolute HTTPS links. Raw HTML
+is escaped. Use full `https://aram.mir.sh/.../` links so they also work in RSS.
+An optional `image` can point to a local `/assets/...png`, `.jpg`, `.jpeg`, or
+`.webp` social card; otherwise the localized ARAM card is used.
+
+Run `node scripts/build-site.mjs _site` to generate `/blog/`, `/en/blog/`, post
+pages, and localized `blog/feed.xml` feeds with full article bodies. The existing
+deployment automatically includes the feeds and submits blog URLs through the
+sitemap/IndexNow workflow. Submit `/blog/feed.xml` in Naver Search Advisor after
+deployment; do not submit an empty language feed. Set `modified` only when the
+article changes substantively. Preview a clean build when removing published
+posts, because the build does not remove old output files.
+
+## Analytics configuration
 
 Analytics is optional at build time. The GitHub Actions repository secret
 `GA_MEASUREMENT_ID` must be configured on **`mirusu400/aram-website`**. When it

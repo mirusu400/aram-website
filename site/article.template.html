@@ -41,7 +41,23 @@
   @media(prefers-color-scheme:light){:root{color-scheme:light;--bg:#fff;--surface:#f5f7f6;--surface2:#eceeed;--ink:#0d1211;--body:#4a534e;--mute:#727b76;--line:#e4e7e4;--accent:#058b63;--onaccent:#fff}}
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);line-height:1.72;-webkit-font-smoothing:antialiased}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f);line-height:1.72;-webkit-font-smoothing:antialiased;position:relative;overflow-x:hidden}
+  body>.pixel-field{position:fixed;top:-35vh;right:0;bottom:-35vh;left:0;z-index:0;pointer-events:none;
+    overflow:hidden;transform:translate3d(0,var(--pixel-scroll,0px),0);will-change:transform}
+  .pixel-field i{position:absolute;width:6px;height:6px;background:var(--accent);opacity:.14;animation:pixelDrift 9s ease-in-out infinite alternate}
+  .pixel-field i:nth-child(1){left:4%;top:12%;width:10px;height:10px;animation-delay:-1s}.pixel-field i:nth-child(2){left:11%;top:58%;animation-delay:-5s}
+  .pixel-field i:nth-child(3){left:22%;top:83%;width:4px;height:4px;animation-delay:-3s}.pixel-field i:nth-child(4){left:39%;top:27%;animation-delay:-7s}
+  .pixel-field i:nth-child(5){left:47%;top:71%;width:9px;height:9px;animation-delay:-2s}.pixel-field i:nth-child(6){right:39%;top:44%;width:4px;height:4px;animation-delay:-6s}
+  .pixel-field i:nth-child(7){right:25%;top:15%;animation-delay:-4s}.pixel-field i:nth-child(8){right:17%;top:76%;width:10px;height:10px;animation-delay:-8s}
+  .pixel-field i:nth-child(9){right:7%;top:36%;width:4px;height:4px;animation-delay:-2.5s}.pixel-field i:nth-child(10){right:3%;top:88%;animation-delay:-5.5s}
+  .pixel-field i:nth-child(11){left:2%;top:43%;width:4px;height:4px;animation-delay:-7.5s}.pixel-field i:nth-child(12){left:14%;top:31%;width:8px;height:8px;animation-delay:-.5s}
+  .pixel-field i:nth-child(13){left:27%;top:66%;width:5px;height:5px;animation-delay:-4.5s}.pixel-field i:nth-child(14){left:33%;top:91%;width:4px;height:4px;animation-delay:-6.5s}
+  .pixel-field i:nth-child(15){left:37%;top:39%;width:10px;height:10px;animation-delay:-3.5s}.pixel-field i:nth-child(16){left:55%;top:7%;width:4px;height:4px;animation-delay:-1.5s}
+  .pixel-field i:nth-child(17){left:61%;top:68%;width:7px;height:7px;animation-delay:-8.5s}.pixel-field i:nth-child(18){right:31%;top:87%;width:4px;height:4px;animation-delay:-2.2s}
+  .pixel-field i:nth-child(19){right:21%;top:51%;width:7px;height:7px;animation-delay:-6.2s}.pixel-field i:nth-child(20){right:12%;top:22%;width:4px;height:4px;animation-delay:-4.2s}
+  .pixel-field i:nth-child(21){right:4%;top:64%;width:9px;height:9px;animation-delay:-.8s}.pixel-field i:nth-child(22){left:49%;top:96%;width:4px;height:4px;animation-delay:-7.8s}
+  @keyframes pixelDrift{from{transform:translate3d(0,-6px,0);opacity:.08}to{transform:translate3d(9px,10px,0);opacity:.28}}
+  header,main,footer{position:relative;z-index:1}
   a{color:inherit}
   .wrap{width:min(var(--max),calc(100% - 40px));margin:0 auto}
   header{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
@@ -52,9 +68,8 @@
   .nav a{text-decoration:none}.nav a:hover{color:var(--ink)}
   .lang{border:1px solid var(--line);border-radius:7px;padding:6px 10px;color:var(--ink)!important}
   main{padding:76px 0 92px}
-  .crumbs{font-size:13px;color:var(--mute);display:flex;gap:8px;align-items:center;margin-bottom:34px}
+  .crumbs{font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:34px}
   .crumbs a{text-decoration:none}.crumbs a:hover{color:var(--ink)}
-  .eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700}
   h1,h2,h3{line-height:1.18;letter-spacing:-.025em;text-wrap:balance}
   h1{font-size:clamp(34px,6vw,57px);margin:17px 0 18px}
   h2{font-size:clamp(24px,4vw,32px);margin:56px 0 15px;padding-top:8px}
@@ -76,7 +91,9 @@
   .release-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:22px 0}
   .release-card{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:18px 20px}
   .release-card h3{margin:12px 0 6px}.release-card p{margin:0 0 10px}
-  .release-meta{display:flex;justify-content:space-between;gap:12px;color:var(--mute);font-size:12px}
+  .release-card h2{font-size:23px;margin:12px 0;padding:0}
+  .release-card time{font-size:13px;color:var(--mute)}
+  .release-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;color:var(--mute);font-size:12px}
   .release-notes{border-top:1px solid var(--line)}
   .release-notes pre{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:16px}
   .release-notes pre code{border:0;padding:0;background:transparent}
@@ -97,15 +114,18 @@
   .related a{text-decoration:none;color:var(--body);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-size:13px}
   footer{border-top:1px solid var(--line);padding:28px 0 44px;color:var(--mute);font-size:12px}
   footer a{color:var(--body);text-underline-offset:3px}
-  @media(max-width:720px){.nav a:not(.lang){display:none}.grid,.release-list{grid-template-columns:1fr}main{padding-top:52px}.lead{font-size:17px}}
-  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  @media(max-width:720px){.nav a:not(.lang){display:none}.grid,.release-list{grid-template-columns:1fr}main{padding-top:52px}.lead{font-size:17px}.pixel-field i:nth-child(n+17){display:none}}
+  @media(max-width:720px){.nav a.blog-link{display:inline}}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.pixel-field i{animation:none}}
 </style>
 {{ANALYTICS_HEAD}}
 </head>
 <body>
+<div class="pixel-field" id="pixelField" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <header><div class="wrap">
   <a class="brand" href="{{HOME_PATH}}"><img src="/assets/icon.png" alt="" width="27" height="27">ARAM</a>
   <nav class="nav" aria-label="{{NAV_LABEL}}">
+    <a class="blog-link" href="{{LOCALE_PREFIX}}blog/">{{BLOG_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}guide/">{{GUIDE_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}compatibility/">{{COMPATIBILITY_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}faq/">FAQ</a>
@@ -115,13 +135,13 @@
 </div></header>
 <main class="wrap">
   <nav class="crumbs" aria-label="{{BREADCRUMB_LABEL}}"><a href="{{HOME_PATH}}">ARAM</a><span aria-hidden="true">/</span><span>{{BREADCRUMB_CURRENT}}</span></nav>
-  <div class="eyebrow">{{EYEBROW}}</div>
   <h1>{{HEADING}}</h1>
   <p class="lead">{{LEAD}}</p>
   <article>
 {{BODY}}
   </article>
   <nav class="related" aria-label="{{RELATED_LABEL}}">
+    <a href="{{LOCALE_PREFIX}}blog/">{{BLOG_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}guide/">{{GUIDE_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}compatibility/">{{COMPATIBILITY_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}faq/">FAQ</a>
@@ -133,6 +153,21 @@
   </nav>
 </main>
 <footer><div class="wrap">{{FOOTER_TEXT}} · <a href="{{LOCALE_PREFIX}}privacy/">{{PRIVACY_LABEL}}</a></div></footer>
+<script>
+const pixelField=document.getElementById("pixelField");
+if(pixelField && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+  let pixelFrame=0;
+  const movePixels=()=>{
+    if(pixelFrame) return;
+    pixelFrame=requestAnimationFrame(()=>{
+      pixelField.style.setProperty("--pixel-scroll",`${scrollY*.025}px`);
+      pixelFrame=0;
+    });
+  };
+  addEventListener("scroll",movePixels,{passive:true});
+  movePixels();
+}
+</script>
 {{ANALYTICS_BODY}}
 </body>
 </html>

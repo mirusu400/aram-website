@@ -1,14 +1,16 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat, mkdir, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import { buildSite } from "./build-site.mjs";
+import { loadBlog, parsePost } from "./blog.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const slugs = ["download", "press", "guide", "compatibility", "faq", "releases", "troubleshooting", "privacy"];
+const slugs = ["download", "press", "guide", "compatibility", "faq", "releases", "troubleshooting", "privacy", "blog"];
+const blog = await loadBlog(path.join(projectRoot, "site", "blog"), (text) => text);
 const storedReleases = JSON.parse(await readFile(path.join(projectRoot, "site", "releases.json"), "utf8"));
 const releaseSlugs = storedReleases.map((release) => release.slug);
 
@@ -100,14 +102,60 @@ test("sitemap contains every canonical page and no player variants", async (cont
   await buildSite(temporaryRoot);
   const sitemap = await readFile(path.join(temporaryRoot, "sitemap.xml"), "utf8");
   const locations = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  const expectedCount = (1 + slugs.length + releaseSlugs.length) * 2;
+  const expectedCount = (1 + slugs.length + releaseSlugs.length) * 2 + blog.posts.length;
   assert.equal(locations.length, expectedCount);
   assert.equal(new Set(locations).size, expectedCount);
   assert.ok(locations.includes("https://aram.mir.sh/"));
   assert.ok(locations.includes("https://aram.mir.sh/en/"));
   assert.ok(locations.every((location) => !location.includes("/player") && !location.includes("?")));
-  assert.equal((sitemap.match(/hreflang="ko"/g) || []).length, expectedCount);
-  assert.equal((sitemap.match(/hreflang="en"/g) || []).length, expectedCount);
+  for (const language of ["ko", "en"]) {
+    const missing = blog.pages.filter((page) => !page.locales[language]).reduce((count, page) => count + Object.keys(page.locales).length, 0);
+    assert.equal((sitemap.match(new RegExp(`hreflang="${language}"`, "g")) || []).length, expectedCount - missing);
+  }
+});
+
+test("blog publishing keeps drafts private and only links real translations", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "aram-blog-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const content = path.join(root, "content");
+  await mkdir(content);
+  const meta = { slug: "sample", lang: "ko", title: 'Test & "title"', description: "A useful description", author: "Writer & Co", published: "2026-01-01", modified: "2026-01-02" };
+  const source = (data) => `---\n${JSON.stringify(data)}\n---\n## Heading\n\nFull RSS body with <script>alert(1)</script> and **emphasis**.\n\n[Guide](https://aram.mir.sh/guide/)`;
+  await writeFile(path.join(content, "ko.md"), source(meta));
+  await writeFile(path.join(content, "draft.md"), source({ ...meta, slug: "draft", draft: true }));
+  await writeFile(path.join(content, "future.md"), source({ ...meta, slug: "future", published: "2999-01-01", modified: "2999-01-01" }));
+  const output = path.join(root, "output");
+  await buildSite(output, { blogDirectory: content, measurementId: "G-TEST12345" });
+  const html = await readFile(path.join(output, "blog/sample/index.html"), "utf8");
+  assert.equal(link(html, "canonical"), "https://aram.mir.sh/blog/sample/");
+  assert.equal(link(html, "alternate", "en"), undefined);
+  assert.doesNotMatch(html, /class="lang"|<script>alert/);
+  assert.match(html, /&lt;script&gt;/);
+  assert.equal(metadata(html, "og:type"), "article");
+  assert.match(html, /data-measurement-id="G-TEST12345"/);
+  const article = jsonLD(html).find((schema) => schema["@type"] === "BlogPosting");
+  assert.equal(article.headline, meta.title);
+  assert.equal(article.author.name, meta.author);
+  assert.equal(article.dateModified, "2026-01-02T00:00:00+09:00");
+  const webpage = jsonLD(html).find((schema) => schema["@type"] === "WebPage");
+  assert.equal(webpage.workTranslation, undefined);
+  assert.equal(webpage.breadcrumb.itemListElement.length, 3);
+  const sitemap = await readFile(path.join(output, "sitemap.xml"), "utf8");
+  assert.match(sitemap, /blog\/sample\//);
+  assert.doesNotMatch(sitemap, /blog\/(draft|future)\/|en\/blog\/sample/);
+  const feed = await readFile(path.join(output, "blog/feed.xml"), "utf8");
+  assert.match(feed, /Full RSS body/);
+  assert.match(feed, /&lt;strong&gt;emphasis&lt;\/strong&gt;/);
+  assert.doesNotMatch(feed, /blog\/(draft|future)\//);
+  await assert.rejects(stat(path.join(output, "blog/draft/index.html")), { code: "ENOENT" });
+  await writeFile(path.join(content, "en.md"), source({ ...meta, lang: "en" }));
+  const translated = path.join(root, "translated");
+  await buildSite(translated, { blogDirectory: content });
+  const en = await readFile(path.join(translated, "en/blog/sample/index.html"), "utf8");
+  assert.equal(link(en, "alternate", "ko"), "https://aram.mir.sh/blog/sample/");
+  assert.equal(link(en, "alternate", "en"), "https://aram.mir.sh/en/blog/sample/");
+  assert.throws(() => parsePost(source({ ...meta, slug: "../bad" }), "bad.md"), /invalid slug/);
+  assert.throws(() => parsePost(source({ ...meta, modified: "2025-01-01" }), "bad.md"), /precedes/);
 });
 
 test("analytics is opt-in, query-free, and excluded from the player", async (context) => {

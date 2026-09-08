@@ -113,9 +113,6 @@
   .mono{font-family:var(--m)}
   ::selection{background:var(--accent);color:var(--onaccent)}
 
-  .eyebrow{font-family:var(--m);font-size:12px;letter-spacing:.24em;text-transform:uppercase;
-    color:var(--accent-ink);display:inline-flex;align-items:center;gap:10px}
-  .eyebrow::before{content:"";width:22px;height:1px;background:var(--accent-ink)}
   h1,h2,h3{font-family:var(--f);text-wrap:balance;letter-spacing:-.02em;line-height:1.05}
 
   /* ---------- nav ---------- */
@@ -305,10 +302,64 @@
     .term pre{font-size:12px}
   }
   @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+  /* ---------- restrained retro accents ---------- */
+  body{position:relative;overflow-x:hidden}
+  .section{position:relative;z-index:1}
+  body > .pixel-field{position:fixed;top:-35vh;right:0;bottom:-35vh;left:0;pointer-events:none;
+    z-index:0;overflow:hidden;transform:translate3d(0,var(--pixel-scroll,0px),0);will-change:transform}
+  .pixel-field i{position:absolute;width:7px;height:7px;background:var(--accent);opacity:.22;
+    animation:pixelDrift 8s ease-in-out infinite alternate}
+  .pixel-field i:nth-child(1){left:3%;top:22%;width:12px;height:12px;animation-delay:-1s}
+  .pixel-field i:nth-child(2){left:8%;top:72%;animation-delay:-5s}
+  .pixel-field i:nth-child(3){left:18%;top:12%;width:5px;height:5px;animation-delay:-3s}
+  .pixel-field i:nth-child(4){left:39%;top:18%;animation-delay:-7s}
+  .pixel-field i:nth-child(5){left:45%;top:79%;width:10px;height:10px;animation-delay:-2s}
+  .pixel-field i:nth-child(6){right:43%;top:48%;width:5px;height:5px;animation-delay:-6s}
+  .pixel-field i:nth-child(7){right:26%;top:13%;animation-delay:-4s}
+  .pixel-field i:nth-child(8){right:18%;top:70%;width:11px;height:11px;animation-delay:-8s}
+  .pixel-field i:nth-child(9){right:8%;top:32%;width:5px;height:5px;animation-delay:-2.5s}
+  .pixel-field i:nth-child(10){right:3%;top:82%;animation-delay:-5.5s}
+  .pixel-field i:nth-child(11){left:2%;top:46%;width:4px;height:4px;animation-delay:-7.5s}
+  .pixel-field i:nth-child(12){left:13%;top:34%;width:9px;height:9px;animation-delay:-.5s}
+  .pixel-field i:nth-child(13){left:25%;top:61%;width:6px;height:6px;animation-delay:-4.5s}
+  .pixel-field i:nth-child(14){left:31%;top:88%;width:4px;height:4px;animation-delay:-6.5s}
+  .pixel-field i:nth-child(15){left:36%;top:41%;width:11px;height:11px;animation-delay:-3.5s}
+  .pixel-field i:nth-child(16){left:53%;top:9%;width:5px;height:5px;animation-delay:-1.5s}
+  .pixel-field i:nth-child(17){left:59%;top:63%;width:8px;height:8px;animation-delay:-8.5s}
+  .pixel-field i:nth-child(18){right:33%;top:84%;width:5px;height:5px;animation-delay:-2.2s}
+  .pixel-field i:nth-child(19){right:22%;top:48%;width:8px;height:8px;animation-delay:-6.2s}
+  .pixel-field i:nth-child(20){right:13%;top:19%;width:4px;height:4px;animation-delay:-4.2s}
+  .pixel-field i:nth-child(21){right:5%;top:61%;width:10px;height:10px;animation-delay:-.8s}
+  .pixel-field i:nth-child(22){left:48%;top:94%;width:4px;height:4px;animation-delay:-7.8s}
+  @keyframes pixelDrift{
+    from{transform:translate3d(0,-7px,0);opacity:.12}
+    to{transform:translate3d(10px,11px,0);opacity:.42}
+  }
+
+  .hero-wordmark{width:min(100%,630px);margin-top:4px;overflow:hidden}
+  .hero-wordmark img{display:block;width:100%;height:auto}
+  .hero-wordmark .wordmark-light{display:none}
+  .hero-wordmark .wordmark-dark{display:block}
+  @media(prefers-color-scheme:light){
+    :root:not([data-theme="dark"]) .hero-wordmark .wordmark-light{display:block}
+    :root:not([data-theme="dark"]) .hero-wordmark .wordmark-dark{display:none}
+  }
+  :root[data-theme="light"] .hero-wordmark .wordmark-light{display:block}
+  :root[data-theme="light"] .hero-wordmark .wordmark-dark{display:none}
+  :root[data-theme="dark"] .hero-wordmark .wordmark-light{display:none}
+  :root[data-theme="dark"] .hero-wordmark .wordmark-dark{display:block}
+  .hero h1{font-size:clamp(28px,3.9vw,44px);line-height:1.13;margin-top:28px;max-width:13ch}
+  .hero .lead{margin-top:18px}
+  @media(max-width:880px){
+    .pixel-field i:nth-child(n+17){display:none}
+  }
+  @media(prefers-reduced-motion:reduce){.pixel-field i{animation:none}}
 </style>
 {{ANALYTICS_HEAD}}
 </head>
 <body>
+<div class="pixel-field" id="pixelField" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
 <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10" /> <path d="M7 17 17 7" /></symbol>
 <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></symbol>
@@ -340,6 +391,7 @@
     <a href="#play" data-k="nav_play">Play</a>
     <a href="#download" data-k="nav_download">Download</a>
     <a href="#source" data-k="nav_source">Source</a>
+    <a href="{{LOCALE_PREFIX}}blog/">{{BLOG_LABEL}}</a>
   </div>
   <div class="ntools">
     <a class="icobtn" href="{{ALTERNATE_URL}}" hreflang="{{ALTERNATE_LANG}}" lang="{{ALTERNATE_LANG}}" title="{{LANGUAGE_TITLE}}" aria-label="{{LANGUAGE_TITLE}}"><svg class="ic"><use href="#i-languages"/></svg><span>{{LANGUAGE_LABEL}}</span></a>
@@ -351,10 +403,14 @@
 <div class="dots" id="dots"></div>
 
 <!-- HOME -->
-<section class="section" id="home"><div class="wrap"><div class="fit">
+<section class="section" id="home">
+<div class="wrap"><div class="fit">
   <div class="hero">
     <div>
-      <span class="eyebrow" data-k="hero_eyebrow">Archived Runtime for ARM Mobiles</span>
+      <div class="hero-wordmark">
+        <img class="wordmark wordmark-light" src="/assets/aram-wordmark-light.png" alt="ARAM">
+        <img class="wordmark wordmark-dark" src="/assets/aram-wordmark-dark.png" alt="ARAM">
+      </div>
       <h1 data-k="hero_h1" data-html>Bring Korean feature-phone software back to life.</h1>
       <p class="lead" data-k="hero_lead">ARAM is a cross-platform emulator that runs Korean feature-phone games and apps.</p>
       <div class="cta">
@@ -381,7 +437,6 @@
 <!-- FEATURES -->
 <section class="section" id="features"><div class="wrap"><div class="fit">
   <div class="sec-head">
-    <span class="eyebrow" data-k="ft_eyebrow">What ARAM can do</span>
     <h2 data-k="ft_h2">A real emulator, not a demo.</h2>
   </div>
   <div class="feat">
@@ -397,7 +452,6 @@
 <!-- RUNTIMES -->
 <section class="section" id="runtimes"><div class="wrap"><div class="fit">
   <div class="sec-head">
-    <span class="eyebrow" data-k="rt_eyebrow">Two ways to run</span>
     <p data-k="rt_p">ARAM runs old software two different ways. Both share the same screen, controls, saves and tools, but each uses the engine that fits the job.</p>
   </div>
   <div class="duo">
@@ -424,7 +478,6 @@
 <!-- PLAY -->
 <section class="section" id="play"><div class="wrap"><div class="fit">
   <div class="sec-head">
-    <span class="eyebrow" data-k="pl_eyebrow">Play in your browser</span>
     <h2 data-k="pl_h2">Run ARAM without installing anything.</h2>
     <p data-k="pl_p">The full ARAM frontend, compiled to WebAssembly. Launch it, then open an authorized WIPI, SKVM, Raptor, JAR, or DAT-family input; normal file opening stays in your browser.</p>
   </div>
@@ -456,7 +509,6 @@
 <!-- DOWNLOAD -->
 <section class="section" id="download"><div class="wrap"><div class="fit">
   <div class="sec-head">
-    <span class="eyebrow" data-k="dlx_eyebrow">Download</span>
     <h2 data-k="dlx_h2">Download ARAM.</h2>
     <p data-k="dlx_p">Choose a channel, then your platform. Both links always point to the newest build.</p>
   </div>
@@ -485,7 +537,6 @@
 <!-- SOURCE -->
 <section class="section" id="source"><div class="wrap"><div class="fit">
   <div class="sec-head">
-    <span class="eyebrow" data-k="src_eyebrow">Open source</span>
     <h2 data-k="src_h2">Four repositories, one product.</h2>
     <p data-k="src_p">The core and frontend stay independent behind contracts; the product integrates them. Everything is on GitHub under mirusu400.</p>
   </div>
@@ -496,6 +547,7 @@
     <a class="repo" href="https://github.com/mirusu400/aram-cheat" target="_blank" rel="noopener"><svg class="ic arr"><use href="#i-arrow-up-right"/></svg><div class="rn"><svg class="ic gh"><use href="#i-github"/></svg>mirusu400/<b>aram-cheat</b></div><div class="rd" data-k="src_cheat">Cheat database · one document per title, keyed by the loaded-image SHA-256.</div></a>
   </div>
   <nav class="resource-links" aria-label="{{RESOURCES_LABEL}}">
+    <a href="{{LOCALE_PREFIX}}blog/">{{BLOG_LABEL}}</a>
     <a href="{{LOCALE_PREFIX}}guide/" data-k="nav_guide">Guide</a>
     <a href="{{LOCALE_PREFIX}}download/" data-k="nav_download">Download</a>
     <a href="{{LOCALE_PREFIX}}compatibility/" data-k="nav_compatibility">Compatibility</a>
@@ -674,6 +726,19 @@ document.querySelectorAll(".lcdreel").forEach(reel=>{
 });
 
 /* ---------- boot ---------- */
+const pixelField=document.getElementById("pixelField");
+if(pixelField && !matchMedia("(prefers-reduced-motion: reduce)").matches){
+  let pixelFrame=0;
+  const movePixels=()=>{
+    if(pixelFrame) return;
+    pixelFrame=requestAnimationFrame(()=>{
+      pixelField.style.setProperty("--pixel-scroll",`${scrollY*.025}px`);
+      pixelFrame=0;
+    });
+  };
+  addEventListener("scroll",movePixels,{passive:true});
+  movePixels();
+}
 let ch0="stable"; try{ ch0=localStorage.getItem("aram-ch")||"stable"; }catch(e){}
 setChannel(ch0);
 if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitAll); }
