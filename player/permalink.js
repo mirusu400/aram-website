@@ -50,9 +50,9 @@
 
     let url;
     try {
-      url = new URL(app, baseURL);
+      url = new URL(app);
     } catch (_) {
-      throw new Error("The app parameter is not a valid URL.");
+      throw new Error("The app parameter must be an absolute URL.");
     }
     if (url.protocol !== "https:") {
       throw new Error("The app URL must use HTTPS.");
@@ -76,6 +76,14 @@
     const url = new URL(currentURL);
     url.searchParams.set("ch", channel);
     return url.toString();
+  }
+
+  function nativeAppURL(currentURL) {
+    const current = new URL(currentURL);
+    if (!parse(current.search, current.toString())) return "";
+    const native = new URL("aram://open");
+    native.searchParams.set("url", current.toString());
+    return native.toString();
   }
 
   function declaredLength(response) {
@@ -167,6 +175,7 @@
     MAX_PACKAGE_BYTES,
     parse,
     withChannel,
+    nativeAppURL,
     fetchPackage,
   };
 });

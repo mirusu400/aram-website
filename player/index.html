@@ -38,6 +38,11 @@
   }
   #chrow a:hover { color: #e6e6ea; }
   #chrow a.on { background: #00d992; color: #06140d; }
+  #appOpen {
+    color: #00d992; font-size: 13px; font-weight: 700; text-decoration: none;
+    border: 1px solid #00d992; border-radius: 999px; padding: 7px 16px;
+  }
+  #appOpen:hover { background: #00d992; color: #06140d; }
 </style>
 </head>
 <body>
@@ -49,6 +54,7 @@
     <a id="chStable" href="?ch=stable">Stable</a>
     <a id="chNightly" href="?ch=nightly">Nightly</a>
   </div>
+  <a id="appOpen" hidden>Open in installed ARAM app</a>
 </div>
 
 <script src="permalink.js"></script>
@@ -88,6 +94,12 @@
   } catch (e) {
     fail(e && e.message ? e.message : String(e));
     return;
+  }
+
+  if (initialSpec) {
+    const appOpen = document.getElementById("appOpen");
+    appOpen.href = ARAMPermalink.nativeAppURL(location.href);
+    appOpen.hidden = false;
   }
 
   status.textContent = "Loading ARAM (" + ch + ")…";

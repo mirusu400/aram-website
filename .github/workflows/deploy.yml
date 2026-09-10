@@ -52,6 +52,7 @@ jobs:
           cp 6c4e0a03d58b41e7a9f2c0bd7835e146.txt _site/
           cp -r assets _site/
           cp -r player _site/
+          cp -r .well-known _site/
           echo aram.mir.sh > _site/CNAME
           touch _site/.nojekyll
 

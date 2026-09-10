@@ -1,0 +1,22 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.mirusu400.aram",
+      "sha256_cert_fingerprints": [
+        "98:98:4B:3B:FF:4E:1D:2A:13:09:AC:26:C3:6F:97:CC:5A:A2:49:90:87:E7:94:85:BE:85:8A:5A:1E:59:2F:29"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.mirusu400.aram.nightly",
+      "sha256_cert_fingerprints": [
+        "F6:03:45:3C:75:84:DF:C3:CA:E6:B1:FB:4C:75:67:71:D1:7D:56:12:7D:38:1B:09:B4:18:62:B1:3A:3F:6C:C8"
+      ]
+    }
+  }
+]

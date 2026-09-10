@@ -45,6 +45,14 @@ test("parse requires an HTTPS app URL and a SHA-256 digest", () => {
       ),
     /credentials/,
   );
+  assert.throws(
+    () =>
+      permalink.parse(
+        `?app=${encodeURIComponent("/demo.zip")}&sha256=${digest}`,
+        "https://aram.mir.sh/player/",
+      ),
+    /absolute URL/,
+  );
 });
 
 test("channel links preserve the complete app permalink", () => {
@@ -56,6 +64,18 @@ test("channel links preserve the complete app permalink", () => {
   assert.equal(stable.searchParams.get("ch"), "stable");
   assert.equal(stable.searchParams.get("app"), "https://example.invalid/demo.zip");
   assert.equal(stable.searchParams.get("sha256"), digest);
+});
+
+test("native app links wrap the complete HTTPS permalink", () => {
+  const current =
+    "https://aram.mir.sh/player/?ch=stable" +
+    `&app=${encodeURIComponent("https://example.invalid/demo.zip")}` +
+    `&sha256=${digest}`;
+  const native = new URL(permalink.nativeAppURL(current));
+  assert.equal(native.protocol, "aram:");
+  assert.equal(native.host, "open");
+  assert.equal(native.searchParams.get("url"), current);
+  assert.equal(permalink.nativeAppURL("https://aram.mir.sh/player/?ch=stable"), "");
 });
 
 test("fetchPackage downloads bounded bytes without credentials and verifies SHA-256", async () => {
@@ -122,4 +142,20 @@ test("the player loads the permalink helper and hands bytes to the WASM bridge",
   const html = readFileSync(join(__dirname, "index.html"), "utf8");
   assert.match(html, /<script src="permalink\.js"><\/script>/);
   assert.match(html, /globalThis\.__aramInitialPackage\s*=/);
+  assert.match(html, /ARAMPermalink\.nativeAppURL/);
+});
+
+test("the site publishes Android App Links for stable and nightly", () => {
+  const links = JSON.parse(
+    readFileSync(join(__dirname, "..", ".well-known", "assetlinks.json"), "utf8"),
+  );
+  const packages = links.map((entry) => entry.target.package_name).sort();
+  assert.deepEqual(packages, [
+    "io.github.mirusu400.aram",
+    "io.github.mirusu400.aram.nightly",
+  ]);
+  for (const entry of links) {
+    assert.deepEqual(entry.relation, ["delegate_permission/common.handle_all_urls"]);
+    assert.match(entry.target.sha256_cert_fingerprints[0], /^(?:[0-9A-F]{2}:){31}[0-9A-F]{2}$/);
+  }
 });
