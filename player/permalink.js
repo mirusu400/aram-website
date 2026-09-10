@@ -80,9 +80,11 @@
 
   function nativeAppURL(currentURL) {
     const current = new URL(currentURL);
-    if (!parse(current.search, current.toString())) return "";
+    const spec = parse(current.search, current.toString());
+    if (!spec) return "";
     const native = new URL("aram://open");
-    native.searchParams.set("url", current.toString());
+    native.searchParams.set("app", spec.url);
+    native.searchParams.set("sha256", spec.sha256);
     return native.toString();
   }
 

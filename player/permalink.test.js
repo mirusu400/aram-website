@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 const { readFileSync } = require("node:fs");
-const { webcrypto } = require("node:crypto");
+const { createHash, webcrypto } = require("node:crypto");
 const { join } = require("node:path");
 const test = require("node:test");
 
@@ -66,7 +66,7 @@ test("channel links preserve the complete app permalink", () => {
   assert.equal(stable.searchParams.get("sha256"), digest);
 });
 
-test("native app links wrap the complete HTTPS permalink", () => {
+test("native app links carry the package directly without a web wrapper", () => {
   const current =
     "https://aram.mir.sh/player/?ch=stable" +
     `&app=${encodeURIComponent("https://example.invalid/demo.zip")}` +
@@ -74,8 +74,21 @@ test("native app links wrap the complete HTTPS permalink", () => {
   const native = new URL(permalink.nativeAppURL(current));
   assert.equal(native.protocol, "aram:");
   assert.equal(native.host, "open");
-  assert.equal(native.searchParams.get("url"), current);
+  assert.equal(native.searchParams.get("url"), null);
+  assert.equal(native.searchParams.get("app"), "https://example.invalid/demo.zip");
+  assert.equal(native.searchParams.get("sha256"), digest);
   assert.equal(permalink.nativeAppURL("https://aram.mir.sh/player/?ch=stable"), "");
+});
+
+test("the published native-link demo package has its pinned identity", () => {
+  const bytes = readFileSync(
+    join(__dirname, "examples", "libwipi-graphics-gallery.zip"),
+  );
+  assert.equal(bytes.byteLength, 4575);
+  assert.equal(
+    createHash("sha256").update(bytes).digest("hex"),
+    "2ff0405f4155a8c4d1edd639c4e07437e366e2398d4e30131f94c42c7dd0f56b",
+  );
 });
 
 test("fetchPackage downloads bounded bytes without credentials and verifies SHA-256", async () => {
