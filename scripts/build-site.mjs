@@ -266,8 +266,15 @@ async function loadStoredReleases() {
 }
 
 function renderInlineMarkdown(value) {
+  const images = [];
   const links = [];
-  const tokenized = String(value).replace(/\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g, (whole, label, href) => {
+  const tokenized = String(value)
+    .replace(/!\[([^\]]*)\]\((\/assets\/blog\/[a-zA-Z0-9/_.-]+\.(?:png|jpe?g|webp))\)/gi, (whole, alt, src) => {
+      const token = `\u0001ARAM-IMAGE-${images.length}\u0001`;
+      images.push(`<img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy" decoding="async">`);
+      return token;
+    })
+    .replace(/\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g, (whole, label, href) => {
     const url = new URL(href);
     if (url.protocol !== "https:") return whole;
     const token = `\u0001ARAM-LINK-${links.length}\u0001`;
@@ -279,6 +286,9 @@ function renderInlineMarkdown(value) {
     .replace(/`([^`]+)`/g, "<code>$1</code>");
   for (let index = 0; index < links.length; index += 1) {
     output = output.replace(`\u0001ARAM-LINK-${index}\u0001`, links[index]);
+  }
+  for (let index = 0; index < images.length; index += 1) {
+    output = output.replace(`\u0001ARAM-IMAGE-${index}\u0001`, images[index]);
   }
   return output;
 }

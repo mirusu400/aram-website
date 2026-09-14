@@ -51,6 +51,21 @@ node --test player/permalink.test.js scripts/analytics.test.mjs scripts/indexnow
 
 ## Blog authoring
 
+### Write in a browser
+
+After this branch is deployed, open [Pages CMS](https://app.pagescms.org), sign
+in with GitHub, and install its GitHub App only for `mirusu400/aram-website`.
+Choose **블로그 글**, then create or edit a post. Saving creates a regular Git
+commit; the existing GitHub Pages workflow deploys it automatically. Pages CMS
+has no separate content database: GitHub remains the source of truth.
+
+Use the image button in the **본문** editor to upload `.jpg`, `.jpeg`, `.png`,
+or `.webp` files. They are stored in `assets/blog/` and inserted into the body.
+Set **대표 이미지** only when you want a custom search and social preview card.
+Keep screenshots reasonably compressed; WebP is preferred for screenshots.
+
+### Write in VS Code
+
 Add a UTF-8 `.md` file to `site/blog/`, using `reading-compatibility.ko.md` as
 the example. Each file starts with JSON metadata between two `---` lines:
 `slug`, `lang` (`ko` or `en`), `title`, `description`, `author`, `published`,
@@ -59,7 +74,8 @@ build; future publication dates are also excluded. Use the same slug for a
 translation. Only published translations receive alternate-language links.
 
 The lightweight Markdown renderer supports headings, paragraphs, unordered
-lists, bold, inline code, fenced code blocks, and absolute HTTPS links. Raw HTML
+lists, bold, inline code, fenced code blocks, local blog images, and absolute
+HTTPS links. Use `![설명](/assets/blog/image.webp)` for a body image. Raw HTML
 is escaped. Use full `https://aram.mir.sh/.../` links so they also work in RSS.
 An optional `image` can point to a local `/assets/...png`, `.jpg`, `.jpeg`, or
 `.webp` social card; otherwise the localized ARAM card is used.

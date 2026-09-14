@@ -1,0 +1,108 @@
+media:
+  - name: blog_images
+    label: 블로그 이미지
+    input: assets/blog
+    output: /assets/blog
+    categories: [image]
+    extensions: [jpg, jpeg, png, webp]
+    rename: safe
+    commit:
+      templates:
+        create: "media(blog): add {filename}"
+        update: "media(blog): update {filename}"
+
+content:
+  - name: blog_posts
+    label: 블로그 글
+    type: collection
+    path: site/blog
+    format: json-frontmatter
+    filename:
+      template: "{slug}.{lang}.md"
+      field: false
+    view:
+      primary: title
+      fields: [title, published, lang, draft]
+      sort: [published, modified, title]
+      search: [title, description, slug]
+      default:
+        sort: published
+        order: desc
+    fields:
+      - name: title
+        label: 제목
+        type: string
+        required: true
+      - name: description
+        label: 검색 설명
+        description: "검색 결과와 글 목록에 표시됩니다. 핵심 내용을 자연스럽게 적어 주세요."
+        type: text
+        required: true
+      - name: slug
+        label: 주소 이름
+        description: "영문 소문자·숫자·하이픈만 사용합니다. 발행 후에는 바꾸지 않는 편이 좋습니다."
+        type: string
+        required: true
+        pattern:
+          regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          message: "영문 소문자, 숫자, 하이픈만 사용할 수 있습니다."
+      - name: lang
+        label: 언어
+        type: select
+        required: true
+        options:
+          values:
+            - name: ko
+              label: 한국어
+            - name: en
+              label: English
+      - name: author
+        label: 작성자
+        type: string
+        required: true
+        default: mirusu400
+      - name: published
+        label: 발행일
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: modified
+        label: 수정일
+        description: "본문을 실질적으로 수정한 날만 변경하세요."
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: image
+        label: 대표 이미지
+        description: "검색·공유 카드에 쓰입니다. 비워두면 기본 ARAM 카드가 사용됩니다."
+        type: image
+        options:
+          media: blog_images
+          path: assets/blog
+          extensions: [jpg, jpeg, png, webp]
+          rename: safe
+      - name: draft
+        label: 초안으로 저장
+        description: "켜 두면 사이트와 RSS에 발행되지 않습니다."
+        type: boolean
+        default: false
+      - name: body
+        label: 본문
+        type: rich-text
+        required: true
+        options:
+          format: markdown
+          media: blog_images
+          path: assets/blog
+          extensions: [jpg, jpeg, png, webp]
+          rename: safe
+          switcher: true
+
+settings:
+  commit:
+    templates:
+      create: "blog: publish {path}"
+      update: "blog: update {path}"
+      delete: "blog: remove {path}"
