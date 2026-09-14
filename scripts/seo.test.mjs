@@ -173,6 +173,13 @@ test("blog images are local, safe, and lazy-loaded", async (context) => {
   assert.doesNotMatch(html, /<img src="https:\/\//);
 });
 
+test("blog accepts Pages CMS JSON metadata without delimiter lines", () => {
+  const source = `${JSON.stringify({ slug: "cms-post", lang: "ko", title: "CMS post", description: "Written in a browser", author: "Writer", published: "2026-09-14", modified: "2026-09-14" }, null, 2)}\nHello from Pages CMS.`;
+  const post = parsePost(source, "cms-post.ko.md");
+  assert.equal(post.slug, "cms-post");
+  assert.equal(post.markdown, "Hello from Pages CMS.");
+});
+
 test("analytics is opt-in, query-free, and excluded from the player", async (context) => {
   const temporaryRoot = await mkdtemp(path.join(os.tmpdir(), "aram-analytics-"));
   context.after(async () => rm(temporaryRoot, { recursive: true, force: true }));

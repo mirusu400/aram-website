@@ -4,10 +4,39 @@ import path from "node:path";
 const base = "https://aram.mir.sh";
 export const escape = (value) => String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 const prefix = (lang) => lang === "ko" ? "" : "/en";
+
+function splitPostSource(source, filename) {
+  const delimited = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]+)$/);
+  if (delimited) return { metadata: delimited[1], body: delimited[2] };
+  if (!source.startsWith("{")) throw new Error(`${filename}: expected JSON metadata`);
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') inString = true;
+    else if (character === "{") depth += 1;
+    else if (character === "}") {
+      depth -= 1;
+      if (depth === 0) {
+        const body = source.slice(index + 1).replace(/^\r?\n/, "");
+        if (!body.trim()) throw new Error(`${filename}: post body is empty`);
+        return { metadata: source.slice(0, index + 1), body };
+      }
+    }
+  }
+  throw new Error(`${filename}: incomplete JSON metadata`);
+}
+
 export function parsePost(source, filename) {
-  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]+)$/);
-  if (!match) throw new Error(`${filename}: expected JSON metadata between --- lines`);
-  const meta = JSON.parse(match[1]);
+  const { metadata, body } = splitPostSource(source, filename);
+  const meta = JSON.parse(metadata);
   for (const key of ["slug", "lang", "title", "description", "author", "published", "modified"]) {
     if (typeof meta[key] !== "string" || !meta[key].trim()) throw new Error(`${filename}: missing ${key}`);
   }
@@ -18,7 +47,7 @@ export function parsePost(source, filename) {
   if (meta.modified < meta.published) throw new Error(`${filename}: modified precedes published`);
   if (meta.draft !== undefined && typeof meta.draft !== "boolean") throw new Error(`${filename}: draft must be boolean`);
   if (meta.image && !/^\/assets\/[a-zA-Z0-9/_.-]+\.(png|jpg|jpeg|webp)$/.test(meta.image)) throw new Error(`${filename}: invalid image`);
-  return { ...meta, markdown: match[2], url: `${base}${prefix(meta.lang)}/blog/${meta.slug}/` };
+  return { ...meta, markdown: body, url: `${base}${prefix(meta.lang)}/blog/${meta.slug}/` };
 }
 
 export async function loadBlog(directory, renderMarkdown) {

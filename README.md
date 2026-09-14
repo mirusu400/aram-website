@@ -59,6 +59,10 @@ Choose **블로그 글**, then create or edit a post. Saving creates a regular G
 commit; the existing GitHub Pages workflow deploys it automatically. Pages CMS
 has no separate content database: GitHub remains the source of truth.
 
+Pages CMS writes the JSON metadata automatically; do not add `---` delimiter
+lines in its editor. The build accepts both its format and the delimiter-based
+format used for manual Markdown files.
+
 Use the image button in the **본문** editor to upload `.jpg`, `.jpeg`, `.png`,
 or `.webp` files. They are stored in `assets/blog/` and inserted into the body.
 Set **대표 이미지** only when you want a custom search and social preview card.
