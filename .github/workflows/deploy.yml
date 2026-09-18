@@ -30,6 +30,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install site build dependencies
+        run: npm ci
+
       - name: Sync published stable release notes
         run: node scripts/sync-releases.mjs
         env:
@@ -55,6 +58,9 @@ jobs:
           cp -r .well-known _site/
           echo aram.mir.sh > _site/CNAME
           touch _site/.nojekyll
+
+      - name: Minify copied CSS and JavaScript assets
+        run: npm run optimize
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-artifact@v4

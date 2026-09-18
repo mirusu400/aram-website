@@ -62,12 +62,18 @@ test("localized build emits distinct, indexable Korean and English pages", async
     assert.doesNotMatch(html, /navigator\.language|applyLang\(/);
     assert.doesNotMatch(html, /assets\/analytics\.js/);
     assert.doesNotThrow(() => jsonLD(html), `${relativePath} contains invalid JSON-LD`);
+    for (const image of html.matchAll(/<img\b[^>]*>/g)) {
+      assert.match(image[0], /\bwidth="\d+"/, `${relativePath} image needs an explicit width`);
+      assert.match(image[0], /\bheight="\d+"/, `${relativePath} image needs an explicit height`);
+    }
   }
 
   const koHome = await readFile(path.join(temporaryRoot, "index.html"), "utf8");
   const enHome = await readFile(path.join(temporaryRoot, "en/index.html"), "utf8");
   assert.match(koHome, /한국 피처폰 소프트웨어를 다시 켜다/);
   assert.match(enHome, /Bring Korean feature-phone software back to life/);
+  assert.match(koHome, /pretendardvariable-dynamic-subset\.css/);
+  assert.doesNotMatch(koHome, /const I18N=\{[^<]+about_eyebrow/);
   for (const slug of slugs) {
     assert.match(koHome, new RegExp(`href="/${slug}/"`));
     assert.match(enHome, new RegExp(`href="/en/${slug}/"`));

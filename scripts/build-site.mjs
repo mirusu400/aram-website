@@ -1,15 +1,44 @@
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import vm from "node:vm";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
+import { minify } from "html-minifier-terser";
+import { imageSize } from "image-size";
+
 import { pages } from "../site/pages.mjs";
 import { loadBlog, writeFeeds } from "./blog.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const assetsRoot = path.join(projectRoot, "assets");
 const baseURL = "https://aram.mir.sh";
+
+const htmlMinifierOptions = {
+  collapseWhitespace: true,
+  minifyCSS: true,
+  minifyJS: true,
+  removeComments: true,
+};
+
+function minifyHTML(source) {
+  return minify(source, htmlMinifierOptions);
+}
+
+function localImageDimensions(source) {
+  if (!source.startsWith("/assets/")) return null;
+  const filename = path.resolve(projectRoot, source.slice(1));
+  const relative = path.relative(assetsRoot, filename);
+  if (relative.startsWith("..") || path.isAbsolute(relative)) return null;
+  try {
+    const { width, height } = imageSize(readFileSync(filename));
+    return Number.isSafeInteger(width) && Number.isSafeInteger(height) ? { width, height } : null;
+  } catch {
+    return null;
+  }
+}
 
 const localeConfig = {
   ko: {
@@ -131,13 +160,19 @@ function extractDictionary(template) {
 
 function localizeDataElements(source, language, dictionary) {
   const elementPattern = /<([a-z][a-z0-9-]*)([^>]*\bdata-k="([^"]+)"[^>]*)>([\s\S]*?)<\/\1>/gi;
-  return source.replace(elementPattern, (whole, tag, attributes, key) => {
+  const localized = source.replace(elementPattern, (whole, tag, attributes, key) => {
     const translation = dictionary[key]?.[language];
     if (typeof translation !== "string") {
       throw new Error(`Missing ${language} translation for data-k=${key}`);
     }
     return `<${tag}${attributes}>${translation}</${tag}>`;
   });
+  const runtimeDictionary = Object.fromEntries(["dlx_stable", "dlx_nightly"].map((key) => {
+    const translation = dictionary[key]?.[language];
+    if (typeof translation !== "string") throw new Error(`Missing ${language} translation for ${key}`);
+    return [key, translation];
+  }));
+  return localized.replace(/const I18N=\{[\s\S]*?\n\};\nconst LS_THEME/, `const I18N=${JSON.stringify(runtimeDictionary)};\nconst LS_THEME`);
 }
 
 function prettyJSON(value) {
@@ -271,7 +306,9 @@ function renderInlineMarkdown(value) {
   const tokenized = String(value)
     .replace(/!\[([^\]]*)\]\((\/assets\/blog\/[a-zA-Z0-9/_.-]+\.(?:png|jpe?g|webp))\)/gi, (whole, alt, src) => {
       const token = `\u0001ARAM-IMAGE-${images.length}\u0001`;
-      images.push(`<img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy" decoding="async">`);
+      const dimensions = localImageDimensions(src);
+      const size = dimensions ? ` width="${dimensions.width}" height="${dimensions.height}"` : "";
+      images.push(`<img src="${escapeHTML(src)}" alt="${escapeHTML(alt)}"${size} loading="lazy" decoding="async">`);
       return token;
     })
     .replace(/\[([^\]]+)\]\((https:\/\/[^)\s]+)\)/g, (whole, label, href) => {
@@ -468,7 +505,7 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
     const rendered = replaceTokens(localized, values, "landing page");
     const outputPath = language === "ko" ? path.join(destination, "index.html") : path.join(destination, "en", "index.html");
     await mkdir(path.dirname(outputPath), { recursive: true });
-    await writeFile(outputPath, rendered, "utf8");
+    await writeFile(outputPath, await minifyHTML(rendered), "utf8");
     sitemapEntries.push({
       canonical: locale.canonical,
       koURL: `${baseURL}/`,
@@ -553,7 +590,7 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
       const relativeParts = language === "ko" ? [pageDefinition.slug, "index.html"] : ["en", pageDefinition.slug, "index.html"];
       const outputPath = path.join(destination, ...relativeParts);
       await mkdir(path.dirname(outputPath), { recursive: true });
-      await writeFile(outputPath, rendered, "utf8");
+      await writeFile(outputPath, await minifyHTML(rendered), "utf8");
       sitemapEntries.push({ canonical, koURL, enURL, lastmod: page.lastmod || articleLastmod });
     }
   }
@@ -611,7 +648,7 @@ export async function buildSite(outputDirectory, { measurementId = "", releases 
         : ["en", "releases", release.slug, "index.html"];
       const outputPath = path.join(destination, ...relativeParts);
       await mkdir(path.dirname(outputPath), { recursive: true });
-      await writeFile(outputPath, rendered, "utf8");
+      await writeFile(outputPath, await minifyHTML(rendered), "utf8");
       sitemapEntries.push({ canonical, koURL, enURL, lastmod: release.publishedAt.slice(0, 10) });
     }
   }

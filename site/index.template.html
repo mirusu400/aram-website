@@ -70,7 +70,7 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <style>
   /* ---------- VoltAgent-derived tokens · dark (default) ---------- */
   :root{
@@ -78,8 +78,8 @@
     --ink:#f2f2f2; --ink-strong:#ffffff; --body:#bdbdbd; --mute:#8b949e;
     --line:#302f2d; --accent:#00d992; --accent-ink:#00d992; --accent-deep:#10b981;
     --onaccent:#06140d; --scan:rgba(0,0,0,.22); --nav:60px;
-    --f:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
-    --m:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+    --f:"Pretendard Variable","Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
+    --m:"Pretendard Variable","Pretendard",-apple-system,BlinkMacSystemFont,system-ui,"Segoe UI",Roboto,sans-serif;
   }
   /* light palette, applied when OS is light and user has not forced dark */
   @media (prefers-color-scheme: light){
@@ -408,8 +408,8 @@
   <div class="hero">
     <div>
       <div class="hero-wordmark">
-        <img class="wordmark wordmark-light" src="/assets/aram-wordmark-light.png" alt="ARAM">
-        <img class="wordmark wordmark-dark" src="/assets/aram-wordmark-dark.png" alt="ARAM">
+        <img class="wordmark wordmark-light" src="/assets/aram-wordmark-light.png" alt="ARAM" width="2172" height="724">
+        <img class="wordmark wordmark-dark" src="/assets/aram-wordmark-dark.png" alt="ARAM" width="2172" height="724">
       </div>
       <h1 data-k="hero_h1" data-html>Bring Korean feature-phone software back to life.</h1>
       <p class="lead" data-k="hero_lead">ARAM is a cross-platform emulator that runs Korean feature-phone games and apps.</p>
@@ -645,7 +645,6 @@ const I18N={
    ko:"ARAM은 펌웨어·상용 게임·키·메모리 덤프·기기 폰트를 배포하지 않습니다. 사용 권한이 있는 자료만 직접 제공하세요. 어떤 제조사·통신사와도 무관합니다."}
 };
 const LS_THEME="aram-theme";
-const lang="{{LANG}}";
 
 /* ---------- theme ---------- */
 function effTheme(){
@@ -705,7 +704,7 @@ function setChannel(ch){
   const pl=document.getElementById("playLaunch"); if(pl) pl.href="/player/?ch="+ch;
   const br=document.getElementById("dlBrowser"); if(br) br.href="/player/?ch="+ch;
   const note=document.getElementById("dlChan");
-  if(note){ note.dataset.k=c.note; const tr=I18N[c.note]; if(tr) note.textContent=tr[lang]; }
+  if(note){ note.dataset.k=c.note; const tr=I18N[c.note]; if(tr) note.textContent=tr; }
   try{ localStorage.setItem("aram-ch",ch); }catch(e){}
 }
 document.querySelectorAll(".dltab").forEach(t=>t.addEventListener("click",()=>setChannel(t.dataset.ch)));

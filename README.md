@@ -31,10 +31,12 @@ to serve from a CDN. So it is pulled at build time and served same-origin.
 ## Local preview
 
 ```powershell
+npm ci
 pwsh scripts/sync-player.ps1      # or: bash scripts/sync-player.sh
-node scripts/build-site.mjs _site
+npm run build
 Copy-Item robots.txt _site/
 Copy-Item -Recurse assets,player _site/
+npm run optimize
 python -m http.server 8000 -d _site
 # open http://localhost:8000/
 ```
@@ -46,7 +48,7 @@ results.
 Run the complete static SEO and player contract checks with:
 
 ```powershell
-node --test player/permalink.test.js scripts/analytics.test.mjs scripts/indexnow.test.mjs scripts/releases.test.mjs scripts/seo.test.mjs
+npm test
 ```
 
 ## Blog authoring
