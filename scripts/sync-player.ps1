@@ -23,6 +23,10 @@ function Sync-Channel([string]$ch, [string]$url) {
             [System.IO.Compression.ZipFileExtensions]::ExtractToFile($entry, (Join-Path $dir $name), $true)
         }
     } finally { $zip.Dispose() }
+    $digest = (Get-FileHash -Algorithm SHA256 -LiteralPath $tmp).Hash.ToLowerInvariant()
+    $metadata = '{"version":"' + $digest + '"}'
+    [System.IO.File]::WriteAllText((Join-Path $dir "runtime.json"), $metadata,
+        [System.Text.UTF8Encoding]::new($false))
     Remove-Item $tmp -Force
     Write-Host "[$ch] ready"
 }

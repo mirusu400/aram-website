@@ -16,6 +16,7 @@ test("copied CSS, JavaScript, and player HTML are minified", async (context) => 
     "assets/analytics.js": "// comment\nconst value = 1 + 2;\nwindow.value = value;\n",
     "assets/analytics.css": ".banner { color: red; padding: 0 0 0 0; }\n",
     "player/permalink.js": "// comment\nwindow.helper = function () { return true; };\n",
+    "player/runtime.js": "// comment\nwindow.runtime = function () { return true; };\n",
     "player/index.html": "<!doctype html><html><head><style>body { margin: 0; }</style></head><body> <p>Player</p> <script>window.ready = true;</script></body></html>",
   };
   for (const [relativePath, source] of Object.entries(fixtures)) {

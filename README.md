@@ -20,13 +20,16 @@ in-browser build of the emulator.
 | `assets/og-{ko,en}.png` | Localized Open Graph and X/Twitter preview cards. |
 | `assets/analytics.{js,css}` | Consent-first GA4 loader and privacy-preserving event allowlist. |
 | `player/` | In-browser ARAM (Ebitengine → WebAssembly), including the checked-in permalink loader. |
-| `player/aram.wasm`, `player/wasm_exec.js` | **Not committed**, ~52 MB runtime, fetched from the `aram-emu` **nightly** release at deploy time. |
-| `scripts/sync-player.{ps1,sh}` | Download the runtime from the nightly release into `player/`. |
+| `player/{stable,nightly}/aram.wasm`, `wasm_exec.js`, `runtime.json` | **Not committed**; release runtimes and a version digest fetched at deploy time. |
+| `scripts/sync-player.{ps1,sh}` | Download the Stable and Nightly runtimes and write each channel's version digest. |
 | `.github/workflows/deploy.yml` | GitHub Pages deploy: runs the sync, then deploys. |
 
 Why the wasm isn't committed: GitHub release assets have no CORS headers (so the
 browser can't fetch them cross-origin), and the file is too large / not tracked
 to serve from a CDN. So it is pulled at build time and served same-origin.
+The player checks `runtime.json` without cache on load and uses its digest in
+the runtime asset URLs. An open tab checks again every five minutes and when
+it regains focus, then offers a reload if a newer build has been deployed.
 
 ## Local preview
 

@@ -5,6 +5,7 @@
 # to populate player/stable/ and player/nightly/ before serving or deploying.
 player/*/aram.wasm
 player/*/wasm_exec.js
+player/*/runtime.json
 
 # legacy single-channel layout
 player/aram.wasm

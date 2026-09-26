@@ -32,6 +32,7 @@ export async function optimizeAssets(root) {
     optimizeFile(root, "assets/analytics.js", minifyJavaScript),
     optimizeFile(root, "assets/analytics.css", minifyCSS),
     optimizeFile(root, "player/permalink.js", minifyJavaScript),
+    optimizeFile(root, "player/runtime.js", minifyJavaScript),
     optimizeFile(root, "player/index.html", (source) => minify(source, {
       collapseWhitespace: true,
       minifyCSS: true,

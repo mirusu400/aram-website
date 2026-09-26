@@ -43,6 +43,12 @@
     border: 1px solid #00d992; border-radius: 999px; padding: 7px 16px;
   }
   #appOpen:hover { background: #00d992; color: #06140d; }
+  #runtimeUpdate {
+    position: fixed; z-index: 10; top: 16px; right: 16px;
+    color: #06140d; background: #00d992; border: 0; border-radius: 999px;
+    padding: 10px 16px; font: inherit; font-weight: 700; cursor: pointer;
+  }
+  #runtimeUpdate[hidden] { display: none; }
 </style>
 </head>
 <body>
@@ -56,8 +62,10 @@
   </div>
   <a id="appOpen" hidden>Open in installed ARAM app</a>
 </div>
+<button id="runtimeUpdate" type="button" hidden>New ARAM build available — reload</button>
 
 <script src="permalink.js"></script>
+<script src="runtime.js"></script>
 <script>
 (async function () {
   const boot = document.getElementById("boot");
@@ -87,6 +95,10 @@
     fail("Failed to load the permalink helper.");
     return;
   }
+  if (!globalThis.ARAMRuntime) {
+    fail("Failed to load the runtime helper.");
+    return;
+  }
 
   let initialSpec;
   try {
@@ -104,10 +116,41 @@
 
   status.textContent = "Loading ARAM (" + ch + ")…";
 
+  let runtimeVersion;
+  try {
+    runtimeVersion = await ARAMRuntime.fetchVersion(ch);
+  } catch (e) {
+    fail("Failed to check the latest " + ch + " build: " + (e && e.message ? e.message : e));
+    return;
+  }
+
+  // A running WASM instance cannot be replaced safely. Offer a reload when a
+  // newer site deployment arrives, including when the tab becomes visible.
+  const runtimeUpdate = document.getElementById("runtimeUpdate");
+  runtimeUpdate.addEventListener("click", () => location.reload());
+  let checking = false;
+  async function checkForUpdate() {
+    if (checking || !runtimeUpdate.hidden) return;
+    checking = true;
+    try {
+      if (await ARAMRuntime.fetchVersion(ch) !== runtimeVersion) {
+        runtimeUpdate.hidden = false;
+      }
+    } catch (e) {
+      console.warn("Could not check for a new ARAM build", e);
+    } finally {
+      checking = false;
+    }
+  }
+  setInterval(checkForUpdate, 5 * 60 * 1000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) checkForUpdate();
+  });
+
   // load the channel's wasm_exec.js (must match the wasm's Go toolchain)
   await new Promise((resolve, reject) => {
     const s = document.createElement("script");
-    s.src = ch + "/wasm_exec.js";
+    s.src = ARAMRuntime.assetURL(ch, "wasm_exec.js", runtimeVersion);
     s.onload = resolve;
     s.onerror = () => reject(new Error("wasm_exec.js"));
     document.head.appendChild(s);
@@ -131,7 +174,7 @@
       ? "Downloading " + initialSpec.name + " and the " + ch + " build…"
       : "Downloading " + ch + " build…";
     const wasmPromise = WebAssembly.instantiateStreaming(
-      fetch(ch + "/aram.wasm"),
+      fetch(ARAMRuntime.assetURL(ch, "aram.wasm", runtimeVersion)),
       go.importObject,
     );
     const packagePromise = initialSpec

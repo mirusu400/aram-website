@@ -9,12 +9,14 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 
 fetch() { # $1 = channel dir, $2 = aram-web.zip url
-  local ch="$1" url="$2" tmp
+  local ch="$1" url="$2" tmp digest
   tmp="$(mktemp -d)"
   echo "[$ch] downloading $url"
   curl -fsSL "$url" -o "$tmp/aram-web.zip"
   mkdir -p "$root/player/$ch"
   unzip -o "$tmp/aram-web.zip" aram.wasm wasm_exec.js -d "$root/player/$ch"
+  digest="$(sha256sum "$tmp/aram-web.zip" | cut -d ' ' -f 1)"
+  printf '{"version":"%s"}\n' "$digest" > "$root/player/$ch/runtime.json"
   rm -rf "$tmp"
 }
 
