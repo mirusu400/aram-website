@@ -170,11 +170,12 @@ test("blog images are local, safe, and lazy-loaded", async (context) => {
   const content = path.join(root, "content");
   await mkdir(content);
   const metadata = { slug: "images", lang: "ko", title: "Image post", description: "Image test", author: "Writer", published: "2026-01-01", modified: "2026-01-01" };
-  await writeFile(path.join(content, "images.md"), `---\n${JSON.stringify(metadata)}\n---\n![A <test> image](/assets/blog/phone-shot.webp)\n\n![Remote](https://example.com/image.webp)`);
+  await writeFile(path.join(content, "images.md"), `---\n${JSON.stringify(metadata)}\n---\n![A <test> image](/assets/blog/phone-shot.webp)\n\n![Existing game screen](/assets/shots/shot-01.png)\n\n![Remote](https://example.com/image.webp)`);
   const output = path.join(root, "output");
   await buildSite(output, { blogDirectory: content });
   const html = await readFile(path.join(output, "blog/images/index.html"), "utf8");
   assert.match(html, /<img src="\/assets\/blog\/phone-shot\.webp" alt="A &lt;test&gt; image" loading="lazy" decoding="async">/);
+  assert.match(html, /<img src="\/assets\/shots\/shot-01\.png" alt="Existing game screen" width="240" height="320" loading="lazy" decoding="async">/);
   assert.match(html, /!<a href="https:\/\/example\.com\/image\.webp" rel="noopener">Remote<\/a>/);
   assert.doesNotMatch(html, /<img src="https:\/\//);
 });

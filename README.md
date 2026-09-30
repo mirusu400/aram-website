@@ -72,6 +72,8 @@ Use the image button in the **본문** editor to upload `.jpg`, `.jpeg`, `.png`,
 or `.webp` files. They are stored in `assets/blog/` and inserted into the body.
 Set **대표 이미지** only when you want a custom search and social preview card.
 Keep screenshots reasonably compressed; WebP is preferred for screenshots.
+Manually authored posts can also reuse the published game screens in
+`assets/shots/`. Keep the alt text specific to the game and what the image shows.
 
 ### Write in VS Code
 

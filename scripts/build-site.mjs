@@ -304,7 +304,7 @@ function renderInlineMarkdown(value) {
   const images = [];
   const links = [];
   const tokenized = String(value)
-    .replace(/!\[([^\]]*)\]\((\/assets\/blog\/[a-zA-Z0-9/_.-]+\.(?:png|jpe?g|webp))\)/gi, (whole, alt, src) => {
+    .replace(/!\[([^\]]*)\]\((\/assets\/(?:blog|shots)\/[a-zA-Z0-9/_.-]+\.(?:png|jpe?g|webp))\)/gi, (whole, alt, src) => {
       const token = `\u0001ARAM-IMAGE-${images.length}\u0001`;
       const dimensions = localImageDimensions(src);
       const size = dimensions ? ` width="${dimensions.width}" height="${dimensions.height}"` : "";

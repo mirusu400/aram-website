@@ -80,6 +80,7 @@
   article strong{color:var(--ink)}
   article a{color:var(--accent);text-underline-offset:3px}
   article img{display:block;width:100%;height:auto;margin:28px 0;border:1px solid var(--line);border-radius:9px;background:var(--surface)}
+  article img[src^="/assets/shots/"]{width:min(100%,480px);margin-right:auto;margin-left:auto;image-rendering:crisp-edges;image-rendering:pixelated}
   article ul,article ol{padding-left:24px}
   article li+li{margin-top:7px}
   .callout{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:18px 20px;margin:24px 0;color:var(--body)}
