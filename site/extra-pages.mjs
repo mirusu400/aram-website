@@ -10,7 +10,7 @@ export const extraPages = [
         lead: "ARAM Emulator는 Windows PC, macOS, Linux, Android와 웹 브라우저에서 사용할 수 있습니다. 처음이라면 설치 없는 웹 버전이나 최신 안정판을 선택하세요.",
         body: `
     <p>피처폰은 흔히 <strong>피쳐폰</strong>으로도 검색됩니다. ARAM은 한국 피처폰의 WIPI·SKVM·Raptor 계열 게임과 소프트웨어를 현대 환경에서 실행하는 오픈소스 에뮬레이터이며, 타이틀별 동작 범위는 <a href="/compatibility/">호환성 단계</a>에 따라 다릅니다.</p>
-    <div class="callout"><strong>게임이나 펌웨어는 포함하지 않습니다.</strong> 직접 소유하거나 사용 권한이 있는 파일만 사용하세요. 공식 배포 파일은 ARAM GitHub 릴리스에서만 내려받는 것을 권장합니다.</div>
+    <div class="callout"><strong>게임이나 펌웨어는 포함하지 않습니다.</strong> 직접 소유하거나 사용 권한이 있는 파일만 사용하세요. Android 안정판은 Google Play에서, 데스크톱과 개발판 파일은 공식 ARAM GitHub 릴리스에서 받는 것을 권장합니다.</div>
 
     <h2>플랫폼별 선택</h2>
     <div class="table-wrap"><table><thead><tr><th>환경</th><th>파일 또는 실행 방법</th><th>대상</th></tr></thead><tbody>
@@ -18,7 +18,7 @@ export const extraPages = [
       <tr><td>Windows PC</td><td><a href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-windows-amd64.zip"><code>aram-windows-amd64.zip</code></a></td><td>x64</td></tr>
       <tr><td>macOS</td><td><a href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-macos-arm64.tar.gz"><code>aram-macos-arm64.tar.gz</code></a></td><td>Apple Silicon</td></tr>
       <tr><td>Linux</td><td><a href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-linux-amd64.tar.gz"><code>aram-linux-amd64.tar.gz</code></a></td><td>x64</td></tr>
-      <tr><td>Android</td><td><a href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-android-universal.apk"><code>aram-android-universal.apk</code></a></td><td>범용 APK</td></tr>
+      <tr><td>Android</td><td><a href="https://play.google.com/store/apps/details?id=io.github.mirusu400.aram">Google Play에서 설치</a></td><td>안정판</td></tr>
     </tbody></table></div>
 
     <h2>PC에서 시작하기</h2>
@@ -44,7 +44,7 @@ export const extraPages = [
         lead: "ARAM Emulator runs on Windows PCs, macOS, Linux, Android, and modern web browsers. Start with the installation-free web build or the latest Stable release.",
         body: `
     <p>ARAM is an open-source emulator for Korean feature-phone WIPI, SKVM, and Raptor-family games and software. Exact behavior varies by title and build, so use the <a href="/en/compatibility/">compatibility milestones</a> instead of assuming broad support.</p>
-    <div class="callout"><strong>No game or firmware files are included.</strong> Use only files you own or are authorized to use. Prefer downloads from the official ARAM GitHub release.</div>
+    <div class="callout"><strong>No game or firmware files are included.</strong> Use only files you own or are authorized to use. Get Android Stable from Google Play and desktop or development builds from the official ARAM GitHub releases.</div>
 
     <h2>Choose a platform</h2>
     <div class="table-wrap"><table><thead><tr><th>Environment</th><th>File or launch method</th><th>Target</th></tr></thead><tbody>
@@ -52,7 +52,7 @@ export const extraPages = [
       <tr><td>Windows PC</td><td><a href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-windows-amd64.zip"><code>aram-windows-amd64.zip</code></a></td><td>x64</td></tr>
       <tr><td>macOS</td><td><a href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-macos-arm64.tar.gz"><code>aram-macos-arm64.tar.gz</code></a></td><td>Apple Silicon</td></tr>
       <tr><td>Linux</td><td><a href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-linux-amd64.tar.gz"><code>aram-linux-amd64.tar.gz</code></a></td><td>x64</td></tr>
-      <tr><td>Android</td><td><a href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-android-universal.apk"><code>aram-android-universal.apk</code></a></td><td>Universal APK</td></tr>
+      <tr><td>Android</td><td><a href="https://play.google.com/store/apps/details?id=io.github.mirusu400.aram">Install from Google Play</a></td><td>Stable</td></tr>
     </tbody></table></div>
 
     <h2>Get started on a computer</h2>

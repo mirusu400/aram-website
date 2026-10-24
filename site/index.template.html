@@ -50,6 +50,7 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": { "@type": "Person", "name": "mirusu400", "url": "https://github.com/mirusu400" },
   "sameAs": [
+    "https://play.google.com/store/apps/details?id=io.github.mirusu400.aram",
     "https://github.com/mirusu400/aram-emu",
     "https://github.com/mirusu400/aram-core",
     "https://github.com/mirusu400/aram-frontend",
@@ -524,8 +525,8 @@
       <svg class="os"><use href="#i-apple"/></svg><div class="meta"><b>macOS</b><span>arm64 · .tar.gz</span></div><svg class="dl"><use href="#i-download"/></svg></a>
     <a class="oscard" data-file="aram-linux-amd64.tar.gz" href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-linux-amd64.tar.gz">
       <svg class="os"><use href="#i-linux"/></svg><div class="meta"><b>Linux</b><span>x64 · .tar.gz</span></div><svg class="dl"><use href="#i-download"/></svg></a>
-    <a class="oscard" data-file="aram-android-universal.apk" href="https://github.com/mirusu400/aram-emu/releases/latest/download/aram-android-universal.apk">
-      <svg class="os"><use href="#i-android"/></svg><div class="meta"><b>Android</b><span>arm64 / x86_64 · .apk</span></div><svg class="dl"><use href="#i-download"/></svg></a>
+    <a class="oscard" data-file="aram-android-universal.apk" data-stable-url="https://play.google.com/store/apps/details?id=io.github.mirusu400.aram" href="https://play.google.com/store/apps/details?id=io.github.mirusu400.aram">
+      <svg class="os"><use href="#i-android"/></svg><div class="meta"><b>Android</b><span data-stable-label="dlx_android_store" data-nightly-label="dlx_android_apk" data-k="dlx_android_store">Google Play · Stable</span></div><svg class="dl"><use href="#i-download"/></svg></a>
   </div>
   <div class="dlmore">
     <a id="dlBrowser" href="/player/?ch=stable" data-k="dlx_browser">Run it in your browser</a>
@@ -625,10 +626,11 @@ const I18N={
  sc_ios:{en:"iOS · designed",ko:"iOS · 설계됨"},
  dlx_eyebrow:{en:"Download",ko:"다운로드"},
  dlx_h2:{en:"Download ARAM.",ko:"ARAM 다운로드."},
- dlx_p:{en:"Choose a channel, then your platform. Both links always point to the newest build.",ko:"채널을 고르고 플랫폼을 선택하세요. 두 링크 모두 항상 최신 빌드를 가리킵니다."},
+ dlx_p:{en:"Choose a channel, then your platform. Android Stable opens Google Play; Nightly downloads the APK.",ko:"채널을 고르고 플랫폼을 선택하세요. Android 안정판은 Google Play에서, Nightly는 APK로 받을 수 있습니다."},
  dlx_tab_stable:{en:"Stable",ko:"안정판"},dlx_tab_nightly:{en:"Nightly",ko:"개발판"},
- dlx_stable:{en:"Recommended. The latest tagged release, stable and tested.",ko:"권장. 최신 태그 릴리스로 안정적이고 검증된 버전입니다."},
+ dlx_stable:{en:"Recommended. Android is available on Google Play; desktop builds use the latest tagged release.",ko:"권장. Android는 Google Play에서, 데스크톱은 최신 태그 릴리스로 제공합니다."},
  dlx_nightly:{en:"Bleeding edge, rebuilt on every push to main. May be unstable.",ko:"최신 개발판. main에 push될 때마다 다시 빌드됩니다. 불안정할 수 있습니다."},
+ dlx_android_store:{en:"Google Play · Stable",ko:"Google Play · 안정판"},dlx_android_apk:{en:"arm64 / x86_64 · .apk",ko:"arm64 / x86_64 · .apk"},
  dlx_browser:{en:"Run it in your browser",ko:"브라우저에서 실행"},
  dlx_all:{en:"All releases on GitHub",ko:"GitHub의 전체 릴리스"},
  src_eyebrow:{en:"Open source",ko:"오픈소스"},src_h2:{en:"Four repositories, one product.",ko:"네 개의 저장소, 하나의 제품."},
@@ -697,8 +699,13 @@ const CH={
   nightly:{base:"https://github.com/mirusu400/aram-emu/releases/download/nightly/",note:"dlx_nightly"}
 };
 function setChannel(ch){
-  const c=CH[ch]||CH.stable;
-  document.querySelectorAll("#download .oscard").forEach(a=>a.href=c.base+a.dataset.file);
+  ch=CH[ch]?ch:"stable";
+  const c=CH[ch];
+  document.querySelectorAll("#download .oscard").forEach(a=>{
+    a.href=a.dataset[ch+"Url"]||c.base+a.dataset.file;
+    const label=a.querySelector("[data-"+ch+"-label]");
+    if(label){ const tr=I18N[label.dataset[ch+"Label"]]; if(tr) label.textContent=tr; }
+  });
   const sums=document.getElementById("dlSums"); if(sums) sums.href=c.base+"SHA256SUMS.txt";
   document.querySelectorAll(".dltab").forEach(t=>t.classList.toggle("on",t.dataset.ch===ch));
   const pl=document.getElementById("playLaunch"); if(pl) pl.href="/player/?ch="+ch;

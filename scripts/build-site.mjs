@@ -167,7 +167,7 @@ function localizeDataElements(source, language, dictionary) {
     }
     return `<${tag}${attributes}>${translation}</${tag}>`;
   });
-  const runtimeDictionary = Object.fromEntries(["dlx_stable", "dlx_nightly"].map((key) => {
+  const runtimeDictionary = Object.fromEntries(["dlx_stable", "dlx_nightly", "dlx_android_store", "dlx_android_apk"].map((key) => {
     const translation = dictionary[key]?.[language];
     if (typeof translation !== "string") throw new Error(`Missing ${language} translation for ${key}`);
     return [key, translation];

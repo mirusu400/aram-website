@@ -72,6 +72,8 @@ test("localized build emits distinct, indexable Korean and English pages", async
   const enHome = await readFile(path.join(temporaryRoot, "en/index.html"), "utf8");
   assert.match(koHome, /한국 피처폰 소프트웨어를 다시 켜다/);
   assert.match(enHome, /Bring Korean feature-phone software back to life/);
+  assert.match(koHome, /https:\/\/play\.google\.com\/store\/apps\/details\?id=io\.github\.mirusu400\.aram/);
+  assert.match(koHome, /data-stable-url="https:\/\/play\.google\.com\/store\/apps\/details\?id=io\.github\.mirusu400\.aram"/);
   assert.match(koHome, /pretendardvariable-dynamic-subset\.css/);
   assert.doesNotMatch(koHome, /const I18N=\{[^<]+about_eyebrow/);
   for (const slug of slugs) {
@@ -86,6 +88,10 @@ test("localized build emits distinct, indexable Korean and English pages", async
   const koDownload = await readFile(path.join(temporaryRoot, "download/index.html"), "utf8");
   assert.match(koDownload, /피처폰 게임 에뮬레이터 PC·안드로이드 다운로드/);
   assert.match(koDownload, /피쳐폰/);
+  assert.match(koDownload, /play\.google\.com\/store\/apps\/details\?id=io\.github\.mirusu400\.aram/);
+  const playStorePost = await readFile(path.join(temporaryRoot, "blog/aram-emulator-on-google-play/index.html"), "utf8");
+  assert.match(playStorePost, /ARAM Emulator가 Google Play에 출시되었습니다/);
+  assert.match(playStorePost, /play\.google\.com\/store\/apps\/details\?id=io\.github\.mirusu400\.aram/);
   const koCompatibility = await readFile(path.join(temporaryRoot, "compatibility/index.html"), "utf8");
   assert.match(koCompatibility, /ARAM v0\.2\.0/);
   assert.match(koCompatibility, /2026-09-02/);
