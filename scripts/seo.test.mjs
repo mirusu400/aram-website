@@ -74,6 +74,9 @@ test("localized build emits distinct, indexable Korean and English pages", async
   assert.match(enHome, /Bring Korean feature-phone software back to life/);
   assert.match(koHome, /https:\/\/play\.google\.com\/store\/apps\/details\?id=io\.github\.mirusu400\.aram/);
   assert.match(koHome, /data-stable-url="https:\/\/play\.google\.com\/store\/apps\/details\?id=io\.github\.mirusu400\.aram"/);
+  assert.match(koHome, /<symbol id="i-google-play"/);
+  assert.match(koHome, /Google Play에서 보기/);
+  assert.match(enHome, /Get it on Google Play/);
   assert.match(koHome, /pretendardvariable-dynamic-subset\.css/);
   assert.doesNotMatch(koHome, /const I18N=\{[^<]+about_eyebrow/);
   for (const slug of slugs) {
